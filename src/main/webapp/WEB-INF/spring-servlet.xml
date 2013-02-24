@@ -2,13 +2,14 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:lang="http://www.springframework.org/schema/lang"
-	xmlns:p="http://www.springframework.org/schema/p" xmlns:tx="http://www.springframework.org/schema/tx"
-	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:lang="http://www.springframework.org/schema/lang" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
 		http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
@@ -41,7 +42,8 @@
 
 	<!-- <jee:jndi-lookup id="dataSource" jndi-name="java:comp/env/${JeeConnection}" 
 		/> -->
-<!-- 	<jee:jndi-lookup id="dataSource" jndi-name="java:comp/env/jdbc/Local" /> -->
+	<!-- <jee:jndi-lookup id="dataSource" jndi-name="java:comp/env/jdbc/Local" 
+		/> -->
 	<jee:jndi-lookup id="dataSource" jndi-name="java:comp/env/jdbc/MYSQLDB" />
 
 	<bean id="sessionFactory"
@@ -75,5 +77,23 @@
 		<!-- one of the properties available; the maximum file size in bytes -->
 		<property name="maxUploadSize" value="500000" />
 	</bean>
+
+	<!-- config data -->
+
+	<bean id="osaConfiguration" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="org.hsqldb.jdbcDriver" />
+		<property name="url" value="jdbc:hsqldb:mem:mydb" />
+		<property name="username" value="sa" />
+		<property name="password" value="" />
+		<property name="initialSize" value="5" />
+		<property name="maxActive" value="10" />
+		<property name="poolPreparedStatements" value="true" />
+		<property name="maxOpenPreparedStatements" value="10" />
+	</bean>
+
+	<jdbc:embedded-database id="osaConfiguration">
+		<jdbc:script location="classpath:osaConfiguration-schema.sql" />
+		<jdbc:script location="classpath:osaConfiguration-data.sql" />
+	</jdbc:embedded-database>
 
 </beans>
