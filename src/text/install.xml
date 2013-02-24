@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter xml:id="installation" xmlns="http://docbook.org/ns/docbook" version="5.0" >
   <title>Installation des Services</title>
+  <para><productname class='service'>cosa</productname> ist eine Implemwntation des <productname class='service'>Froc</productname>.
+  </para>
   <section>
     <title>Vorbedingingen</title>
     <para>Auf dem Server müssen einige Einstellungen vorgenommen werden, damit der Service vom Maven aus deployed werden kann und 
@@ -11,33 +13,33 @@
 	  <para>Auf dem Server ist mysql installiert</para>
 	</listitem>
 	<listitem>
-	  <para>Auf dem Server ist ein User mit mit den Rollen <code>manager-gui</code> und <code>manager-script</code> eingerichtet:
-	  <example>
-	    <title>tomcat-users.xml</title>
-	    
+	  <para>Auf dem Server ist ein User mit mit den Rollen <code>manager-gui</code> und <code>manager-script</code> eingerichtet. Auszug aus dem File <filename>tomcat-users.xml</filename>:
+	  <informalexample>   
 	    <programlisting language="XML"><![CDATA[
 	    <role rolename="manager-gui"/>
 	    <role rolename="manager-script"/>
 		
 	    <user username="tomcat" password="tomcat" roles="manager-gui,manager-script"/>]]>
 	    </programlisting>
-	  </example>
+	  </informalexample>
 	  </para>
 	</listitem>
 	<listitem>
-	  <para>Auf dem Server ist eine passende <code>datasource</code> und eine Property für die <code>osaFileBase</code> eingerichtet:
-	  <example>
-	    <title>context.xml</title>
-	    <programlisting language="XML"><![CDATA[
-		<Resource name="jdbc/MYSQLDB" auth="Container" type="javax.sql.DataSource"
-	  	  username="psychosa" password=".........." url="jdbc:mysql://iwmdb.uni-koblenz.de:3306/psychosa"
-		  driverClassName="com.mysql.jdbc.Driver" initialSize="5" maxWait="5000"
-		  maxActive="120" maxIdle="5" />
+	  <para>Auf dem Server ist eine passende <code>datasource</code> und eine Property für die <code>osaFileBase</code> eingerichtet. Auszug aus dem File <filename>context.xml</filename>:
+	  <informalexample>
+	   
+	    <programlisting language="XML" role="XML"><![CDATA[
+<Resource name="jdbc/MYSQLDB" 
+          auth="Container" type="javax.sql.DataSource"
+          username="psychosa" password=".........." 
+          url="jdbc:mysql://iwmdb.uni-koblenz.de:3306/psychosa"
+          driverClassName="com.mysql.jdbc.Driver" initialSize="5" maxWait="5000"
+          maxActive="120" maxIdle="5" />
 		
-		<Environment name="osaFileBase" value="/var/local/osa"
-		  type="java.lang.String" override="true"/>]]>
+<Environment name="osaFileBase" value="/var/local/osa"
+             type="java.lang.String" override="true"/>]]>
 	    </programlisting>
-	  </example>
+	  </informalexample>
 	  </para>
 	</listitem>
       </orderedlist>
