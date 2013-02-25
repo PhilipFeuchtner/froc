@@ -8,7 +8,6 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import de.uniko.iwm.osa.data.model.OsaDbPages;
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
 
 @Repository
@@ -21,6 +20,7 @@ public class OsaDbQuestsDAOImpl implements OsaDbQuestsDAO {
 		sessionFactory.getCurrentSession().save(q);
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<OsaDbQuests> listOsaDbQuests() {
 
 		return sessionFactory.getCurrentSession().createQuery("from OsaDbQuests")
@@ -36,6 +36,7 @@ public class OsaDbQuestsDAOImpl implements OsaDbQuestsDAO {
 
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<OsaDbQuests> getOsaDbQuestsById(Integer id) {
 		Query query = sessionFactory.getCurrentSession().createQuery("from OsaDbQuests p where p.id=?");
 		query.setInteger(0, id);

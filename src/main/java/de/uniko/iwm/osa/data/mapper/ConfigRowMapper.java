@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
+@SuppressWarnings("rawtypes")
 public class ConfigRowMapper implements RowMapper {
 
 	@Override

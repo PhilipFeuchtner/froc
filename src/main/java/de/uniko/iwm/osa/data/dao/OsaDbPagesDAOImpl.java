@@ -19,24 +19,11 @@ public class OsaDbPagesDAOImpl implements OsaDbPagesDAO {
 		sessionFactory.getCurrentSession().save(p);
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<OsaDbPages> listOsaDbPages() {
 
-		List<OsaDbPages> list = (List<OsaDbPages>) sessionFactory.getCurrentSession().createQuery("from OsaDbPages")
+		return (List<OsaDbPages>) sessionFactory.getCurrentSession().createQuery("from OsaDbPages")
 				.list();
-		
-//		// -------------------------
-//		List<Book> result = hibernateTemplate.execute(new HibernateCallback<List<Book>>() {
-//		    public List<Book> doInHibernate(Session session) throws HibernateException, SQLException {
-//		        Query query = session.createQuery("SELECT DISTINCT b FROM Book as b LEFT JOIN FETCH b.authors");
-//
-//		        List list = query.list();
-//
-//		        return list;
-//		    }
-//		});
-//		// -------------------------
-		
-		return list;
 	}
 
 	public void removeOsaDbPages(Integer id) {
@@ -45,9 +32,9 @@ public class OsaDbPagesDAOImpl implements OsaDbPagesDAO {
 		if (null != q) {
 			sessionFactory.getCurrentSession().delete(q);
 		}
-
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<OsaDbPages> getOsaDbPagesById(Integer id) {
 		Query query = sessionFactory.getCurrentSession().createQuery("from OsaDbPages p where p.id=?");
 		query.setInteger(0, id);

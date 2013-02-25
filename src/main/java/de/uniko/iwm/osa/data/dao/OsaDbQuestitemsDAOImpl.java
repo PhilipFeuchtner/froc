@@ -18,6 +18,7 @@ public class OsaDbQuestitemsDAOImpl implements OsaDbQuestitemsDAO {
 		sessionFactory.getCurrentSession().save(qi);
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<OsaDbQuestitems> listOsaDbQuestitems() {
 		return sessionFactory.getCurrentSession().createQuery("from OsaDbQuestitems")				
 				.list();

@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import de.uniko.iwm.osa.data.mapper.ConfigRowMapper;
@@ -19,6 +18,7 @@ public class ConfigDAOImpl implements ConfigDAO {
 		this.osaConfiguration = ds;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Config> select(String osaName) {
 		   JdbcTemplate select = new JdbcTemplate(osaConfiguration);
@@ -28,6 +28,7 @@ public class ConfigDAOImpl implements ConfigDAO {
 		            new ConfigRowMapper());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Config> selectAll() {
 		   JdbcTemplate select = new JdbcTemplate(osaConfiguration);

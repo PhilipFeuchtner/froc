@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 
 import de.uniko.iwm.osa.data.model.Config;
 
+@SuppressWarnings("rawtypes")
 public class ConfigResultSetExtractor implements ResultSetExtractor {
 
 	@Override
