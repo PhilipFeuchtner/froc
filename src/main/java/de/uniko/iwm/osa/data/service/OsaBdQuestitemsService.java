@@ -2,7 +2,7 @@ package de.uniko.iwm.osa.data.service;
 
 import java.util.List;
 
-import de.uniko.iwm.osa.data.form.OsaDbQuestitems;
+import de.uniko.iwm.osa.data.model.OsaDbQuestitems;
 
 
 public interface OsaBdQuestitemsService {

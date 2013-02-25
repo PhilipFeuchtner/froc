@@ -5,9 +5,9 @@
 
 <hibernate-configuration>
 	<session-factory>
-		<mapping class="de.uniko.iwm.osa.data.form.Contact" />
-		<mapping class="de.uniko.iwm.osa.data.form.OsaDbPages" />
-		<mapping class="de.uniko.iwm.osa.data.form.OsaDbQuestitems" />
-		<mapping class="de.uniko.iwm.osa.data.form.OsaDbQuests" />
+		<mapping class="de.uniko.iwm.osa.data.model.Contact" />
+		<mapping class="de.uniko.iwm.osa.data.model.OsaDbPages" />
+		<mapping class="de.uniko.iwm.osa.data.model.OsaDbQuestitems" />
+		<mapping class="de.uniko.iwm.osa.data.model.OsaDbQuests" />
 	</session-factory>
 </hibernate-configuration>

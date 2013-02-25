@@ -2,7 +2,7 @@ package de.uniko.iwm.osa.qtiinterpreter;
 
 import java.util.List;
 
-import de.uniko.iwm.osa.data.form.OsaDbQuests;
+import de.uniko.iwm.osa.data.model.OsaDbQuests;
 import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
 
 public class AssessmentItem {

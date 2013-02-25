@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.util.List;
 
 import de.uniko.iwm.osa.data.dao.OsaDbQuestsDAO;
-import de.uniko.iwm.osa.data.form.OsaDbQuests;
+import de.uniko.iwm.osa.data.model.OsaDbQuests;
 import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
 
 public class Compile {

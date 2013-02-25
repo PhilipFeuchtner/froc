@@ -1,4 +1,4 @@
 
-insert into config (osaName, jeeDatasource, fileBasePath) values ('psychosa', 'jdbc/Local','/var/local');
+insert into CONFIG (OSANAME, JEEDATASOURCE, FILEBASEPATH) values ('psychosa', 'jdbc/Local','/var/local/psyhosa');
 
---insert into config (osaName, jeeDatasource, fileBasePath) values ('otherosa', 'Kit','Cole');
+insert into config (osaName, jeeDatasource, fileBasePath) values ('otherosa', 'Kit','Cole');

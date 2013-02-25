@@ -1,4 +1,4 @@
-drop table config if exists;
+drop table CONFIG if exists;
 
 
-create table config (id integer identity primary key, osaName varchar(200) not null, jeeDatasource varchar(200) not null, fileBasePath varchar(200) not null );
+create table CONFIG (ID integer identity primary key, OSANAME varchar(200) not null, JEEDATASOURCE varchar(200) not null, FILEBASEPATH varchar(200) not null );

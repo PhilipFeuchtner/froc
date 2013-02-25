@@ -2,21 +2,11 @@ package de.uniko.iwm.osa.data.controller;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Map;
+import java.util.List;
 
-import javax.annotation.Resource;
-import javax.annotation.Resources;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,9 +14,11 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import de.uniko.iwm.osa.data.form.OsaDbPages;
-import de.uniko.iwm.osa.data.form.OsaDbQuestitems;
-import de.uniko.iwm.osa.data.form.UploadItem;
+import de.uniko.iwm.osa.data.dao.ConfigDAOImpl;
+import de.uniko.iwm.osa.data.model.Config;
+import de.uniko.iwm.osa.data.model.OsaDbPages;
+import de.uniko.iwm.osa.data.model.OsaDbQuestitems;
+import de.uniko.iwm.osa.data.model.UploadItem;
 import de.uniko.iwm.osa.data.service.OsaBdQuestitemsService;
 import de.uniko.iwm.osa.data.service.OsaDbPagesService;
 import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
@@ -47,6 +39,9 @@ public class OsaController {
 
 	@Autowired
 	private OsaDbPagesService pService;
+	
+	@Autowired
+	private DataSource osaConfiguration;
 
 	// @Value("classpath:imageTemplate.xslt") InputStream imageTemplate;
 	// @Value("classpath:SampleQTI2_1.zip") InputStream qtiStream;
@@ -56,35 +51,6 @@ public class OsaController {
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String listContacts(Model model) {
-
-		// map.put("contact", new Contact());
-		// map.put("contactList", contactService.listContact());
-
-		// Context initCtx;
-		// try {
-		// initCtx = new InitialContext();
-		//
-		// Context envCtx = (Context) initCtx.lookup("java:comp/env");
-		//
-		// DataSource ds = (DataSource) envCtx.lookup("jdbc/Local");
-		// Connection conn = ds.getConnection();
-		//
-		// Statement stmt = conn.createStatement();
-		// ResultSet rs = stmt.executeQuery("select name from pages");
-		//
-		// int count = 0;
-		// while (rs.next()) {
-		// count++;
-		// System.out.println(count + "\t: " + rs.getString(1));
-		// }
-		//
-		// } catch (NamingException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// } catch (SQLException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
 
 		System.out.println("q Size  : " + qService.listOsaDbQuests().size());
 		System.out.println("qi Size : "
@@ -97,6 +63,15 @@ public class OsaController {
 		OsaDbPages p = pService.getOsaDbPagesById(qi.getPagesid()).get(0);
 
 		model.addAttribute(new UploadItem());
+
+		ConfigDAOImpl cDAO = new ConfigDAOImpl();
+		cDAO.setDataSource(osaConfiguration);
+		
+		System.out.println("Now select and list all configs");
+		List<Config> list = cDAO.selectAll();
+		for (Config myC : list) {
+			System.out.println(myC);
+		}
 
 		return "osadbform";
 	}

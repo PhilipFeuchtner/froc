@@ -6,7 +6,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import de.uniko.iwm.osa.data.form.OsaDbQuestitems;
+import de.uniko.iwm.osa.data.model.OsaDbQuestitems;
 
 @Repository
 public class OsaDbQuestitemsDAOImpl implements OsaDbQuestitemsDAO {

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import de.uniko.iwm.osa.data.form.Contact;
+import de.uniko.iwm.osa.data.model.Contact;
 import de.uniko.iwm.osa.data.service.ContactService;
 import de.uniko.iwm.osa.data.service.OsaBdQuestitemsService;
 import de.uniko.iwm.osa.data.service.OsaDbQuestsService;

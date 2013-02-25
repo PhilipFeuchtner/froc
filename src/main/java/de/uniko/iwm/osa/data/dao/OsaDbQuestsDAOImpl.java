@@ -8,8 +8,8 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import de.uniko.iwm.osa.data.form.OsaDbPages;
-import de.uniko.iwm.osa.data.form.OsaDbQuests;
+import de.uniko.iwm.osa.data.model.OsaDbPages;
+import de.uniko.iwm.osa.data.model.OsaDbQuests;
 
 @Repository
 public class OsaDbQuestsDAOImpl implements OsaDbQuestsDAO {

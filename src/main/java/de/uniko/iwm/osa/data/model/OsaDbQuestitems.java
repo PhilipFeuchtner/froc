@@ -1,4 +1,4 @@
-package de.uniko.iwm.osa.data.form;
+package de.uniko.iwm.osa.data.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

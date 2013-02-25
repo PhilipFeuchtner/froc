@@ -2,7 +2,7 @@ package de.uniko.iwm.osa.data.service;
 
 import java.util.List;
 
-import de.uniko.iwm.osa.data.form.OsaDbPages;
+import de.uniko.iwm.osa.data.model.OsaDbPages;
 
 
 public interface OsaDbPagesService {

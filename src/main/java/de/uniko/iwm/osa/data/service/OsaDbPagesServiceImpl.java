@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.uniko.iwm.osa.data.dao.OsaDbPagesDAO;
-import de.uniko.iwm.osa.data.form.OsaDbPages;
+import de.uniko.iwm.osa.data.model.OsaDbPages;
 
 @Service
 public class OsaDbPagesServiceImpl implements OsaDbPagesService {

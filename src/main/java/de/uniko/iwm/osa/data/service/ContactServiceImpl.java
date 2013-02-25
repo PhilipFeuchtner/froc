@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.uniko.iwm.osa.data.dao.ContactDAO;
-import de.uniko.iwm.osa.data.form.Contact;
+import de.uniko.iwm.osa.data.model.Contact;
 
 
 @Service

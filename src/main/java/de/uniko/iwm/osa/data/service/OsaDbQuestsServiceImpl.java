@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.uniko.iwm.osa.data.dao.OsaDbQuestsDAO;
-import de.uniko.iwm.osa.data.form.OsaDbQuests;
+import de.uniko.iwm.osa.data.model.OsaDbQuests;
 
 @Service
 public class OsaDbQuestsServiceImpl implements OsaDbQuestsService {
