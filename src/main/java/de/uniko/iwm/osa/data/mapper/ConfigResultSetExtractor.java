@@ -13,12 +13,6 @@ public class ConfigResultSetExtractor implements ResultSetExtractor {
 	@Override
 	public Object extractData(ResultSet rs) throws SQLException,
 			DataAccessException {
-	    Config c = new Config();
-	    c.setId(rs.getInt(1));
-	    c.setOsaName(rs.getString(2));
-	    c.setJeeDatasource(rs.getString(3));
-	    c.setFileBasePath(rs.getString(4));
-	    return c;
+	    return new Config(rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4));
 	}
-
 }

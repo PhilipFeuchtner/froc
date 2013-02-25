@@ -73,6 +73,12 @@ public class OsaController {
 			System.out.println(myC);
 		}
 
+		System.out.println("Now select and list all psychosa");
+		list = cDAO.select("psychosa");
+		for (Config myC : list) {
+			System.out.println(myC);
+		}
+		
 		return "osadbform";
 	}
 

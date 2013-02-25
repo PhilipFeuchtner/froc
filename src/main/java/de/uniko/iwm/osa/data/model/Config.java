@@ -13,29 +13,27 @@ public class Config {
 	private String jeeDatasource;
 	private String fileBasePath;
 	
+	public Config(Integer id, String osaName, String jeeDatasource, String fileBasePath) {
+		this.id = id;
+		this.osaName = osaName;
+		this.jeeDatasource = jeeDatasource;
+		this.fileBasePath = fileBasePath;
+	}
+	
 	public Integer getId() {
 		return id;
 	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
+
 	public String getOsaName() {
 		return osaName;
 	}
-	public void setOsaName(String osaName) {
-		this.osaName = osaName;
-	}
+
 	public String getJeeDatasource() {
 		return jeeDatasource;
 	}
-	public void setJeeDatasource(String jeeDatasource) {
-		this.jeeDatasource = jeeDatasource;
-	}
+
 	public String getFileBasePath() {
 		return fileBasePath;
-	}
-	public void setFileBasePath(String fileBasePath) {
-		this.fileBasePath = fileBasePath;
 	}
 	
 	@Override
