@@ -6,7 +6,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <html>
 <head>
-<title>Spring 3 MVC Series - Contact Manager</title>
+<title>Cosa implementing Froc</title>
 <style type="text/css">
 body {
 	font-family: sans-serif;
