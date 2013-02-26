@@ -27,10 +27,12 @@
 
       <orderedlist numeration="lowerroman">
 	<listitem>
-	  <para>Auf dem Server ist mysql installiert</para>
+	  <para>Auf dem Server ist <acronym>mysql</acronym> installiert</para>
 	</listitem>
 	<listitem>
-	  <para>Auf dem Server ist ein User mit mit den Rollen <code>manager-gui</code> und <code>manager-script</code> eingerichtet. Auszug aus dem File <filename>tomcat-users.xml</filename>:
+	  <para>Auf dem Server ist ein User mit mit den Rollen <code>manager-gui</code> und <code>manager-script</code> eingerichtet. 
+	  </para>
+	  <para>Auszug aus dem File <filename>tomcat-users.xml</filename>:
 	  <informalexample>   
 	    <programlisting language="XML"><![CDATA[
 	    <role rolename="manager-gui"/>
@@ -42,7 +44,10 @@
 	  </para>
 	</listitem>
 	<listitem>
-	  <para>Auf dem Server ist eine passende <code>datasource</code> und eine Property für die <code>osaFileBase</code> eingerichtet. Auszug aus dem File <filename>context.xml</filename>:
+	  <para>Auf dem Server ist eine passende <code>datasource</code> und eine Property <code>osaFileBase</code> 
+	  für jede OSA-Installation eingerichtet. Auf diees Einträge wird über die Konfigurations-Datenbank zugegriffen.
+	  </para>
+	  <para>Auszug aus dem File <filename>context.xml</filename>:
 	  <informalexample>
 	   
 	    <programlisting language="XML" role="XML"><![CDATA[
@@ -66,8 +71,9 @@
   <section>
     <title>Verschiedene OSA-Installationen</title>
     <para>
-      Zum jetztigen Zeitpunkt wird über eine enbedded-database auf die notwendigen Konfigurationsdaten zugegriffen.
-      Auszug aus dem File <filename>context.xml</filename>:
+      Zum jetztigen Zeitpunkt wird über eine <code>enbedded-database</code> auf die notwendigen Konfigurationsdaten zugegriffen.
+    </para>
+    <para>Auszug aus dem File <filename>context.xml</filename>:
       <informalexample>
 	<programlisting language="XML" role="XML"><![CDATA[
         <jdbc:embedded-database id="osaConfiguration">
@@ -77,7 +83,7 @@
 	</programlisting>
       </informalexample>
     </para>
-    <para>Sobald diese Datenbank als jndi-resource verfügbar ist und die passenden Werte eingetragen sind, kann transparent auf verschiedene Installationen zugegriffen werden.
+    <para>Sobald diese Datenbank als <code>jndi</code>-resource verfügbar ist und die passenden Werte eingetragen sind, kann transparent auf verschiedene Installationen zugegriffen werden.
     </para>
   </section>
 
