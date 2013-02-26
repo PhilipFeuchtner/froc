@@ -7,14 +7,14 @@
       <revnumber>0.91</revnumber>
       <date>2013-02-26</date>
       <authorinitials>fe</authorinitials>
-      <revremark>Bug fixes</revremark>
+      <revremark>Verschiedene OSAs</revremark>
     </revision>
  
     <revision>
       <revnumber>0.90</revnumber>
       <date>2013-02-15</date>
       <authorinitials>fe</authorinitials>
-      <revremark>First beta release</revremark>
+      <revremark>Erstes Release</revremark>
     </revision>
   </revhistory>
 
@@ -60,6 +60,24 @@
 	  </para>
 	</listitem>
       </orderedlist>
+    </para>
+  </section>
+
+  <section>
+    <title>Verschiedene OSA-Installationen</title>
+    <para>
+      Zum jetztigen Zeitpunkt wird über eine enbedded-database auf die notwendigen Konfigurationsdaten zugegriffen.
+      Auszug aus dem File <filename>context.xml</filename>:
+      <informalexample>
+	<programlisting language="XML" role="XML"><![CDATA[
+        <jdbc:embedded-database id="osaConfiguration">
+          <jdbc:script location="classpath:osaConfiguration-schema.sql" />
+          <jdbc:script location="classpath:osaConfiguration-data.sql" />
+        </jdbc:embedded-database>]]>
+	</programlisting>
+      </informalexample>
+    </para>
+    <para>Sobald diese Datenbank als jndi-resource verfügbar ist und die passenden Werte eingetragen sind, kann transparent auf verschiedene Installationen zugegriffen werden.
     </para>
   </section>
 
