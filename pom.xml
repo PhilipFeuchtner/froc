@@ -51,26 +51,21 @@
 				</configuration>
 			</plugin>
 
+			<!-- <plugin> <groupId>org.codehaus.cargo</groupId> <artifactId>cargo-maven2-plugin</artifactId> 
+				<version>1.2.4</version> <configuration> <container> <containerId>tomcat7x</containerId> 
+				<type>remote</type> </container> <configuration> <type>runtime</type> <properties> 
+				<cargo.remote.username>${cargo.remote.username}</cargo.remote.username> <cargo.remote.password>${cargo.remote.password}</cargo.remote.password> 
+				<cargo.remote.uri>${cargo.remote.uri}</cargo.remote.uri> </properties> </configuration> 
+				</configuration> </plugin> -->
+
 			<plugin>
-				<groupId>org.codehaus.cargo</groupId>
-				<artifactId>cargo-maven2-plugin</artifactId>
-				<version>1.2.4</version>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>2.1</version>
 				<configuration>
-					<container>
-						<containerId>tomcat7x</containerId>
-						<type>remote</type>
-					</container>
-					<configuration>
-						<type>runtime</type>
-						<properties>
-							<cargo.remote.username>${cargo.remote.username}</cargo.remote.username>
-							<cargo.remote.password>${cargo.remote.password}</cargo.remote.password>
-							<cargo.remote.uri>${cargo.remote.uri}</cargo.remote.uri>
-						</properties>
-					</configuration>
+					<server>${tomcat7.cosa.server.id}</server>
 				</configuration>
 			</plugin>
-
 
 		</plugins>
 

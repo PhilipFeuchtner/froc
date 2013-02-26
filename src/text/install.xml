@@ -66,7 +66,7 @@
   <section>
     <title>Installation</title>
     <para>
-      Der Service wird von Maven aus mit dem Befehl <command>mvn clean install cargo:redeploy</command> deployed. 
+      Der Service wird von Maven aus mit dem Befehl <command>mvn clean tomcat7:deploy</command> deployed. 
     </para>
   </section>
 </chapter>

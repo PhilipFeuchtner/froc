@@ -28,9 +28,6 @@ import de.uniko.iwm.osa.qtiinterpreter.Compile;
 @RequestMapping("/index")
 public class OsaController {
 
-	// @Autowired
-	// private ContactService contactService;
-
 	@Autowired
 	private OsaBdQuestitemsService qiService;
 
@@ -42,10 +39,6 @@ public class OsaController {
 	
 	@Autowired
 	private DataSource osaConfiguration;
-
-	// @Value("classpath:imageTemplate.xslt") InputStream imageTemplate;
-	// @Value("classpath:SampleQTI2_1.zip") InputStream qtiStream;
-	// @Value("classpath:Interessen_18.12.2012.zip") InputStream qtiStream;
 
 	final String image_base = "new_images";
 
