@@ -3,6 +3,8 @@ all: text.pdf
 
 text.pdf: text.fo
 	fop -fo install.fo -pdf install.pdf
+	rm install.fo
+	mv install.pdf ../../
 
 text.fo: install.xml
 	xsltproc -o install.fo \

@@ -69,11 +69,6 @@
 
 		</plugins>
 
-		<!-- <resources> <resource> <directory>${project.basedir}/src/main/webapp/WEB-INF</directory> 
-			<filtering>true</filtering> <targetPath>${project.basedir}/src/main/webapp/WEB-INF/wsdl</targetPath> 
-			<includes> <include>spring-servlet.xml</include> </includes> </resource> 
-			</resources> -->
-
 	</build>
 
 
