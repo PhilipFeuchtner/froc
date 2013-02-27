@@ -2,6 +2,7 @@ package de.uniko.iwm.osa.data.dao;
 
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -30,7 +31,23 @@ public class OsaDbQuestitemsDAOImpl implements OsaDbQuestitemsDAO {
 		if (null != qi) {
 			sessionFactory.getCurrentSession().delete(qi);
 		}
-
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<OsaDbQuestitems> listOsaDbQuestitemsById(Integer id) {
+		Query query = sessionFactory.getCurrentSession().createQuery("from OsaDbQuestitems p where p.id=?");
+		query.setInteger(0, id);
+
+		return query.list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<OsaDbQuestitems> listOsaDbQuestitemsByPagesid(Integer pid) {
+		Query query = sessionFactory.getCurrentSession().createQuery("from OsaDbQuestitems p where pagesid p.pagesid=?");			
+		query.setInteger(0, pid);
+
+		return query.list();
+	}
 }

@@ -11,6 +11,7 @@ import java.util.List;
 import de.uniko.iwm.osa.data.dao.OsaDbQuestsDAO;
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
 import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
+import de.uniko.iwm.osa.questsitemTree.AssessmentItem;
 
 public class Compile {
 
