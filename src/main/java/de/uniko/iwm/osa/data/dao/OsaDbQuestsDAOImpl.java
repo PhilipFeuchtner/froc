@@ -43,6 +43,13 @@ public class OsaDbQuestsDAOImpl implements OsaDbQuestsDAO {
 		return query.list();
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<OsaDbQuests> getOsaDbQuestsByQuestid(Integer id) {
+		Query query = sessionFactory.getCurrentSession().createQuery("from OsaDbQuests p where p.questid=? order by p.position");
+		query.setInteger(0, id);
+		return query.list();
+	}
+	
 	public void storeOsaDbQuests(OsaDbQuests q) {
 		sessionFactory.getCurrentSession().saveOrUpdate(q);
 		

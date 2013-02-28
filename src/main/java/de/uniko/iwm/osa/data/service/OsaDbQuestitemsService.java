@@ -5,9 +5,11 @@ import java.util.List;
 import de.uniko.iwm.osa.data.model.OsaDbQuestitems;
 
 
-public interface OsaBdQuestitemsService {
+public interface OsaDbQuestitemsService {
 	
 	public void addOsaDbQuestitems(OsaDbQuestitems qi);
 	public List<OsaDbQuestitems> listOsaDbQuestitems();
+	public List<OsaDbQuestitems> listOsaDbQuestitemsById(Integer id);
+	public List<OsaDbQuestitems> listOsaDbQuestitemsByPagesid(Integer pid);
 	public void removeOsaDbQuestitems(Integer id);
 }

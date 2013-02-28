@@ -37,6 +37,11 @@ public class OsaDbQuestsServiceImpl implements OsaDbQuestsService {
 	}
 
 	@Transactional
+	public List<OsaDbQuests> getOsaDbQuestsByQuestid(Integer id) {
+		return qDAO.getOsaDbQuestsByQuestid(id);
+	}
+	
+	@Transactional
 	public void storeOsaDbQuests(OsaDbQuests q) {
 		qDAO.storeOsaDbQuests(q);
 	}

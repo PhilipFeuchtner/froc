@@ -45,7 +45,7 @@ public class OsaDbQuestitemsDAOImpl implements OsaDbQuestitemsDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<OsaDbQuestitems> listOsaDbQuestitemsByPagesid(Integer pid) {
-		Query query = sessionFactory.getCurrentSession().createQuery("from OsaDbQuestitems p where pagesid p.pagesid=?");			
+		Query query = sessionFactory.getCurrentSession().createQuery("from OsaDbQuestitems p where p.pagesid=?");			
 		query.setInteger(0, pid);
 
 		return query.list();

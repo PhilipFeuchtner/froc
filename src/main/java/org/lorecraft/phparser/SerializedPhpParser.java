@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2007 Zsolt Szász <zsolt at lorecraft dot com>
+Copyright (c) 2007 Zsolt Szï¿½sz <zsolt at lorecraft dot com>
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -19,7 +19,7 @@ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
+ */
 
 package org.lorecraft.phparser;
 
@@ -29,20 +29,22 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
- * Deserializes a serialized PHP data structure into corresponding Java objects. It supports
- * the integer, float, boolean, string primitives that are mapped to their Java
- * equivalent, plus arrays that are parsed into <code>Map</code> instances and objects
- * that are represented by {@link SerializedPhpParser.PhpObject} instances.
+ * Deserializes a serialized PHP data structure into corresponding Java objects.
+ * It supports the integer, float, boolean, string primitives that are mapped to
+ * their Java equivalent, plus arrays that are parsed into <code>Map</code>
+ * instances and objects that are represented by
+ * {@link SerializedPhpParser.PhpObject} instances.
  * <p>
  * Example of use:
+ * 
  * <pre>
  * 		String input = "O:8:"TypeName":1:{s:3:"foo";s:3:"bar";}";
  * 		SerializedPhpParser serializedPhpParser = new SerializedPhpParser(input);
- *		Object result = serializedPhpParser.parse();
+ * 	Object result = serializedPhpParser.parse();
  * </pre>
- *
- * The <code>result</code> object will be a <code>PhpObject</code> with the name "TypeName" and
- * the attribute "foo" = "bar".
+ * 
+ * The <code>result</code> object will be a <code>PhpObject</code> with the name
+ * "TypeName" and the attribute "foo" = "bar".
  */
 public class SerializedPhpParser {
 
@@ -53,7 +55,7 @@ public class SerializedPhpParser {
 	private boolean assumeUTF8 = true;
 
 	private Pattern acceptedAttributeNameRegex = null;
-	
+
 	public SerializedPhpParser(String input) {
 		this.input = input;
 	}
@@ -66,37 +68,37 @@ public class SerializedPhpParser {
 	public Object parse() {
 		char type = input.charAt(index);
 		switch (type) {
-		    case 'i':
-                        index += 2;
-                        // Patch Integer/Double for the PHP x64.
-                        Object tmp;
-                        tmp = parseInt();
-                        if (tmp == null) {
-                            tmp = parseFloat();
-                        }
-                        return tmp;
-                        // End of Patch Integer/Double for the PHP x64.
-                    case 'd':
-                        index += 2;
-                        return parseFloat();
-                    case 'b':
-                        index += 2;
-                        return parseBoolean();
-                    case 's':
-                        index += 2;
-                        return parseString();
-                    case 'a':
-                        index += 2;
-                        return parseArray();
-                    case 'O':
-                        index += 2;
-                        return parseObject();
-                    case 'N':
-                        index += 2;
-                        return NULL;
-                    default:
-                        throw new IllegalStateException("Encountered unknown type [" + type
-                                + "]");
+		case 'i':
+			index += 2;
+			// Patch Integer/Double for the PHP x64.
+			Object tmp;
+			tmp = parseInt();
+			if (tmp == null) {
+				tmp = parseFloat();
+			}
+			return tmp;
+			// End of Patch Integer/Double for the PHP x64.
+		case 'd':
+			index += 2;
+			return parseFloat();
+		case 'b':
+			index += 2;
+			return parseBoolean();
+		case 's':
+			index += 2;
+			return parseString();
+		case 'a':
+			index += 2;
+			return parseArray();
+		case 'O':
+			index += 2;
+			return parseObject();
+		case 'N':
+			index += 2;
+			return NULL;
+		default:
+			throw new IllegalStateException("Encountered unknown type [" + type
+					+ "]");
 		}
 	}
 
@@ -138,7 +140,7 @@ public class SerializedPhpParser {
 		if (!(key instanceof String)) {
 			return true;
 		}
-		return acceptedAttributeNameRegex.matcher((String)key).matches();
+		return acceptedAttributeNameRegex.matcher((String) key).matches();
 	}
 
 	private int readLength() {
@@ -150,7 +152,7 @@ public class SerializedPhpParser {
 
 	/**
 	 * Assumes strings are utf8 encoded
-	 *
+	 * 
 	 * @return
 	 */
 	private String parseString() {
@@ -197,23 +199,25 @@ public class SerializedPhpParser {
 	}
 
 	private Integer parseInt() {
-		int delimiter = input.indexOf(';', index);         
-                // Let's store old value of the index for the patch Integer/Double for the PHP x64.
-                int index_old=index;
+		int delimiter = input.indexOf(';', index);
+		// Let's store old value of the index for the patch Integer/Double for
+		// the PHP x64.
+		int index_old = index;
 		String value = input.substring(index, delimiter);
 		index = delimiter + 1;
-                // Patch Integer/Double for the PHP x64.
-                try {
-                    return Integer.valueOf(value);
-                } catch (Exception ex) {
-                    index=index_old;
-                }
+		// Patch Integer/Double for the PHP x64.
+		try {
+			return Integer.valueOf(value);
+		} catch (Exception ex) {
+			index = index_old;
+		}
 		return null;
-                // End of Patch Integer/Double for the PHP x64.
+		// End of Patch Integer/Double for the PHP x64.
 	}
-	
+
 	public void setAcceptedAttributeNameRegex(String acceptedAttributeNameRegex) {
-		this.acceptedAttributeNameRegex = Pattern.compile(acceptedAttributeNameRegex);
+		this.acceptedAttributeNameRegex = Pattern
+				.compile(acceptedAttributeNameRegex);
 	}
 
 	public static final Object NULL = new Object() {

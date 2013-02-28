@@ -76,7 +76,7 @@ public class AssessmentItem {
 			q = questById.get(0);
 			q.setShowdesc(showdesc);
 			
-			questsService.storeOsaDbQuests(q);
+			// questsService.storeOsaDbQuests(q);
 			
 			return true;
 		} else {

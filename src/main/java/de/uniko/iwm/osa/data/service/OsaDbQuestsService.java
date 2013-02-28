@@ -11,5 +11,6 @@ public interface OsaDbQuestsService {
 	public List<OsaDbQuests> listOsaDbQuests();
 	public void removeOsaDbQuests(Integer id);
 	public List<OsaDbQuests> getOsaDbQuestsById(Integer id);
+	public List<OsaDbQuests> getOsaDbQuestsByQuestid(Integer id);
 	public void storeOsaDbQuests(OsaDbQuests q);
 }

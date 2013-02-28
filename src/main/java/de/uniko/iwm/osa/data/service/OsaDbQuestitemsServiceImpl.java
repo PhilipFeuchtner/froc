@@ -11,7 +11,7 @@ import de.uniko.iwm.osa.data.model.OsaDbQuestitems;
 
 
 @Service
-public class OsaDbQuestitemsServiceImpl implements OsaBdQuestitemsService {
+public class OsaDbQuestitemsServiceImpl implements OsaDbQuestitemsService {
 
 	@Autowired
 	private OsaDbQuestitemsDAO qiDAO;
@@ -27,6 +27,18 @@ public class OsaDbQuestitemsServiceImpl implements OsaBdQuestitemsService {
 		return qiDAO.listOsaDbQuestitems();
 	}
 
+	@Transactional
+	public List<OsaDbQuestitems> listOsaDbQuestitemsById(Integer id) {
+
+		return qiDAO.listOsaDbQuestitemsById(id);
+	}
+	
+	@Transactional
+	public List<OsaDbQuestitems> listOsaDbQuestitemsByPagesid(Integer id) {
+
+		return qiDAO.listOsaDbQuestitemsByPagesid(id);
+	}
+	
 	@Transactional
 	public void removeOsaDbQuestitems(Integer id) {
 		qiDAO.removeOsaDbQuestitems(id);

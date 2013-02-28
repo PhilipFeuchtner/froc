@@ -19,17 +19,18 @@ import de.uniko.iwm.osa.data.model.Config;
 import de.uniko.iwm.osa.data.model.OsaDbPages;
 import de.uniko.iwm.osa.data.model.OsaDbQuestitems;
 import de.uniko.iwm.osa.data.model.UploadItem;
-import de.uniko.iwm.osa.data.service.OsaBdQuestitemsService;
+import de.uniko.iwm.osa.data.service.OsaDbQuestitemsService;
 import de.uniko.iwm.osa.data.service.OsaDbPagesService;
 import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
 import de.uniko.iwm.osa.qtiinterpreter.Compile;
+import de.uniko.iwm.osa.questsitemTree.QTree;
 
 @Controller
 @RequestMapping("/index")
 public class OsaController {
 
 	@Autowired
-	private OsaBdQuestitemsService qiService;
+	private OsaDbQuestitemsService qiService;
 
 	@Autowired
 	private OsaDbQuestsService qService;
@@ -54,11 +55,18 @@ public class OsaController {
 
 		OsaDbQuestitems qi = qiService.listOsaDbQuestitems().get(0);
 		OsaDbPages p = pService.getOsaDbPagesById(qi.getPagesid()).get(0);
+		
+		QTree qt = new QTree();
+		qt.toDot(pService, qiService, qService);
+		
+		/* -------------------------------------- */
 
 		model.addAttribute(new UploadItem());
 
 		ConfigDAOImpl cDAO = new ConfigDAOImpl();
 		cDAO.setDataSource(osaConfiguration);
+		
+		/* -------------------------------------- */
 		
 		System.out.println("Now select and list all configs");
 		List<Config> list = cDAO.selectAll();
