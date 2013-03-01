@@ -16,7 +16,7 @@
 
 	<context:annotation-config />
 	<!-- <context:component-scan base-package="net.viralpatel.contact" /> -->
-	<context:component-scan base-package="de.uniko.iwm.osa.data" />
+	<context:component-scan base-package="de.uniko.iwm.osa" />
 
 	<!-- Aspect -->
 	<aop:aspectj-autoproxy />
@@ -37,14 +37,14 @@
 		<property name="defaultEncoding" value="UTF-8" />
 	</bean>
 
-	<!-- <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" 
-		p:location="/WEB-INF/jdbc.properties" /> -->
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" 
+		p:location="classpath:application.properties" />
 
 	<!-- <jee:jndi-lookup id="dataSource" jndi-name="java:comp/env/${JeeConnection}" 
 		/> -->
 	<!-- <jee:jndi-lookup id="dataSource" jndi-name="java:comp/env/jdbc/Local" 
 		/> -->
-	<jee:jndi-lookup id="dataSource" jndi-name="java:comp/env/jdbc/Local" />
+	<jee:jndi-lookup id="dataSource" jndi-name="java:comp/env/jdbc/MYSQLDB" />
 
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
@@ -84,5 +84,9 @@
 		<jdbc:script location="classpath:osaConfiguration-schema.sql" />
 		<jdbc:script location="classpath:osaConfiguration-data.sql" />
 	</jdbc:embedded-database>
+	
+	<!-- qtree bean -->
+	
+	<bean id="qtree" class="de.uniko.iwm.osa.questsitemTree.QTree" />
 
 </beans>

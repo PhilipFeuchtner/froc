@@ -92,4 +92,9 @@ public class OsaDbQuests {
 	public void setTypevalues(String typevalues) {
 		this.typevalues = typevalues;
 	}
+	
+	@Override 
+	public String toString() {
+		return String.format("Quest: [%3d][%2d][%2d]", id, questid, position);
+	}
 }

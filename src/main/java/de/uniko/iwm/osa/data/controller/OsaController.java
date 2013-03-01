@@ -7,6 +7,8 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -40,6 +42,9 @@ public class OsaController {
 	
 	@Autowired
 	private DataSource osaConfiguration;
+	
+	@Autowired
+	private QTree qtree;
 
 	final String image_base = "new_images";
 
@@ -56,8 +61,7 @@ public class OsaController {
 		OsaDbQuestitems qi = qiService.listOsaDbQuestitems().get(0);
 		OsaDbPages p = pService.getOsaDbPagesById(qi.getPagesid()).get(0);
 		
-		QTree qt = new QTree();
-		qt.toDot(pService, qiService, qService);
+		qtree.toDot();
 		
 		/* -------------------------------------- */
 
