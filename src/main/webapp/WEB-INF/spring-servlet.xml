@@ -16,7 +16,7 @@
 
 	<context:annotation-config />
 	<!-- <context:component-scan base-package="net.viralpatel.contact" /> -->
-	<context:component-scan base-package="de.uniko.iwm.osa" />
+	<context:component-scan base-package="de.uniko.iwm.osa.data" />
 
 	<!-- Aspect -->
 	<aop:aspectj-autoproxy />
@@ -85,8 +85,8 @@
 		<jdbc:script location="classpath:osaConfiguration-data.sql" />
 	</jdbc:embedded-database>
 	
-	<!-- qtree bean -->
+	<!-- other bean -->
 	
+	<bean id="builder" class="de.uniko.iwm.osa.qtiinterpreter.Builder" />
 	<bean id="qtree" class="de.uniko.iwm.osa.questsitemTree.QTree" />
-
 </beans>

@@ -24,7 +24,7 @@ import de.uniko.iwm.osa.data.model.UploadItem;
 import de.uniko.iwm.osa.data.service.OsaDbQuestitemsService;
 import de.uniko.iwm.osa.data.service.OsaDbPagesService;
 import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
-import de.uniko.iwm.osa.qtiinterpreter.Compile;
+import de.uniko.iwm.osa.qtiinterpreter.Builder;
 import de.uniko.iwm.osa.questsitemTree.QTree;
 
 @Controller
@@ -32,16 +32,10 @@ import de.uniko.iwm.osa.questsitemTree.QTree;
 public class OsaController {
 
 	@Autowired
-	private OsaDbQuestitemsService qiService;
-
-	@Autowired
-	private OsaDbQuestsService qService;
-
-	@Autowired
-	private OsaDbPagesService pService;
+	private DataSource osaConfiguration;
 	
 	@Autowired
-	private DataSource osaConfiguration;
+	Builder builder;
 	
 	@Autowired
 	private QTree qtree;
@@ -50,20 +44,8 @@ public class OsaController {
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String listContacts(Model model) {
-
-		System.out.println("q Size  : " + qService.listOsaDbQuests().size());
-		System.out.println("qi Size : "
-				+ qiService.listOsaDbQuestitems().size());
-		System.out.println("p Size  : " + pService.listOsaDbPages().size());
-		System.out.println("p [3]  : "
-				+ pService.getOsaDbPagesById(new Integer(3)));
-
-		OsaDbQuestitems qi = qiService.listOsaDbQuestitems().get(0);
-		OsaDbPages p = pService.getOsaDbPagesById(qi.getPagesid()).get(0);
 		
 		qtree.toDot();
-		
-		/* -------------------------------------- */
 
 		model.addAttribute(new UploadItem());
 
@@ -108,8 +90,7 @@ public class OsaController {
 		if (!uploadItem.getFileData().isEmpty()) {
 			InputStream qtiInput = uploadItem.getFileData().getInputStream();
 
-			Compile comp = new Compile(qtiInput, image_base, qService);
-			comp.run();
+			builder.run(qtiInput);
 		}
 
 		return "osadbform";
