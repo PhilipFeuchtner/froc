@@ -15,7 +15,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import de.uniko.iwm.osa.questsitemTree.AssessmentItem;
+import de.uniko.iwm.osa.data.model.AssessmentItem;
 
 import net.sf.saxon.s9api.Axis;
 import net.sf.saxon.s9api.DocumentBuilder;

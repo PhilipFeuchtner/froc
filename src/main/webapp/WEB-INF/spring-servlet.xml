@@ -37,7 +37,8 @@
 		<property name="defaultEncoding" value="UTF-8" />
 	</bean>
 
-	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" 
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
 		p:location="classpath:application.properties" />
 
 	<!-- <jee:jndi-lookup id="dataSource" jndi-name="java:comp/env/${JeeConnection}" 
@@ -79,14 +80,17 @@
 	</bean>
 
 	<!-- config data -->
- 
+
 	<jdbc:embedded-database id="osaConfiguration">
 		<jdbc:script location="classpath:osaConfiguration-schema.sql" />
 		<jdbc:script location="classpath:osaConfiguration-data.sql" />
 	</jdbc:embedded-database>
-	
+
 	<!-- other bean -->
-	
+
 	<bean id="builder" class="de.uniko.iwm.osa.qtiinterpreter.Builder" />
 	<bean id="qtree" class="de.uniko.iwm.osa.questsitemTree.QTree" />
+	<!-- <bean id="assessmentItem" class="de.uniko.iwm.osa.questsitemTree.AssessmentItem" 
+		/> -->
+		
 </beans>

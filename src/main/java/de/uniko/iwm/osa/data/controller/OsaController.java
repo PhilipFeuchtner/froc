@@ -46,6 +46,7 @@ public class OsaController {
 	public String listContacts(Model model) {
 		
 		qtree.toDot();
+		
 
 		model.addAttribute(new UploadItem());
 

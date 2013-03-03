@@ -1,18 +1,18 @@
-package de.uniko.iwm.osa.questsitemTree;
+package de.uniko.iwm.osa.data.model;
 
 import java.util.List;
 
-import de.uniko.iwm.osa.data.model.OsaDbQuests;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
 
 public class AssessmentItem {
-
+	
 	private int id;
 	private int questid;
 	private int position;
 	// private String shownum;
 	private String showdesc;
-
 	// private String typevalues;
 
 	public int getId() {
@@ -66,7 +66,7 @@ public class AssessmentItem {
 
 	/* ----------------------------------------- */
 
-	public boolean toOsaDbQuests(OsaDbQuestsService questsService) {
+	public int toOsaDbQuests(OsaDbQuestsService questsService) {
 
 		List<OsaDbQuests> questById = questsService
 				.getOsaDbQuestsById(new Integer(id));
@@ -77,15 +77,15 @@ public class AssessmentItem {
 			q.setShowdesc(showdesc);
 			
 			// questsService.storeOsaDbQuests(q);
+			questsService.addOsaDbQuests(q);
 			
-			return true;
+			return q.getId();
 		} else {
 			System.out.println("--> ERRON incorrect questsdb:" + id);
 		}
-		return false;
-
+		return -1;
 	}
-
+	
 	/* ----------------------------------------- */
 
 	@Override

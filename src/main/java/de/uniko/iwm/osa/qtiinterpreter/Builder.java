@@ -11,19 +11,19 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import de.uniko.iwm.osa.data.dao.OsaDbQuestsDAO;
+import de.uniko.iwm.osa.data.model.AssessmentItem;
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
 import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
-import de.uniko.iwm.osa.questsitemTree.AssessmentItem;
 
 public class Builder {
+	
+	@Autowired
+	OsaDbQuestsService questsService;
 
 	String image_base = null;
 
 	Parse parser;
 	String base;
-	
-	@Autowired
-	OsaDbQuestsService questsService;
 
 	public void run(InputStream zipFile) {
 
@@ -91,7 +91,8 @@ public class Builder {
 				for (AssessmentItem item : itemList) {
 					System.out.println("-->" + item);
 					
-					// item.toOsaDbQuests(questsService);
+					int newId = item.toOsaDbQuests(questsService);
+					System.out.println("   " + newId);
 				}
 				// questsService.storeOsaDbQuests(q);
 			} catch (FileNotFoundException e) {
