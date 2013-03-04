@@ -16,6 +16,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import de.uniko.iwm.osa.data.model.AssessmentItem;
+import de.uniko.iwm.osa.data.model.AssessmentItem.AssessmentItemType;
 import de.uniko.iwm.osa.data.model.AssessmentSection;
 import de.uniko.iwm.osa.data.model.AssessmentTest;
 import de.uniko.iwm.osa.data.model.TestPart;
@@ -85,6 +86,8 @@ public class Parse {
 
 	private String base;
 	private String image_base;
+	
+	private int count = 0;
 
 	public Parse(String base, String image_base) {
 		this.base = base;
@@ -138,132 +141,30 @@ public class Parse {
 		return res;
 	}
 
-	public AssessmentTest handle_assessmentTest(String href)
+	public AssessmentTest handle_AssessmentFile(String href)
 			throws FileNotFoundException {
-		AssessmentTest assessmentTest = new AssessmentTest();
 
-		// List<AssessmentItem> assessmentItemList = new
-		// ArrayList<AssessmentItem>();
+		AssessmentTest assessmentTest = null;
+		count = 0;
 
-		XdmNode node_assessmentTest;
 		try {
-			node_assessmentTest = builder.build(new File(base, href));
+			XdmNode item = builder.build(new File(base, href));
 
-			XPathSelector selector;
+			XPathSelector selector = xpath.compile(QUERY_IMSQTI_ASSESSMENTTEST)
+					.load();
+			selector.setContextItem(item);
+			XdmValue children = selector.evaluate();
 
-			//
-			// tests
-			//
-			System.out.println("AssessmentTest");
-
-			selector = xpath.compile(QUERY_IMSQTI_ASSESSMENTTEST).load();
-			selector.setContextItem(node_assessmentTest);
-
-			// Evaluate the expression.
-			XdmValue children_tests = selector.evaluate();
-
-			for (XdmItem item1 : children_tests) {
-				// attention
-				// there will be only one AssessmentTest
-
+			for (XdmItem child : children) {
 				//
-				// testParts
+				// tests
 				//
-				System.out.println("TestPart");
+				System.out.println("AssessmentTest");
 
-				selector = xpath.compile(QUERY_IMSQTI_TESTPART).load();
-				selector.setContextItem(item1);
-				XdmValue children_item1 = selector.evaluate();
-
-				for (XdmItem item2 : children_item1) {
-					TestPart testPart = new TestPart();
-					assessmentTest.addTestPart(testPart);
-
-					int count = 0;
-					int cy_questid = 0;
-
-					//
-					// assessment section
-					//
-					System.out.println("AssessmentSection");
-
-					selector = xpath.compile(QUERY_IMSQTI_ASSESSMENTSECTION)
-							.load();
-					selector.setContextItem(item2);
-					XdmValue children_item2 = selector.evaluate();
-
-					for (XdmItem item3 : children_item2) {
-						AssessmentSection assessmentSection = new AssessmentSection();
-						testPart.addAssessmentSection(assessmentSection);
-
-						int cy_position = 0;
-						cy_questid++;
-
-						//
-						// title
-						//
-
-						selector = xpath.compile("@title").load();
-						selector.setContextItem(item3);
-						XdmValue titles = selector.evaluate();
-
-						//
-						// set title
-						//
-						for (XdmItem att_titles : titles) {
-							String text = att_titles.getStringValue();
-							assessmentSection.setTitle(text);
-
-							System.out.println(String.format("Att title: (%s)",
-									text));
-						}
-
-						//
-						// set rubricBlock
-						//
-
-						String text = cleanHtmlContent(selector,
-								(XdmNode) item3,
-								QUERY_ASSESSMENTSECTION_RUBRIC, PART_RUBRIC);
-						assessmentSection.setRubicBlock(text);
-
-						//
-						// find refs
-						//
-
-						selector = xpath
-								.compile(QUERY_IMSQTI_ASSESSMENTITEMREF).load();
-						selector.setContextItem(item3);
-						XdmValue children_item3 = selector.evaluate();
-
-						//
-						// go on
-						//
-
-						for (XdmItem refs : children_item3) {
-							count++;
-							cy_position++;
-
-							System.out.println(String.format("ref file: %s",
-									refs.getStringValue()));
-							System.out
-									.println(String
-											.format("count [%2d], questid [%2d], position [%2d]",
-													count, cy_questid,
-													cy_position));
-
-							AssessmentItem it = handle_imsqti_item_xmlv2p1(
-									refs.getStringValue(), count, cy_questid,
-									cy_position);
-
-							if (it != null)
-								assessmentSection.addAssessmentItem(it);
-						}
-					}
-				}
+				assessmentTest = handle_AssessmentTest(child);
 			}
+
 		} catch (SaxonApiException e) {
-			// assessmentItemList = null;
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -271,20 +172,127 @@ public class Parse {
 		return assessmentTest;
 	}
 
-	public AssessmentItem handle_imsqti_item_xmlv2p1(String href, int count,
+	public AssessmentTest handle_AssessmentTest(XdmItem item) throws FileNotFoundException, SaxonApiException {
+		AssessmentTest assessmentTest = new AssessmentTest();
+
+		XPathSelector selector = xpath.compile(QUERY_IMSQTI_TESTPART).load();
+		selector.setContextItem(item);
+		XdmValue children = selector.evaluate();
+
+		for (XdmItem child : children) {
+			//
+			// testParts
+			//
+			System.out.println("TestPart");
+
+			TestPart testPart = handle_TestPart(child);
+			assessmentTest.addTestPart(testPart);
+		}
+
+		return assessmentTest;
+	}
+
+	public TestPart handle_TestPart(XdmItem item) throws FileNotFoundException, SaxonApiException {
+		TestPart testPart = new TestPart();
+		int cy_questid = 0;
+
+		XPathSelector selector = xpath.compile(QUERY_IMSQTI_ASSESSMENTSECTION)
+				.load();
+		selector.setContextItem(item);
+		XdmValue children = selector.evaluate();
+
+		for (XdmItem child : children) {
+			cy_questid++;
+
+			//
+			// assessment section
+			//
+			System.out.println("AssessmentSection");
+
+			AssessmentSection assessmentSection = handle_AssessmentSection(
+					child, cy_questid);
+			testPart.addAssessmentSection(assessmentSection);
+		}
+
+		return testPart;
+	}
+
+	public AssessmentSection handle_AssessmentSection(XdmItem item,
+			int cy_questid) throws FileNotFoundException, SaxonApiException {
+		AssessmentSection assessmentSection = new AssessmentSection();
+		int cy_position = 0;
+
+		//
+		// title
+		//
+
+		XPathSelector selector = xpath.compile("@title").load();
+		selector.setContextItem(item);
+		XdmValue titles = selector.evaluate();
+
+		//
+		// set title
+		//
+		for (XdmItem att_titles : titles) {
+			String text = att_titles.getStringValue();
+			assessmentSection.setTitle(text);
+
+			System.out.println(String.format("Att title: (%s)", text));
+		}
+
+		//
+		// set rubricBlock
+		//
+
+		String text = cleanHtmlContent(selector, (XdmNode) item,
+				QUERY_ASSESSMENTSECTION_RUBRIC, PART_RUBRIC);
+		assessmentSection.setRubicBlock(text);
+
+		//
+		// find refs
+		//
+
+		selector = xpath.compile(QUERY_IMSQTI_ASSESSMENTITEMREF).load();
+		selector.setContextItem(item);
+		XdmValue children_item3 = selector.evaluate();
+
+		//
+		// go on
+		//
+
+		for (XdmItem refs : children_item3) {
+			count++;
+			cy_position++;
+
+			System.out.println(String.format("ref file: %s",
+					refs.getStringValue()));
+			System.out.println(String.format(
+					"count [%2d], questid [%2d], position [%2d]", count,
+					cy_questid, cy_position));
+
+			AssessmentItem it = handle_imsqti_item_xmlv2p1(
+					refs.getStringValue(), cy_questid, cy_position);
+
+			if (it != null) {
+				it.setShownum("" + count);
+				it.setAssessmentType(AssessmentItemType.INTERESSEN);
+
+				assessmentSection.addAssessmentItem(it);
+				System.out.println("IT: " + it);
+			}
+		}
+		
+		return assessmentSection;
+	}
+
+	public AssessmentItem handle_imsqti_item_xmlv2p1(String href,
 			int cy_questid, int cy_position) throws FileNotFoundException {
 
 		AssessmentItem question = new AssessmentItem();
 
-		// InputStream xmlStream = new FileInputStream( new File(base, href));
-		// StreamResult transformed = doXsltTransform(xmlStream, xsltStream);
-
-		// handle_imsqti_text(href);
-		// handle_imsqti_choiceInteraction(href);
-
-		XdmNode manifestDoc;
+		XdmNode document;
 		try {
-			manifestDoc = builder.build(new File(base, href));
+			document = builder.build(new File(base, href));
 
 			XPathSelector selector;
 
@@ -293,7 +301,7 @@ public class Parse {
 			//
 
 			selector = xpath.compile(PART_ASS_TITLE).load();
-			selector.setContextItem(manifestDoc);
+			selector.setContextItem(document);
 
 			// Evaluate the expression.
 			XdmValue children_tiltes = selector.evaluate();
@@ -308,7 +316,7 @@ public class Parse {
 			//
 
 			selector = xpath.compile(PART_CORRECT_RESP).load();
-			selector.setContextItem(manifestDoc);
+			selector.setContextItem(document);
 
 			// Evaluate the expression.
 			XdmValue children_correct_responses = selector.evaluate();
@@ -322,8 +330,8 @@ public class Parse {
 			// parse content
 			//
 
-			String text = cleanHtmlContent(selector, manifestDoc,
-					PART_ITEM_BODY, PART_HTML);
+			String text = cleanHtmlContent(selector, document, PART_ITEM_BODY,
+					PART_HTML);
 			question.setShowdesc(text);
 
 			question.setId(count);
@@ -353,7 +361,7 @@ public class Parse {
 		XdmValue children = selector.evaluate();
 
 		for (XdmItem item : children) {
-			System.out.println("------>" + item.toString());
+			// System.out.println("------>" + item.toString());
 
 			HtmlFilter hf = new HtmlFilter();
 			String fragment = hf.parseText(item.toString());

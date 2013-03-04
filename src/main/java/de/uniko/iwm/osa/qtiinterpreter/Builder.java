@@ -87,7 +87,7 @@ public class Builder {
 //			q = questById.get(0);
 
 			try {
-				AssessmentTest assessmentTest = parser.handle_assessmentTest(href);
+				AssessmentTest assessmentTest = parser.handle_AssessmentFile(href);
 //				
 //				for (AssessmentItem item : itemList) {
 //					System.out.println("-->" + item);
