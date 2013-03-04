@@ -4,9 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AssessmentSection {
+	
+	private String title;
 	private String rubicBlock;
 	private List<AssessmentItem> assessmentItems = new ArrayList<AssessmentItem>();
 	
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
 	public String getRubicBlock() {
 		return rubicBlock;
 	}

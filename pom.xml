@@ -182,11 +182,16 @@
 		</dependency>
 
 		<!-- QtiInterpreter -->
-
+<!--  
 		<dependency>
 			<groupId>net.sourceforge.saxon</groupId>
 			<artifactId>saxon</artifactId>
 			<version>9.1.0.8</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.saxon</groupId>
+			<artifactId>saxon9-dom</artifactId>
+			<version>9.1.0.7</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sourceforge.saxon</groupId>
@@ -194,6 +199,12 @@
 			<version>9.1.0.8</version>
 			<classifier>s9api</classifier>
 		</dependency>
+-->
+<dependency>
+	<groupId>org.apache.servicemix.bundles</groupId>
+	<artifactId>org.apache.servicemix.bundles.saxon</artifactId>
+	<version>9.3.0.11_1</version>
+</dependency>
 
 		<dependency>
 			<groupId>junit</groupId>

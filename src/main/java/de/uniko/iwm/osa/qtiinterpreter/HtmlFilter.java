@@ -3,12 +3,20 @@ package de.uniko.iwm.osa.qtiinterpreter;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -23,7 +31,7 @@ public class HtmlFilter {
 	List<String> skipList;
 	List<String> qtiInlineElementsList;
 	List<String> htmlImageElementsList;
-	
+
 	static Document doc = null;
 
 	public enum Kind {
@@ -101,7 +109,7 @@ public class HtmlFilter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return printXmlDocument(doc);
 	}
 
@@ -198,6 +206,36 @@ public class HtmlFilter {
 				.getImplementation();
 		LSSerializer lsSerializer = domImplementationLS.createLSSerializer();
 		String string = lsSerializer.writeToString(document);
+		System.out.println("-> " + string);
 		return string;
+	}
+
+	public String printXmlDocument2(Document document) {
+		String result = "";
+		Node node = document.getDocumentElement();
+		NodeList children = node.getChildNodes();
+
+		TransformerFactory transFactory = TransformerFactory.newInstance();
+		Transformer transformer;
+		try {
+			for (int i = 0; i < children.getLength(); i++) {
+				transformer = transFactory.newTransformer();
+
+				StringWriter buffer = new StringWriter();
+				transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION,
+						"yes");
+				transformer.transform(new DOMSource(node), new StreamResult(
+						buffer));
+				result += buffer.toString();
+			}
+		} catch (TransformerConfigurationException e) {
+			// TODO Auto-generated catch block
+			// e.printStackTrace();
+		} catch (TransformerException e) {
+			// TODO Auto-generated catch block
+			// e.printStackTrace();
+		}
+
+		return result;
 	}
 }
