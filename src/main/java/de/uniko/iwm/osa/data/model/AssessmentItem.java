@@ -103,12 +103,12 @@ public class AssessmentItem {
 			q = questById.get(0);
 			q.setShowdesc(showdesc);
 
-			// questsService.storeOsaDbQuests(q);
-			questsService.addOsaDbQuests(q);
+			questsService.storeOsaDbQuests(q);
+			// questsService.addOsaDbQuests(q);
 
 			return q.getId();
 		} else {
-			System.out.println("--> ERRON incorrect questsdb:" + id);
+			System.out.println("--> ERROR incorrect questsdb:" + id);
 		}
 		return -1;
 	}

@@ -12,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import de.uniko.iwm.osa.data.dao.OsaDbQuestsDAO;
 import de.uniko.iwm.osa.data.model.AssessmentItem;
+import de.uniko.iwm.osa.data.model.AssessmentSection;
 import de.uniko.iwm.osa.data.model.AssessmentTest;
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
+import de.uniko.iwm.osa.data.model.TestPart;
 import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
 
 public class Builder {
@@ -88,6 +90,16 @@ public class Builder {
 
 			try {
 				AssessmentTest assessmentTest = parser.handle_AssessmentFile(href);
+				
+				for (TestPart testPart : assessmentTest.getTestParts()) {
+	 				for (AssessmentSection assessmentSection : testPart.getAssessmentSections()) {
+						for (AssessmentItem assessmentItem : assessmentSection.getAssessmentItems()) {
+							System.out.println("AssessmentItem: " + assessmentItem);
+							int newId = assessmentItem.toOsaDbQuests(questsService);
+							System.out.println("   " + newId);
+						}
+					}
+				}
 //				
 //				for (AssessmentItem item : itemList) {
 //					System.out.println("-->" + item);

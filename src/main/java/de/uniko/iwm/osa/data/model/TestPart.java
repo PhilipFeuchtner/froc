@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TestPart {
-	List <AssessmentSection> testParts = new ArrayList<AssessmentSection>();
+	List <AssessmentSection> assessmentSections = new ArrayList<AssessmentSection>();
 
-	public List<AssessmentSection> getTestParts() {
-		return testParts;
+	public List<AssessmentSection> getAssessmentSections() {
+		return assessmentSections;
 	}
 
-	public void setTestParts(List<AssessmentSection> testParts) {
-		this.testParts = testParts;
+	public void setTestParts(List<AssessmentSection> assessmentSection) {
+		this.assessmentSections = assessmentSection;
 	}
 	
 	public void addAssessmentSection(AssessmentSection item) {
-		testParts.add(item);
+		assessmentSections.add(item);
 	}
 }

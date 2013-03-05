@@ -172,7 +172,7 @@ public class Parse {
 		return assessmentTest;
 	}
 
-	public AssessmentTest handle_AssessmentTest(XdmItem item) throws FileNotFoundException, SaxonApiException {
+	private AssessmentTest handle_AssessmentTest(XdmItem item) throws FileNotFoundException, SaxonApiException {
 		AssessmentTest assessmentTest = new AssessmentTest();
 
 		XPathSelector selector = xpath.compile(QUERY_IMSQTI_TESTPART).load();
@@ -192,7 +192,7 @@ public class Parse {
 		return assessmentTest;
 	}
 
-	public TestPart handle_TestPart(XdmItem item) throws FileNotFoundException, SaxonApiException {
+	private TestPart handle_TestPart(XdmItem item) throws FileNotFoundException, SaxonApiException {
 		TestPart testPart = new TestPart();
 		int cy_questid = 0;
 
@@ -217,7 +217,7 @@ public class Parse {
 		return testPart;
 	}
 
-	public AssessmentSection handle_AssessmentSection(XdmItem item,
+	private AssessmentSection handle_AssessmentSection(XdmItem item,
 			int cy_questid) throws FileNotFoundException, SaxonApiException {
 		AssessmentSection assessmentSection = new AssessmentSection();
 		int cy_position = 0;
@@ -285,7 +285,7 @@ public class Parse {
 		return assessmentSection;
 	}
 
-	public AssessmentItem handle_imsqti_item_xmlv2p1(String href,
+	private AssessmentItem handle_imsqti_item_xmlv2p1(String href,
 			int cy_questid, int cy_position) throws FileNotFoundException {
 
 		AssessmentItem question = new AssessmentItem();
@@ -387,36 +387,6 @@ public class Parse {
 		return result;
 	}
 
-	//
-	// xslt
-	//
-
-	public StreamResult doXsltTransform(InputStream xmlSource,
-			InputStream xsltStream) {
-
-		Source xsltSource = new StreamSource(xsltStream);
-
-		// ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		// StreamResult result = new StreamResult(baos);
-
-		StreamResult result = new StreamResult(new StringWriter());
-
-		try {
-			TransformerFactory tFactory = TransformerFactory.newInstance(
-					"net.sf.saxon.TransformerFactoryImpl", null);
-			Transformer transformer = tFactory.newTransformer(xsltSource);
-			transformer.transform(new StreamSource(xmlSource), result);
-		} catch (Exception e) {
-			e.printStackTrace();
-
-			return null;
-		}
-
-		String xmlString = result.getWriter().toString();
-		System.out.println(xmlString);
-
-		return result;
-	}
 
 	/**
 	 * Helper method to get the first child of an element having a given name.
@@ -433,18 +403,4 @@ public class Parse {
 			return null;
 		}
 	}
-
-	//
-	// helper
-	//
-
-	public String modifyImageUrl(XdmItem v) {
-		String text = v.toString();
-		if (text.startsWith(IMAGE_PREFIX)) {
-			Matcher m = PATTERN_IMAGE_SRC.matcher(text);
-			return m.replaceFirst("src=\"" + image_base);
-		}
-		return text;
-	}
-
 }
