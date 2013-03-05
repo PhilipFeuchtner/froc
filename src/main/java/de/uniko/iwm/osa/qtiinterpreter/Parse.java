@@ -86,7 +86,7 @@ public class Parse {
 
 	private String base;
 	private String image_base;
-	
+
 	private int count = 0;
 
 	public Parse(String base, String image_base) {
@@ -109,11 +109,10 @@ public class Parse {
 
 	}
 
-	public List<String> handleManifest(String filename) {
-		List<String> res = null;
+	public AssessmentTest handleManifest(String filename) throws FileNotFoundException {
+		AssessmentTest assessmentTest = null;
 
 		try {
-
 			XdmNode manifestDoc = builder.build(new File(base, filename));
 
 			XPathSelector selector = xpath.compile(QUERY_MANIFEST_ASSESSMENT)
@@ -123,25 +122,21 @@ public class Parse {
 			// Evaluate the expression.
 			XdmValue children = selector.evaluate();
 
-			// result value
-			res = new ArrayList<String>();
-
 			for (XdmItem item : children) {
 				XdmNode resNode = (XdmNode) item;
 
 				String id = resNode.getAttributeValue(new QName("href"));
-				res.add(id);
+				assessmentTest = handle_AssessmentFile(id);
 			}
-
-		} catch (Exception e) {
-			System.out.println(e.getLocalizedMessage());
-			res = null;
+		} catch (SaxonApiException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
-		return res;
+		return assessmentTest;
 	}
 
-	public AssessmentTest handle_AssessmentFile(String href)
+	private AssessmentTest handle_AssessmentFile(String href)
 			throws FileNotFoundException {
 
 		AssessmentTest assessmentTest = null;
@@ -172,7 +167,8 @@ public class Parse {
 		return assessmentTest;
 	}
 
-	private AssessmentTest handle_AssessmentTest(XdmItem item) throws FileNotFoundException, SaxonApiException {
+	private AssessmentTest handle_AssessmentTest(XdmItem item)
+			throws FileNotFoundException, SaxonApiException {
 		AssessmentTest assessmentTest = new AssessmentTest();
 
 		XPathSelector selector = xpath.compile(QUERY_IMSQTI_TESTPART).load();
@@ -192,7 +188,8 @@ public class Parse {
 		return assessmentTest;
 	}
 
-	private TestPart handle_TestPart(XdmItem item) throws FileNotFoundException, SaxonApiException {
+	private TestPart handle_TestPart(XdmItem item)
+			throws FileNotFoundException, SaxonApiException {
 		TestPart testPart = new TestPart();
 		int cy_questid = 0;
 
@@ -281,7 +278,7 @@ public class Parse {
 				System.out.println("IT: " + it);
 			}
 		}
-		
+
 		return assessmentSection;
 	}
 
@@ -386,7 +383,6 @@ public class Parse {
 
 		return result;
 	}
-
 
 	/**
 	 * Helper method to get the first child of an element having a given name.
