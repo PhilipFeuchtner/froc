@@ -64,6 +64,7 @@
 				<version>2.1</version>
 				<configuration>
 					<server>${tomcat7.cosa.server.id}</server>
+					<url>${tomcat7.cosa.server.url}</url>
 				</configuration>
 			</plugin>
 
