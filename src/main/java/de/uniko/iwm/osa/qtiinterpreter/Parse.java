@@ -44,7 +44,8 @@ public class Parse {
 	// final String QUERY_MANIFEST_RESOURCE =
 	// "/imscp:manifest/imscp:resources/imscp:resource[@type='imsqti_item_xmlv2p1']";
 	final String QUERY_MANIFEST_ASSESSMENT = "/imscp:manifest/imscp:resources/imscp:resource[@type='imsqti_assessment_xmlv2p1']";
-
+	final String QUERY_MANIFEST_DESCRIPTION = "/imscp:manifest//imscp:resources/imscp:resource" + 
+			"/imsmd:metadata/imsmd:lom/imsmd:general/imsmd:description/imsmd:langstring";
 	//
 	// imsqti
 	// assessment -> assessmentItemRef
@@ -99,7 +100,7 @@ public class Parse {
 		xpath.declareNamespace("imscp",
 				"http://www.imsglobal.org/xsd/imscp_v1p1");
 		xpath.declareNamespace("imsmd",
-				"http://www.imsglobal.org/xsd/imsmd_v1p2");
+				"http://www.imsglobal.org/xsd/imsmd_v1p2p2");
 		xpath.declareNamespace("imsqti",
 				"http://www.imsglobal.org/xsd/imsqti_v2p1");
 
@@ -112,14 +113,35 @@ public class Parse {
 	public AssessmentTest handleManifest(String filename) throws FileNotFoundException {
 		AssessmentTest assessmentTest = null;
 
+		XPathSelector selector;
+		
 		try {
 			XdmNode manifestDoc = builder.build(new File(base, filename));
-
-			XPathSelector selector = xpath.compile(QUERY_MANIFEST_ASSESSMENT)
+			
+//			//
+//			// query description
+//			//
+//			selector = xpath.compile(QUERY_MANIFEST_DESCRIPTION)
+//					.load();
+//			selector.setContextItem(manifestDoc);
+//			XdmValue descs = selector.evaluate();
+//
+//			System.out.println("ASS STRING search");
+//					
+//			for (XdmItem item : descs) {
+//				XdmNode resNode = (XdmNode) item;
+//
+//				String text = resNode.getStringValue();
+//				System.out.println("ASS STRING:" + text);
+//			}
+			
+			//
+			// query assessmentTest
+			//
+			
+			selector = xpath.compile(QUERY_MANIFEST_ASSESSMENT)
 					.load();
 			selector.setContextItem(manifestDoc);
-
-			// Evaluate the expression.
 			XdmValue children = selector.evaluate();
 
 			for (XdmItem item : children) {
