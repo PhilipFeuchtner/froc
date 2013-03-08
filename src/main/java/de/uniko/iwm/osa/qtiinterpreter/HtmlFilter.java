@@ -209,33 +209,4 @@ public class HtmlFilter {
 		System.out.println("-> " + string);
 		return string;
 	}
-
-	public String printXmlDocument2(Document document) {
-		String result = "";
-		Node node = document.getDocumentElement();
-		NodeList children = node.getChildNodes();
-
-		TransformerFactory transFactory = TransformerFactory.newInstance();
-		Transformer transformer;
-		try {
-			for (int i = 0; i < children.getLength(); i++) {
-				transformer = transFactory.newTransformer();
-
-				StringWriter buffer = new StringWriter();
-				transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION,
-						"yes");
-				transformer.transform(new DOMSource(node), new StreamResult(
-						buffer));
-				result += buffer.toString();
-			}
-		} catch (TransformerConfigurationException e) {
-			// TODO Auto-generated catch block
-			// e.printStackTrace();
-		} catch (TransformerException e) {
-			// TODO Auto-generated catch block
-			// e.printStackTrace();
-		}
-
-		return result;
-	}
 }

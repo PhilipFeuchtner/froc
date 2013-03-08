@@ -45,7 +45,7 @@ public class OsaController {
 	@RequestMapping(method = RequestMethod.GET)
 	public String listContacts(Model model) {
 		
-		qtree.toDot();
+		// qtree.toDot();
 
 		model.addAttribute(new UploadItem());
 

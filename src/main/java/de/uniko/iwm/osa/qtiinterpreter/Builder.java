@@ -22,25 +22,18 @@ public class Builder {
 	public void run(InputStream zipFile) {
 
 		try {
-			System.out.println("- A -");
 			String base = UnZip.unzipFile(zipFile);
-			System.out.println("- B -");
 			Parse parser = new Parse(base, image_base);
-			System.out.println("- C -");
 			
 			//
 			// step one
 			// scan manifest
 			//
 			AssessmentTest assessmentTest = parser.handleManifest("imsmanifest.xml");
-			System.out.println("- D -");
 			
 			for (TestPart testPart : assessmentTest.getTestParts()) {
-				System.out.println("- E -");
  				for (AssessmentSection assessmentSection : testPart.getAssessmentSections()) {
- 					System.out.println("- F -");
 					for (AssessmentItem assessmentItem : assessmentSection.getAssessmentItems()) {
-						System.out.println("- G -");
 						System.out.println("AssessmentItem: " + assessmentItem);
 						int newId = assessmentItem.toOsaDbQuests(questsService);
 						System.out.println("   " + newId);
