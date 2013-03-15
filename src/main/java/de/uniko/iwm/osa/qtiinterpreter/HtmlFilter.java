@@ -42,7 +42,8 @@ public class HtmlFilter {
 		skipList = new ArrayList<String>();
 		skipList.add("span");
 		skipList.add("div");
-
+		skipList.add("font");
+		
 		qtiInlineElementsList = new ArrayList<String>();
 		qtiInlineElementsList.add("positionObjectStage");
 		qtiInlineElementsList.add("customInteraction");
@@ -119,8 +120,8 @@ public class HtmlFilter {
 			return true;
 		} else {
 			NodeList children = inspect.getChildNodes();
-
 			boolean changed = false;
+			
 			for (int i = 0; i < children.getLength(); i++) {
 				if (doIt(children.item(i))) {
 					changed = true;
