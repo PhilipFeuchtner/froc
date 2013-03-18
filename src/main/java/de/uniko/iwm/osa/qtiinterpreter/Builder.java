@@ -13,7 +13,7 @@ import de.uniko.iwm.osa.data.model.TestPart;
 import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
 
 public class Builder {
-	
+
 	@Autowired
 	OsaDbQuestsService questsService;
 
@@ -24,23 +24,28 @@ public class Builder {
 		try {
 			String base = UnZip.unzipFile(zipFile);
 			Parse parser = new Parse(base, image_base);
-			
+
 			//
 			// step one
 			// scan manifest
 			//
-			AssessmentTest assessmentTest = parser.handleManifest("imsmanifest.xml");
-			
-			for (TestPart testPart : assessmentTest.getTestParts()) {
- 				for (AssessmentSection assessmentSection : testPart.getAssessmentSections()) {
-					for (AssessmentItem assessmentItem : assessmentSection.getAssessmentItems()) {
-						System.out.println("AssessmentItem: " + assessmentItem);
-						int newId = assessmentItem.toOsaDbQuests(questsService);
-						System.out.println("   " + newId);
+			if (parser.handleManifest("imsmanifest.xml")) {
+				AssessmentTest assessmentTest = parser.getAssessmentTest();
+
+				for (TestPart testPart : assessmentTest.getTestParts()) {
+					for (AssessmentSection assessmentSection : testPart
+							.getAssessmentSections()) {
+						for (AssessmentItem assessmentItem : assessmentSection
+								.getAssessmentItems()) {
+							System.out.println("AssessmentItem: "
+									+ assessmentItem);
+							int newId = assessmentItem
+									.toOsaDbQuests(questsService);
+							System.out.println("   " + newId);
+						}
 					}
 				}
 			}
-			
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

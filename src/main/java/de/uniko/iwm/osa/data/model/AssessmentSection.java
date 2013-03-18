@@ -6,7 +6,7 @@ import java.util.List;
 public class AssessmentSection {
 	
 	private String title;
-	private String rubicBlock;
+	private String rubricBlock;
 	private List<AssessmentItem> assessmentItems = new ArrayList<AssessmentItem>();
 	
 	public String getTitle() {
@@ -15,11 +15,11 @@ public class AssessmentSection {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public String getRubicBlock() {
-		return rubicBlock;
+	public String getRubricBlock() {
+		return rubricBlock;
 	}
-	public void setRubicBlock(String rubicBlock) {
-		this.rubicBlock = rubicBlock;
+	public void setRubricBlock(String rubricBlock) {
+		this.rubricBlock = rubricBlock;
 	}
 	public List<AssessmentItem> getAssessmentItems() {
 		return assessmentItems;

@@ -19,6 +19,8 @@ import de.uniko.iwm.osa.data.model.AssessmentItem;
 import de.uniko.iwm.osa.data.model.AssessmentItem.AssessmentItemType;
 import de.uniko.iwm.osa.data.model.AssessmentSection;
 import de.uniko.iwm.osa.data.model.AssessmentTest;
+import de.uniko.iwm.osa.data.model.OsaItem;
+import de.uniko.iwm.osa.data.model.OsaPage;
 import de.uniko.iwm.osa.data.model.TestPart;
 
 import net.sf.saxon.s9api.Axis;
@@ -44,8 +46,8 @@ public class Parse {
 	// final String QUERY_MANIFEST_RESOURCE =
 	// "/imscp:manifest/imscp:resources/imscp:resource[@type='imsqti_item_xmlv2p1']";
 	final String QUERY_MANIFEST_ASSESSMENT = "/imscp:manifest/imscp:resources/imscp:resource[@type='imsqti_assessment_xmlv2p1']";
-	final String QUERY_MANIFEST_DESCRIPTION = "/imscp:manifest//imscp:resources/imscp:resource" + 
-			"/imsmd:metadata/imsmd:lom/imsmd:general/imsmd:description/imsmd:langstring";
+	final String QUERY_MANIFEST_DESCRIPTION = "/imscp:manifest//imscp:resources/imscp:resource"
+			+ "/imsmd:metadata/imsmd:lom/imsmd:general/imsmd:description/imsmd:langstring";
 	//
 	// imsqti
 	// assessment -> assessmentItemRef
@@ -88,6 +90,11 @@ public class Parse {
 	private String base;
 	private String image_base;
 
+	/* --- generated values --- */
+
+	private AssessmentTest assessmentTest = null;
+	private OsaPage osaPage = null;
+
 	private int count = 0;
 
 	public Parse(String base, String image_base) {
@@ -110,88 +117,89 @@ public class Parse {
 
 	}
 
-	public AssessmentTest handleManifest(String filename) throws FileNotFoundException {
-		AssessmentTest assessmentTest = null;
+	public boolean handleManifest(String filename) throws FileNotFoundException {
+		assessmentTest = new AssessmentTest();
+		osaPage = new OsaPage();
 
 		XPathSelector selector;
-		
+
 		try {
 			XdmNode manifestDoc = builder.build(new File(base, filename));
-			
-//			//
-//			// query description
-//			//
-//			selector = xpath.compile(QUERY_MANIFEST_DESCRIPTION)
-//					.load();
-//			selector.setContextItem(manifestDoc);
-//			XdmValue descs = selector.evaluate();
-//
-//			System.out.println("ASS STRING search");
-//					
-//			for (XdmItem item : descs) {
-//				XdmNode resNode = (XdmNode) item;
-//
-//				String text = resNode.getStringValue();
-//				System.out.println("ASS STRING:" + text);
-//			}
-			
+
+			// //
+			// // query description
+			// //
+			// selector = xpath.compile(QUERY_MANIFEST_DESCRIPTION)
+			// .load();
+			// selector.setContextItem(manifestDoc);
+			// XdmValue descs = selector.evaluate();
+			//
+			// System.out.println("ASS STRING search");
+			//
+			// for (XdmItem item : descs) {
+			// XdmNode resNode = (XdmNode) item;
+			//
+			// String text = resNode.getStringValue();
+			// System.out.println("ASS STRING:" + text);
+			// }
+
 			//
 			// query assessmentTest
 			//
-			
-			selector = xpath.compile(QUERY_MANIFEST_ASSESSMENT)
-					.load();
+
+			selector = xpath.compile(QUERY_MANIFEST_ASSESSMENT).load();
 			selector.setContextItem(manifestDoc);
 			XdmValue children = selector.evaluate();
 
+			int num_tests = 0;
 			for (XdmItem item : children) {
 				XdmNode resNode = (XdmNode) item;
 
 				String id = resNode.getAttributeValue(new QName("href"));
-				assessmentTest = handle_AssessmentFile(id);
+				num_tests = handle_AssessmentFile(id);
 			}
+
+			if (num_tests != 1)
+				return false;
+
 		} catch (SaxonApiException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+
+			return false;
 		}
 
-		return assessmentTest;
+		return true;
 	}
 
-	private AssessmentTest handle_AssessmentFile(String href)
-			throws FileNotFoundException {
+	private int handle_AssessmentFile(String href)
+			throws FileNotFoundException, SaxonApiException {
 
-		AssessmentTest assessmentTest = null;
+		int num_tests = 0;
 		count = 0;
 
-		try {
-			XdmNode item = builder.build(new File(base, href));
+		XdmNode item = builder.build(new File(base, href));
 
-			XPathSelector selector = xpath.compile(QUERY_IMSQTI_ASSESSMENTTEST)
-					.load();
-			selector.setContextItem(item);
-			XdmValue children = selector.evaluate();
+		XPathSelector selector = xpath.compile(QUERY_IMSQTI_ASSESSMENTTEST)
+				.load();
+		selector.setContextItem(item);
+		XdmValue children = selector.evaluate();
 
-			for (XdmItem child : children) {
-				//
-				// tests
-				//
-				System.out.println("AssessmentTest");
+		for (XdmItem child : children) {
+			num_tests++;
+			//
+			// tests
+			//
+			System.out.println("AssessmentTest");
 
-				assessmentTest = handle_AssessmentTest(child);
-			}
-
-		} catch (SaxonApiException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			handle_AssessmentTest(child);
 		}
 
-		return assessmentTest;
+		return num_tests;
 	}
 
-	private AssessmentTest handle_AssessmentTest(XdmItem item)
+	private void handle_AssessmentTest(XdmItem item)
 			throws FileNotFoundException, SaxonApiException {
-		AssessmentTest assessmentTest = new AssessmentTest();
 
 		XPathSelector selector = xpath.compile(QUERY_IMSQTI_TESTPART).load();
 		selector.setContextItem(item);
@@ -206,8 +214,6 @@ public class Parse {
 			TestPart testPart = handle_TestPart(child);
 			assessmentTest.addTestPart(testPart);
 		}
-
-		return assessmentTest;
 	}
 
 	private TestPart handle_TestPart(XdmItem item)
@@ -239,6 +245,8 @@ public class Parse {
 	private AssessmentSection handle_AssessmentSection(XdmItem item,
 			int cy_questid) throws FileNotFoundException, SaxonApiException {
 		AssessmentSection assessmentSection = new AssessmentSection();
+		OsaItem osaItem = new OsaItem();
+		
 		int cy_position = 0;
 
 		//
@@ -265,7 +273,9 @@ public class Parse {
 
 		String text = cleanHtmlContent(selector, (XdmNode) item,
 				QUERY_ASSESSMENTSECTION_RUBRIC, PART_RUBRIC);
-		assessmentSection.setRubicBlock(text);
+		assessmentSection.setRubricBlock(text);
+		
+		
 
 		//
 		// find refs
@@ -421,4 +431,23 @@ public class Parse {
 			return null;
 		}
 	}
+
+	/* --- getter & setter --- */
+
+	public AssessmentTest getAssessmentTest() {
+		return assessmentTest;
+	}
+
+	public void setAssessmentTest(AssessmentTest assessmentTest) {
+		this.assessmentTest = assessmentTest;
+	}
+
+	public OsaPage getOsaPage() {
+		return osaPage;
+	}
+
+	public void setOsaPage(OsaPage osaPage) {
+		this.osaPage = osaPage;
+	}
+
 }
