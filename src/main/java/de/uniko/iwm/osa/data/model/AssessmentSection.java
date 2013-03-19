@@ -3,11 +3,13 @@ package de.uniko.iwm.osa.data.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.uniko.iwm.osa.data.assessmentItem.AssessmentItemType01;
+
 public class AssessmentSection {
 	
 	private String title;
 	private String rubricBlock;
-	private List<AssessmentItem> assessmentItems = new ArrayList<AssessmentItem>();
+	private List<AssessmentItemType01> assessmentItems = new ArrayList<AssessmentItemType01>();
 	
 	public String getTitle() {
 		return title;
@@ -21,14 +23,14 @@ public class AssessmentSection {
 	public void setRubricBlock(String rubricBlock) {
 		this.rubricBlock = rubricBlock;
 	}
-	public List<AssessmentItem> getAssessmentItems() {
+	public List<AssessmentItemType01> getAssessmentItems() {
 		return assessmentItems;
 	}
-	public void setAssessmentItems(List<AssessmentItem> assessmentItems) {
+	public void setAssessmentItems(List<AssessmentItemType01> assessmentItems) {
 		this.assessmentItems = assessmentItems;
 	}
 	
-	public void addAssessmentItem(AssessmentItem item) {
+	public void addAssessmentItem(AssessmentItemType01 item) {
 		assessmentItems.add(item);
 	}
 }

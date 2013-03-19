@@ -20,6 +20,7 @@ import de.uniko.iwm.osa.data.dao.ConfigDAOImpl;
 import de.uniko.iwm.osa.data.model.Config;
 import de.uniko.iwm.osa.data.model.OsaDbPages;
 import de.uniko.iwm.osa.data.model.OsaDbQuestitems;
+import de.uniko.iwm.osa.data.model.OsaPage;
 import de.uniko.iwm.osa.data.model.UploadItem;
 import de.uniko.iwm.osa.data.service.OsaDbQuestitemsService;
 import de.uniko.iwm.osa.data.service.OsaDbPagesService;
@@ -39,6 +40,8 @@ public class OsaController {
 	
 	@Autowired
 	private QTree qtree;
+	
+	private OsaPage osaPage;
 
 	final String image_base = "new_images";
 
@@ -90,7 +93,7 @@ public class OsaController {
 		if (!uploadItem.getFileData().isEmpty()) {
 			InputStream qtiInput = uploadItem.getFileData().getInputStream();
 
-			builder.run(qtiInput);
+			osaPage = builder.run(qtiInput);
 		}
 
 		return "osadbform";

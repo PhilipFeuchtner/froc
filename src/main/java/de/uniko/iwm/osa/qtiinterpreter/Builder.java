@@ -6,9 +6,11 @@ import java.io.InputStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import de.uniko.iwm.osa.data.model.AssessmentItem;
+import de.uniko.iwm.osa.data.assessmentItem.AssessmantItem;
 import de.uniko.iwm.osa.data.model.AssessmentSection;
 import de.uniko.iwm.osa.data.model.AssessmentTest;
+import de.uniko.iwm.osa.data.model.OsaItem;
+import de.uniko.iwm.osa.data.model.OsaPage;
 import de.uniko.iwm.osa.data.model.TestPart;
 import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
 
@@ -19,7 +21,8 @@ public class Builder {
 
 	String image_base = null;
 
-	public void run(InputStream zipFile) {
+	public OsaPage run(InputStream zipFile) {
+		OsaPage osaPage = new OsaPage();
 
 		try {
 			String base = UnZip.unzipFile(zipFile);
@@ -35,14 +38,24 @@ public class Builder {
 				for (TestPart testPart : assessmentTest.getTestParts()) {
 					for (AssessmentSection assessmentSection : testPart
 							.getAssessmentSections()) {
-						for (AssessmentItem assessmentItem : assessmentSection
+						OsaItem osaItem = new OsaItem();
+						
+						for (AssessmantItem assessmentItem : assessmentSection
 								.getAssessmentItems()) {
+							
+							osaItem.addQuestsOldId(assessmentItem.getId());
+							
 							System.out.println("AssessmentItem: "
 									+ assessmentItem);
 							int newId = assessmentItem
 									.toOsaDbQuests(questsService);
 							System.out.println("   " + newId);
+							
+							osaItem.addQuestsNewId(newId);
+							osaItem.addQuestsQuestId(assessmentItem.getQuestid());
 						}
+						
+						osaPage.addQuestionPages(osaItem);
 					}
 				}
 			}
@@ -53,6 +66,7 @@ public class Builder {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
+		return osaPage;
 	}
 }

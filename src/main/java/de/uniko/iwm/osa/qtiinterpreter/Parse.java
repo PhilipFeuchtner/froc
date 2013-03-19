@@ -2,26 +2,9 @@ package de.uniko.iwm.osa.qtiinterpreter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
-import de.uniko.iwm.osa.data.model.AssessmentItem;
-import de.uniko.iwm.osa.data.model.AssessmentItem.AssessmentItemType;
-import de.uniko.iwm.osa.data.model.AssessmentSection;
-import de.uniko.iwm.osa.data.model.AssessmentTest;
-import de.uniko.iwm.osa.data.model.OsaItem;
-import de.uniko.iwm.osa.data.model.OsaPage;
-import de.uniko.iwm.osa.data.model.TestPart;
 
 import net.sf.saxon.s9api.Axis;
 import net.sf.saxon.s9api.DocumentBuilder;
@@ -35,6 +18,11 @@ import net.sf.saxon.s9api.XdmItem;
 import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XdmSequenceIterator;
 import net.sf.saxon.s9api.XdmValue;
+import de.uniko.iwm.osa.data.assessmentItem.AssessmentItemType01;
+// import de.uniko.iwm.osa.data.assessmentItem.AssessmentItemImpl.AssessmentItemType;
+import de.uniko.iwm.osa.data.model.AssessmentSection;
+import de.uniko.iwm.osa.data.model.AssessmentTest;
+import de.uniko.iwm.osa.data.model.TestPart;
 
 public class Parse {
 
@@ -93,7 +81,7 @@ public class Parse {
 	/* --- generated values --- */
 
 	private AssessmentTest assessmentTest = null;
-	private OsaPage osaPage = null;
+	// private OsaPage osaPage = null;
 
 	private int count = 0;
 
@@ -119,7 +107,7 @@ public class Parse {
 
 	public boolean handleManifest(String filename) throws FileNotFoundException {
 		assessmentTest = new AssessmentTest();
-		osaPage = new OsaPage();
+		// osaPage = new OsaPage();
 
 		XPathSelector selector;
 
@@ -245,7 +233,7 @@ public class Parse {
 	private AssessmentSection handle_AssessmentSection(XdmItem item,
 			int cy_questid) throws FileNotFoundException, SaxonApiException {
 		AssessmentSection assessmentSection = new AssessmentSection();
-		OsaItem osaItem = new OsaItem();
+		// OsaItem osaItem = new OsaItem();
 		
 		int cy_position = 0;
 
@@ -299,12 +287,12 @@ public class Parse {
 					"count [%2d], questid [%2d], position [%2d]", count,
 					cy_questid, cy_position));
 
-			AssessmentItem it = handle_imsqti_item_xmlv2p1(
+			AssessmentItemType01 it = handle_imsqti_item_xmlv2p1(
 					refs.getStringValue(), cy_questid, cy_position);
 
 			if (it != null) {
 				it.setShownum("" + count);
-				it.setAssessmentType(AssessmentItemType.INTERESSEN);
+				// it.setAssessmentType(AssessmentItemType.INTERESSEN);
 
 				assessmentSection.addAssessmentItem(it);
 				System.out.println("IT: " + it);
@@ -314,10 +302,10 @@ public class Parse {
 		return assessmentSection;
 	}
 
-	private AssessmentItem handle_imsqti_item_xmlv2p1(String href,
+	private AssessmentItemType01 handle_imsqti_item_xmlv2p1(String href,
 			int cy_questid, int cy_position) throws FileNotFoundException {
 
-		AssessmentItem question = new AssessmentItem();
+		AssessmentItemType01 question = new AssessmentItemType01();
 
 		XdmNode document;
 		try {
@@ -442,12 +430,12 @@ public class Parse {
 		this.assessmentTest = assessmentTest;
 	}
 
-	public OsaPage getOsaPage() {
-		return osaPage;
-	}
-
-	public void setOsaPage(OsaPage osaPage) {
-		this.osaPage = osaPage;
-	}
+//	public OsaPage getOsaPage() {
+//		return osaPage;
+//	}
+//
+//	public void setOsaPage(OsaPage osaPage) {
+//		this.osaPage = osaPage;
+//	}
 
 }

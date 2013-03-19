@@ -9,8 +9,9 @@ public class OsaItem {
 	private String pagesPid;
 	private String pagesName;
 	
-	private List<Integer> questsId = new ArrayList<Integer>(); 
-	private List<String> questsQuestId = new ArrayList<String>(); 
+	private List<Integer> questsNewId = new ArrayList<Integer>(); 
+	private List<Integer> questsOldId = new ArrayList<Integer>(); 
+	private List<Integer> questsQuestId = new ArrayList<Integer>(); 
 	
 	public Integer getPagesId() {
 		return pagesId;
@@ -33,23 +34,31 @@ public class OsaItem {
 	
 	/* ----------------------- */
 	
-	public List<Integer> getQuestsId() {
-		return questsId;
+	public List<Integer> getQuestsNewId() {
+		return questsNewId;
 	}
-	public void setQuestsId(List<Integer> questsId) {
-		this.questsId = questsId;
+	public void setQuestsNewId(List<Integer> questsId) {
+		this.questsNewId = questsId;
 	}
-	public void addQuestsId(Integer id) {
-		questsId.add(id);
+	public void addQuestsNewId(Integer id) {
+		questsNewId.add(id);
 	}
-	public List<String> getQuestsQuestId() {
+	public List<Integer> getQuestsOldId() {
+		return questsOldId;
+	}
+	public void setQuestsOldId(List<Integer> questsId) {
+		this.questsOldId = questsId;
+	}
+	public void addQuestsOldId(Integer id) {
+		questsOldId.add(id);
+	}
+	public List<Integer> getQuestsQuestId() {
 		return questsQuestId;
 	}
-	public void setQuestsQuestId(List<String> questsQuestId) {
+	public void setQuestsQuestId(List<Integer> questsQuestId) {
 		this.questsQuestId = questsQuestId;
 	}
-	public void addQuestsQuestId(String questId) {
+	public void addQuestsQuestId(Integer questId) {
 		questsQuestId.add(questId);
 	}
-	
 }
