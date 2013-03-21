@@ -5,46 +5,28 @@ import java.util.List;
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
 import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
 
-public class AssessmentItemType01 implements AssessmantItem {
+public class AssessmentItemType01 extends AssessmentItem {
 
 	final String MAGIC_INTERESSEN_TYPEVALUES = "a:5:{i:0;i:1;i:1;i:2;i:2;i:3;i:3;i:4;i:4;i:5;}";
 
-	private int id;
-	private int questid;
+	private Integer id;
+	private Integer questid;
 	private int position;
 	private String shownum;
 	private String showdesc;
 	private String typevalues = MAGIC_INTERESSEN_TYPEVALUES;
 
-	private AssessmentItemType assessmentType;
+	private ItemType assessmentType;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.uniko.iwm.osa.data.model.AssessmantItemI#getId()
-	 */
-	@Override
-	public int getId() {
-		return id;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.uniko.iwm.osa.data.model.AssessmantItemI#setId(int)
-	 */
-	@Override
-	public void setId(int id) {
-		this.id = id;
-	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see de.uniko.iwm.osa.data.model.AssessmantItemI#getQuestid()
 	 */
+	
 	@Override
-	public int getQuestid() {
+	public Integer getQuestid() {
 		return questid;
 	}
 
@@ -54,7 +36,7 @@ public class AssessmentItemType01 implements AssessmantItem {
 	 * @see de.uniko.iwm.osa.data.model.AssessmantItemI#setQuestid(int)
 	 */
 	@Override
-	public void setQuestid(int questid) {
+	public void setQuestid(Integer questid) {
 		this.questid = questid;
 	}
 
@@ -63,7 +45,7 @@ public class AssessmentItemType01 implements AssessmantItem {
 	 * 
 	 * @see de.uniko.iwm.osa.data.model.AssessmantItemI#getPosition()
 	 */
-	@Override
+	
 	public int getPosition() {
 		return position;
 	}
@@ -73,7 +55,7 @@ public class AssessmentItemType01 implements AssessmantItem {
 	 * 
 	 * @see de.uniko.iwm.osa.data.model.AssessmantItemI#setPosition(int)
 	 */
-	@Override
+	
 	public void setPosition(int position) {
 		this.position = position;
 	}
@@ -83,7 +65,7 @@ public class AssessmentItemType01 implements AssessmantItem {
 	 * 
 	 * @see de.uniko.iwm.osa.data.model.AssessmantItemI#getShownum()
 	 */
-	@Override
+	
 	public String getShownum() {
 		return shownum;
 	}
@@ -94,7 +76,7 @@ public class AssessmentItemType01 implements AssessmantItem {
 	 * @see
 	 * de.uniko.iwm.osa.data.model.AssessmantItemI#setShownum(java.lang.String)
 	 */
-	@Override
+
 	public void setShownum(String shownum) {
 		this.shownum = shownum;
 	}
@@ -104,7 +86,7 @@ public class AssessmentItemType01 implements AssessmantItem {
 	 * 
 	 * @see de.uniko.iwm.osa.data.model.AssessmantItemI#getShowdesc()
 	 */
-	@Override
+	
 	public String getShowdesc() {
 		return showdesc;
 	}
@@ -115,7 +97,7 @@ public class AssessmentItemType01 implements AssessmantItem {
 	 * @see
 	 * de.uniko.iwm.osa.data.model.AssessmantItemI#setShowdesc(java.lang.String)
 	 */
-	@Override
+	
 	public void setShowdesc(String showdesc) {
 		this.showdesc = showdesc;
 	}
@@ -125,7 +107,7 @@ public class AssessmentItemType01 implements AssessmantItem {
 	 * 
 	 * @see de.uniko.iwm.osa.data.model.AssessmantItemI#getTypevalues()
 	 */
-	@Override
+
 	public String getTypevalues() {
 		return typevalues;
 	}
@@ -137,16 +119,14 @@ public class AssessmentItemType01 implements AssessmantItem {
 	 * de.uniko.iwm.osa.data.model.AssessmantItemI#setTypevalues(java.lang.String
 	 * )
 	 */
-	@Override
+	
 	public void setTypevalues(String typevalues) {
 		this.typevalues = typevalues;
 	}
 
 	/* ----------------------------------------- */
 
-	public AssessmentItemType getAssessmentType() {
-		return assessmentType;
-	}
+
 
 //	public void setAssessmentType(AssessmentItemType assessmentType) {
 //		this.assessmentType = assessmentType;
@@ -163,6 +143,7 @@ public class AssessmentItemType01 implements AssessmantItem {
 	 * de.uniko.iwm.osa.data.model.AssessmantItemI#toOsaDbQuests(de.uniko.iwm
 	 * .osa.data.service.OsaDbQuestsService)
 	 */
+	
 	@Override
 	public int toOsaDbQuests(OsaDbQuestsService questsService) {
 

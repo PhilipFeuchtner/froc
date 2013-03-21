@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.uniko.iwm.osa.data.assessmentItem.AssessmentItemType01;
+import de.uniko.iwm.osa.data.assessmentItem.Item;
 
 public class AssessmentSection {
 	
 	private String title;
 	private String rubricBlock;
-	private List<AssessmentItemType01> assessmentItems = new ArrayList<AssessmentItemType01>();
+	private List<Item> assessmentItems = new ArrayList<Item>();
 	
 	public String getTitle() {
 		return title;
@@ -23,10 +24,10 @@ public class AssessmentSection {
 	public void setRubricBlock(String rubricBlock) {
 		this.rubricBlock = rubricBlock;
 	}
-	public List<AssessmentItemType01> getAssessmentItems() {
+	public List<Item> getAssessmentItems() {
 		return assessmentItems;
 	}
-	public void setAssessmentItems(List<AssessmentItemType01> assessmentItems) {
+	public void setAssessmentItems(List<Item> assessmentItems) {
 		this.assessmentItems = assessmentItems;
 	}
 	
