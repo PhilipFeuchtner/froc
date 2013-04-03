@@ -19,20 +19,9 @@
         <!-- The body of the document contains a number of sections -->
         <section name="section 1">
 
-            <h1>H1 Title</h1>
-            <h2>H2 Subtitle</h2>
-            <h3>H3 sub-subtitle</h3>
-            <!-- Within sections, any XHTML can be used -->
-            <p>This is a paragraph inside of section 1</p>
-            <!-- in addition to XHTML, any number of subsections can be within a section -->
-            <subsection name="Subsection 1">
-                <p>Subsection!</p>
-                <h3>An H3 inside of subsection</h3>
-            </subsection>
-        </section>
-        <section name="section 2">
-            <p>More paragraphs</p>
-        </section>
+            <h1>OSA</h1>
+            <h2>Froc Project Site</h2>
+
 
         <section name="other section">
             <p>This is how you run site documentation</p>
