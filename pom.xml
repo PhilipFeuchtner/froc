@@ -12,13 +12,15 @@
 		<!-- url = ssh://feucht@osa-dev.uni-koblenz.de/srv/git/osa/cosa.git scm:git:ssh://server_name[:port]/path_to_repository -->
 		<connection>scm:git:ssh://${osa.developer}@osa-dev.uni-koblenz.de/srv/git/osa/froc.git</connection>
 		<url>scm:git:ssh://${osa.developer}@osa-dev.uni-koblenz.de/srv/git/osa/froc.git</url>
-		<developerConnection>scm:git:ssh://${osa.developer}@osa-dev.uni-koblenz.de/srv/git/osa/forc.git</developerConnection>
+	    <developerConnection>scm:git:ssh://${osa.developer}@osa-dev.uni-koblenz.de/srv/git/osa/forc.git</developerConnection>
+
 	</scm>
 
 	<distributionManagement>
 		<site>
 			<id>website</id>
 			<url>scp://${osa.developer}@iwmuser.uni-koblenz.de/home/feucht/www/osa/</url>
+			<!-- url>scp://${osa.developer}@osa-dev.uni-koblenz.de//var/www/psychologie/osa/</url-->
 		</site>
 	</distributionManagement>
 
@@ -140,8 +142,8 @@
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.source}</target>
 				</configuration>
 			</plugin>
 
@@ -243,12 +245,21 @@
 						<plugin>
 							<groupId>org.apache.maven.plugins</groupId>
 							<artifactId>maven-checkstyle-plugin</artifactId>
+							<reportSets>
+								<reportSet>
+									<reports>
+										<report>checkstyle</report>
+									</reports>
+								</reportSet>
+							</reportSets>
+
 							<configuration>
 								<skip>${checkstyle.skip}</skip>
 								<configLocation>${maven-checkstyle-plugin.configLocation}</configLocation>
 								<failsOnError>false</failsOnError>
 								<enableRulesSummary>true</enableRulesSummary>
 								<includeTestSourceDirectory>true</includeTestSourceDirectory>
+								<excludes>**/generated/*.java</excludes>
 							</configuration>
 						</plugin>
 						<plugin>
@@ -423,21 +434,10 @@
 				</executions>
 			</plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jxr-plugin</artifactId>
-				<configuration>
-					<aggregate>true</aggregate>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>jxr</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-jxr-plugin</artifactId> 
+				<configuration> <aggregate>true</aggregate> </configuration> <executions> 
+				<execution> <phase>process-resources</phase> <goals> <goal>jxr</goal> </goals> 
+				</execution> </executions> </plugin> -->
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -693,7 +693,7 @@
 		<javadocs.skip>false</javadocs.skip>
 		<pmd.skip>false</pmd.skip>
 
-
+		<maven.compiler.source>1.7</maven.compiler.source>
 	</properties>
 
 </project>

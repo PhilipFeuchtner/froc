@@ -1,34 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document xmlns="http://maven.apache.org/XDOC/2.0"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
-
-    <properties>
-        <title>Mike's DOCs for ${projectName}</title>
-        <author email="mike@elickconcepts.com">Mike!</author>
-    </properties>
-
-    <!-- Optional HEAD element, which is copied as is into the XHTML <head> element -->
-    <head>
-        <title>Mike's DOCs for ${projectName}</title>
-        <meta content="this is Mike's site docs" name="description"/>
-    </head>
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
     <body>
 
         <!-- The body of the document contains a number of sections -->
-        <section name="section 1">
+        <section name="Main Site">
 
             <h1>OSA</h1>
             <h2>Froc Project Site</h2>
 
+        </section>
 
-        <section name="other section">
+        <!-- <section name="other section">
             <p>This is how you run site documentation</p>
-            <!-- You can also include preformatted source blocks in the document -->
+            
             <source>
                 mvn clean site:run
             </source>
-        </section>
+        </section> -->
     </body>
+
 </document>
