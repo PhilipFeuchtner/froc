@@ -26,6 +26,7 @@
 
 	<build>
 		<finalName>Froc</finalName>
+		
 
 		<pluginManagement>
 			<plugins>
