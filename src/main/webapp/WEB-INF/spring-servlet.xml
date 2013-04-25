@@ -79,12 +79,9 @@
 		<property name="maxUploadSize" value="500000" />
 	</bean>
 
-	<!-- config data -->
-
-	<jdbc:embedded-database id="osaConfiguration">
-		<jdbc:script location="classpath:osaConfiguration-schema.sql" />
-		<jdbc:script location="classpath:osaConfiguration-data.sql" />
-	</jdbc:embedded-database>
+	<!-- config data <jdbc:embedded-database id="osaConfiguration"> <jdbc:script 
+		location="classpath:osaConfiguration-schema.sql" /> <jdbc:script location="classpath:osaConfiguration-data.sql" 
+		/> </jdbc:embedded-database> -->
 
 	<!-- other bean -->
 
@@ -92,5 +89,5 @@
 	<bean id="qtree" class="de.uniko.iwm.osa.questsitemTree.QTree" />
 	<!-- <bean id="assessmentItem" class="de.uniko.iwm.osa.questsitemTree.AssessmentItem" 
 		/> -->
-		
+
 </beans>

@@ -32,43 +32,41 @@ import de.uniko.iwm.osa.questsitemTree.QTree;
 @RequestMapping("/index")
 public class OsaController {
 
-	@Autowired
-	private DataSource osaConfiguration;
-	
+	// @Autowired
+	// private DataSource osaConfiguration;
+
 	@Autowired
 	Builder builder;
-	
+
 	@Autowired
 	private QTree qtree;
-	
+
 	private OsaPage osaPage;
 
 	final String image_base = "new_images";
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String listContacts(Model model) {
-		
+
 		// qtree.toDot();
 
 		model.addAttribute(new UploadItem());
 
 		ConfigDAOImpl cDAO = new ConfigDAOImpl();
-		cDAO.setDataSource(osaConfiguration);
-		
-		/* -------------------------------------- */
-		
-		System.out.println("Now select and list all configs");
-		List<Config> list = cDAO.selectAll();
-		for (Config myC : list) {
-			System.out.println(myC);
-		}
+//		cDAO.setDataSource(osaConfiguration);
 
-		System.out.println("Now select and list all psychosa");
-		list = cDAO.select("psychosa");
-		for (Config myC : list) {
-			System.out.println(myC);
-		}
-		
+		/*
+		 * --------------------------------------
+		 * 
+		 * System.out.println("Now select and list all configs"); List<Config>
+		 * list = cDAO.selectAll(); for (Config myC : list) {
+		 * System.out.println(myC); }
+		 * 
+		 * System.out.println("Now select and list all psychosa"); list =
+		 * cDAO.select("psychosa"); for (Config myC : list) {
+		 * System.out.println(myC); }
+		 */
+
 		return "osadbform";
 	}
 
