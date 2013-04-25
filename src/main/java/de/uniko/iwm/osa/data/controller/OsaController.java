@@ -16,7 +16,6 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import de.uniko.iwm.osa.data.dao.ConfigDAOImpl;
 import de.uniko.iwm.osa.data.model.Config;
 import de.uniko.iwm.osa.data.model.OsaDbPages;
 import de.uniko.iwm.osa.data.model.OsaDbQuestitems;
@@ -43,7 +42,9 @@ public class OsaController {
 
 	private OsaPage osaPage;
 
+	private String osa_name = "psychosa"; 
 	final String image_base = "new_images";
+	private @Value("${CYQUEST_DBCONFIG}") String MAGIC_CYQUEST_CONFIG_FILE;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String listContacts(Model model) {
@@ -51,21 +52,6 @@ public class OsaController {
 		// qtree.toDot();
 
 		model.addAttribute(new UploadItem());
-
-		ConfigDAOImpl cDAO = new ConfigDAOImpl();
-//		cDAO.setDataSource(osaConfiguration);
-
-		/*
-		 * --------------------------------------
-		 * 
-		 * System.out.println("Now select and list all configs"); List<Config>
-		 * list = cDAO.selectAll(); for (Config myC : list) {
-		 * System.out.println(myC); }
-		 * 
-		 * System.out.println("Now select and list all psychosa"); list =
-		 * cDAO.select("psychosa"); for (Config myC : list) {
-		 * System.out.println(myC); }
-		 */
 
 		return "osadbform";
 	}
