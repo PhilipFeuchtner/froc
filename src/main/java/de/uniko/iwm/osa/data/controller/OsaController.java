@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -42,14 +44,20 @@ public class OsaController {
 	private OsaPage osaPage;
 
 	private String osa_name = "psychosa"; 
+	
+	@Autowired
+	private String OsaFileBase;
+	
 	final String image_base = "new_images";
-	private @Value("${CYQUEST_DBCONFIG}") String MAGIC_CYQUEST_CONFIG_FILE;
+	private @Value("${CYQUEST_DBCONFIG}") String CYQUEST_PHP_CONFIG_FILE;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String listContacts(Model model) {
 
 		// qtree.toDot();
-
+		String[] basePathParts  = {OsaFileBase, osa_name, CYQUEST_PHP_CONFIG_FILE};  
+		System.out.println("Osa FB: "+ generateBasePath(basePathParts));
+		
 		model.addAttribute(new UploadItem());
 
 		return "osadbform";
@@ -80,5 +88,11 @@ public class OsaController {
 		}
 
 		return "osadbform";
+	}
+	
+	private String generateBasePath(String[] args) {
+		String dummy = StringUtils.join(args, "/");
+		
+		return FilenameUtils.normalize(dummy);
 	}
 }

@@ -12,7 +12,7 @@
 		<!-- url = ssh://feucht@osa-dev.uni-koblenz.de/srv/git/osa/cosa.git scm:git:ssh://server_name[:port]/path_to_repository -->
 		<connection>scm:git:ssh://${osa.developer}@osa-dev.uni-koblenz.de/srv/git/osa/froc.git</connection>
 		<url>scm:git:ssh://${osa.developer}@osa-dev.uni-koblenz.de/srv/git/osa/froc.git</url>
-	    <developerConnection>scm:git:ssh://${osa.developer}@osa-dev.uni-koblenz.de/srv/git/osa/forc.git</developerConnection>
+		<developerConnection>scm:git:ssh://${osa.developer}@osa-dev.uni-koblenz.de/srv/git/osa/forc.git</developerConnection>
 
 	</scm>
 
@@ -20,13 +20,13 @@
 		<site>
 			<id>website</id>
 			<url>scp://${osa.developer}@iwmuser.uni-koblenz.de/home/feucht/www/osa/</url>
-			<!-- url>scp://${osa.developer}@osa-dev.uni-koblenz.de//var/www/psychologie/osa/</url-->
+			<!-- url>scp://${osa.developer}@osa-dev.uni-koblenz.de//var/www/psychologie/osa/</url -->
 		</site>
 	</distributionManagement>
 
 	<build>
 		<finalName>Froc</finalName>
-		
+
 
 		<pluginManagement>
 			<plugins>
@@ -656,6 +656,13 @@
 			<artifactId>commons-io</artifactId>
 			<version>1.3.2</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.1</version>
+		</dependency>
+
 
 	</dependencies>
 	<properties>
