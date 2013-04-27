@@ -1,5 +1,6 @@
 package de.uniko.iwm.osa.data.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -26,6 +27,7 @@ import de.uniko.iwm.osa.data.service.OsaDbQuestitemsService;
 import de.uniko.iwm.osa.data.service.OsaDbPagesService;
 import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
 import de.uniko.iwm.osa.qtiinterpreter.Builder;
+import de.uniko.iwm.osa.qtiinterpreter.DbConfigExtractor;
 import de.uniko.iwm.osa.questsitemTree.QTree;
 
 @Controller
@@ -52,11 +54,18 @@ public class OsaController {
 	private @Value("${CYQUEST_DBCONFIG}") String CYQUEST_PHP_CONFIG_FILE;
 
 	@RequestMapping(method = RequestMethod.GET)
-	public String listContacts(Model model) {
+	public String contact(Model model) {
 
 		// qtree.toDot();
 		String[] basePathParts  = {OsaFileBase, osa_name, CYQUEST_PHP_CONFIG_FILE};  
-		System.out.println("Osa FB: "+ generateBasePath(basePathParts));
+		String osaBase = generateBasePath(basePathParts);
+		System.out.println("Osa FB: "+ osaBase);
+		
+		DbConfigExtractor dbce = new DbConfigExtractor();
+		if (dbce.extract(new File(osaBase)))
+			System.out.println("Success: [(" + dbce.getDb_server() + ")(" + dbce.getDb_user() + ")("+ dbce.getDb_password() +")]");
+		else
+			System.out.println("Fail");
 		
 		model.addAttribute(new UploadItem());
 
