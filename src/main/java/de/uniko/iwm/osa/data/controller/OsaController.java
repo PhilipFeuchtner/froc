@@ -62,7 +62,7 @@ public class OsaController {
 		System.out.println("Osa FB: "+ osaBase);
 		
 		DbConfigExtractor dbce = new DbConfigExtractor();
-		if (dbce.extract(new File(osaBase)))
+		if (dbce.extract(osaBase))
 			System.out.println("Success: [(" + dbce.getDb_server() + ")(" + dbce.getDb_user() + ")("+ dbce.getDb_password() +")]");
 		else
 			System.out.println("Fail");

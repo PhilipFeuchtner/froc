@@ -1,12 +1,12 @@
 package de.uniko.iwm.osa.qtiinterpreter;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.LineIterator;
 
 public class DbConfigExtractor {
 
@@ -23,38 +23,33 @@ public class DbConfigExtractor {
 		// "$wspvars['dbcon'] = @mysql_connect('localhost','dbusr_osa','iQAq8KWW');";
 
 		DbConfigExtractor dbce = new DbConfigExtractor();
-		if (dbce.extract(new File(base)))
-			System.out.println("Success: [(" + dbce.getDb_server() + ")(" + dbce.getDb_user() + ")("+ dbce.getDb_password() +")]");
+		if (dbce.extract(base))
+			System.out.println("Success: [(" + dbce.getDb_server() + ")("
+					+ dbce.getDb_user() + ")(" + dbce.getDb_password() + ")]");
 		else
 			System.out.println("Fail");
 	}
 
-	public boolean extract(File f) {
+	public boolean extract(String path) {
+
 		try {
-			Reader r = new FileReader(f);
-			BufferedReader br = new BufferedReader(r);
+			LineIterator it = FileUtils.lineIterator(new File(path), "UTF-8");
+			try {
 
-			boolean trymore = true;
+				while (it.hasNext()) {
+					String line = it.nextLine();
 
-			while (trymore) {
-				String line = br.readLine();
-
-				trymore = line != null;
-
-				if (trymore && line.startsWith(start)) {
-					br.close();
-					
-					return extractValues(line);
+					if (line.startsWith(start)) {
+						return extractValues(line);
+					}
 				}
+			} finally {
+				LineIterator.closeQuietly(it);
 			}
-			
-			br.close();
-			
 		} catch (IOException e) {
 			e.printStackTrace();
-			return false;
-		} 
-		
+		}
+
 		return false;
 	}
 
@@ -86,9 +81,9 @@ public class DbConfigExtractor {
 
 		return count == 4;
 	}
-	
+
 	// ----------------------------------------------------------------------
-	
+
 	public String getDb_server() {
 		return db_server;
 	}
