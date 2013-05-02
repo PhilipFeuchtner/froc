@@ -7,23 +7,37 @@ import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
 
 public class AssessmentItem extends Item {
 	
-//	public abstract int getQuestid();
-//	public abstract void setQuestid(int questid);
-//
-//	public abstract int getPosition();
-//	public abstract void setPosition(int position);
-//
-//	public abstract String getShownum();
-//	public abstract void setShownum(String shownum);
-//
-//	public abstract String getShowdesc();
-//	public abstract void setShowdesc(String showdesc);
-//
-//	public abstract String getTypevalues();
-//	public abstract void setTypevalues(String typevalues);
-//	
-//	public AssessmentItemType getAssessmentType();
+	private Integer id;
 	
+	@Override
+	public Integer getId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setId(Integer id) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Integer getQuestid() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setQuestid(Integer questid) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public ItemType getAssessmentType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	/* -------------------------- */
 
 	public int toOsaDbQuests(OsaDbQuestsService questsService) {
@@ -43,5 +57,4 @@ public class AssessmentItem extends Item {
 		}
 		return -1;
 	}
-
 }

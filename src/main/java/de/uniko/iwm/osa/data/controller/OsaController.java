@@ -62,9 +62,12 @@ public class OsaController {
 		System.out.println("Osa FB: "+ osaBase);
 		
 		DbConfigExtractor dbce = new DbConfigExtractor();
-		if (dbce.extract(osaBase))
+		if (dbce.extract(osaBase)) {
+			// <!-- <jee:jndi-lookup id="dataSource" jndi-name="java:comp/env/${JeeConnection}" 
+			// jdbc:mysql//localhost:3306/dbname
 			System.out.println("Success: [(" + dbce.getDb_server() + ")(" + dbce.getDb_user() + ")("+ dbce.getDb_password() +")]");
-		else
+			System.out.println("Jdbc   : [jdbc:mysql//" + dbce.getDb_server() + ":3306/" + osa_name +"]");		
+		} else
 			System.out.println("Fail");
 		
 		model.addAttribute(new UploadItem());

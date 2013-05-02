@@ -2,6 +2,7 @@ package de.uniko.iwm.osa.data.assessmentItem;
 
 import java.util.List;
 
+import de.uniko.iwm.osa.data.assessmentItem.Item.ItemType;
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
 import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
 
@@ -15,9 +16,6 @@ public class AssessmentItemType01 extends AssessmentItem {
 	private String shownum;
 	private String showdesc;
 	private String typevalues = MAGIC_INTERESSEN_TYPEVALUES;
-
-	private ItemType assessmentType;
-
 
 	/*
 	 * (non-Javadoc)
@@ -40,6 +38,16 @@ public class AssessmentItemType01 extends AssessmentItem {
 		this.questid = questid;
 	}
 
+	@Override
+	public Integer getId() {
+		return id;
+	}
+
+	@Override
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -122,6 +130,11 @@ public class AssessmentItemType01 extends AssessmentItem {
 	
 	public void setTypevalues(String typevalues) {
 		this.typevalues = typevalues;
+	}
+	
+	@Override
+	public ItemType getAssessmentType() {
+		return ItemType.INTERESSEN;
 	}
 
 	/* ----------------------------------------- */
