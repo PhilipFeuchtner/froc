@@ -4,6 +4,8 @@
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+
 <html>
 <head>
 <title>Cosa implementing Froc</title>
@@ -37,9 +39,12 @@ body {
 			<legend>Upload Fields</legend>
 
 			<p>
-				<form:label for="name" path="name">Abschnitt</form:label>
+				<form:label for="osa" path="osaList">Osa</form:label>
 				<br />
-				<form:input path="name" />
+				<form:select path="osaList" multiple="false">
+					<form:options items="${uploadItem.osaList}" />
+				</form:select>
+
 			</p>
 
 			<p>

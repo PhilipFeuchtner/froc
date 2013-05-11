@@ -3,7 +3,10 @@ package de.uniko.iwm.osa.data.controller;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -52,10 +56,10 @@ public class OsaController {
 	
 	final String image_base = "new_images";
 	private @Value("${CYQUEST_DBCONFIG}") String CYQUEST_PHP_CONFIG_FILE;
-
+	
 	@RequestMapping(method = RequestMethod.GET)
 	public String contact(Model model) {
-
+		
 		// qtree.toDot();
 		String[] basePathParts  = {OsaFileBase, osa_name, CYQUEST_PHP_CONFIG_FILE};  
 		String osaBase = generateBasePath(basePathParts);
@@ -70,7 +74,9 @@ public class OsaController {
 		} else
 			System.out.println("Fail");
 		
-		model.addAttribute(new UploadItem());
+		UploadItem it = new UploadItem();
+		it.generateOsaList(OsaFileBase);
+		model.addAttribute(it);
 
 		return "osadbform";
 	}

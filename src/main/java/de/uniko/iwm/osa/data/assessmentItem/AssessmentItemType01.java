@@ -2,7 +2,6 @@ package de.uniko.iwm.osa.data.assessmentItem;
 
 import java.util.List;
 
-import de.uniko.iwm.osa.data.assessmentItem.Item.ItemType;
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
 import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
 
