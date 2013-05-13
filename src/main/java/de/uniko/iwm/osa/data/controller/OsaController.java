@@ -97,6 +97,6 @@ public class OsaController {
 			osaPage = builder.run(qtiInput);
 		}
 
-		return "osadbform";
+		return "osa-status-ok";
 	}
 }
