@@ -32,7 +32,7 @@ public class OsaConfigExtractor {
 		this.osaBase = osaBase;
 		this.cyquestConfig = cyquestConfig;
 		
-		generateOsaList();
+		osaNames = generateOsaList(osaBase);
 	}
 
 	public static void main(String args[]) {
@@ -104,17 +104,19 @@ public class OsaConfigExtractor {
 		return count == 4;
 	}
 
-	public void generateOsaList() {
-		File baseDir = new File(osaBase);
+	public List<String> generateOsaList(String base) {
+		File baseDir = new File(base);
 		File[] fileList = baseDir.listFiles();
 
-		osaNames = new ArrayList<String>();
+		List<String> names = new ArrayList<String>();
 		for (int i = 0; i < fileList.length; i++) {
 			if (fileList[i].isDirectory()) {
 				String name = fileList[i].getName();
-				osaNames.add(name);
+				names.add(name);
 			}
 		}
+		
+		return names;
 	}
 
 	// ----------------------------------------------------------------------
