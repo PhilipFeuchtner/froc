@@ -88,7 +88,9 @@ public class OsaController {
 		System.err.println("Test upload: "
 				+ uploadItem.getFileData().getOriginalFilename());
 		System.err.println("-------------------------------------------");
-
+		System.err.println("Osas Name: "+ uploadItem.getOsaList().get(0));
+		System.err.println("-------------------------------------------");
+		
 		if (!uploadItem.getFileData().isEmpty()) {
 			InputStream qtiInput = uploadItem.getFileData().getInputStream();
 
