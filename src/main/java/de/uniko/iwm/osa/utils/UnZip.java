@@ -1,4 +1,4 @@
-package de.uniko.iwm.osa.qtiinterpreter;
+package de.uniko.iwm.osa.utils;
 
 import java.io.BufferedInputStream;
 import java.io.File;

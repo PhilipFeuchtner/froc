@@ -1,14 +1,18 @@
-package de.uniko.iwm.osa.qtiinterpreter;
+package de.uniko.iwm.osa.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.LineIterator;
+import org.apache.commons.lang3.StringUtils;
 
-public class DbConfigExtractor {
+public class OsaConfigExtractor {
 
 	private String db_server = null;
 	private String db_user = null;
@@ -17,20 +21,38 @@ public class DbConfigExtractor {
 	private String start = "$wspvars['dbcon'] =";
 	private Pattern p = Pattern.compile("'([^']*)'");
 
+	// -----------------------------------------------------------
+
+	private String osaBase;
+	// private String osaName = null;
+	private String cyquestConfig;
+	List<String> osaNames;
+
+	public OsaConfigExtractor(String osaBase, String cyquestConfig) {
+		this.osaBase = osaBase;
+		this.cyquestConfig = cyquestConfig;
+		
+		generateOsaList();
+	}
+
 	public static void main(String args[]) {
-		String base = "/var/www/psychosa/data/include/dbaccess.inc.php";
+		// String base = "/var/www/psychosa/data/include/dbaccess.inc.php";
 		// String test =
 		// "$wspvars['dbcon'] = @mysql_connect('localhost','dbusr_osa','iQAq8KWW');";
 
-		DbConfigExtractor dbce = new DbConfigExtractor();
-		if (dbce.extract(base))
+		OsaConfigExtractor dbce = new OsaConfigExtractor("/var/www/",
+				"data/include/dbaccess.inc.php");
+		if (dbce.extract("psychosa"))
 			System.out.println("Success: [(" + dbce.getDb_server() + ")("
 					+ dbce.getDb_user() + ")(" + dbce.getDb_password() + ")]");
 		else
 			System.out.println("Fail");
 	}
 
-	public boolean extract(String path) {
+	public boolean extract(String osaName) {
+
+		String[] basePathParts = { osaBase, osaName, cyquestConfig };
+		String path = generateBasePath(basePathParts);
 
 		try {
 			LineIterator it = FileUtils.lineIterator(new File(path), "UTF-8");
@@ -82,6 +104,27 @@ public class DbConfigExtractor {
 		return count == 4;
 	}
 
+	public void generateOsaList() {
+		File baseDir = new File(osaBase);
+		File[] fileList = baseDir.listFiles();
+
+		osaNames = new ArrayList<String>();
+		for (int i = 0; i < fileList.length; i++) {
+			if (fileList[i].isDirectory()) {
+				String name = fileList[i].getName();
+				osaNames.add(name);
+			}
+		}
+	}
+
+	// ----------------------------------------------------------------------
+
+	private String generateBasePath(String[] args) {
+		String dummy = StringUtils.join(args, "/");
+
+		return FilenameUtils.normalize(dummy);
+	}
+
 	// ----------------------------------------------------------------------
 
 	public String getDb_server() {
@@ -94,5 +137,13 @@ public class DbConfigExtractor {
 
 	public String getDb_password() {
 		return db_password;
+	}
+
+	public List<String> getOsaNames() {
+		return osaNames;
+	}
+	
+	public boolean hasOsa(String name) {
+		return osaNames.contains(name);
 	}
 }

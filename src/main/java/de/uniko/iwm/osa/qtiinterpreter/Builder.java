@@ -13,6 +13,7 @@ import de.uniko.iwm.osa.data.model.OsaItem;
 import de.uniko.iwm.osa.data.model.OsaPage;
 import de.uniko.iwm.osa.data.model.TestPart;
 import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
+import de.uniko.iwm.osa.utils.UnZip;
 
 public class Builder {
 
