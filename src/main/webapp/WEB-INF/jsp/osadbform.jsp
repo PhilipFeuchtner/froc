@@ -9,25 +9,8 @@
 <html>
 <head>
 <title>Cosa implementing Froc</title>
-<style type="text/css">
-body {
-	font-family: sans-serif;
-}
+ <link rel="stylesheet" type="text/css" href="<c:url value='/css/style.css'/>"/>
 
-.data,.data td {
-	border-collapse: collapse;
-	width: 100%;
-	border: 1px solid #aaa;
-	margin: 2px;
-	padding: 2px;
-}
-
-.data th {
-	font-weight: bold;
-	background-color: #5C82FF;
-	color: white;
-}
-</style>
 </head>
 <body>
 
