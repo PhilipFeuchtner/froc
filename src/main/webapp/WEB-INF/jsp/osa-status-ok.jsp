@@ -10,6 +10,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Status Ok</title>
+ <link rel="stylesheet" type="text/css" href="<c:url value='/css/style.css'/>"/>
+
 </head>
 <body>
 	<h2>Status Ok</h2>
@@ -20,6 +22,38 @@
 		Osa selected:[
 		<c:out value="${uploadItem.osaList[0]}"></c:out>
 		]
+	</fieldset>
+
+	<fieldset>
+		<legend>Debug</legend>
+
+		<table border="0">
+			<tr>
+				<td>Values changed</td>
+				<td>&nbsp;</td>
+				<td><c:out value="${osaPage.size()}"></c:out></td>
+			</tr>
+			<tr>
+				<td>jdbc String</td>
+				<td>&nbsp;</td>
+				<td><c:out value="${dataBaseConfig.jdbcString}"></c:out></td>
+			</tr>
+			<tr>
+				<td>User</td>
+				<td>&nbsp;</td>
+				<td><c:out value="${dataBaseConfig.db_user}"></c:out></td>
+			</tr>
+			<tr>
+				<td>Password</td>
+				<td>&nbsp;</td>
+				<td><c:out value="${dataBaseConfig.db_password}"></c:out></td>
+			</tr>
+			<tr>
+				<td>Valid?</td>
+				<td>&nbsp;</td>
+				<td><c:out value="${dataBaseConfig.hasValidData}"></c:out></td>
+			</tr>
+		</table>
 	</fieldset>
 </body>
 </html>

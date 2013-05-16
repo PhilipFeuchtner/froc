@@ -23,6 +23,11 @@ public class OsaConfigExtractor {
 
 	// -----------------------------------------------------------
 
+	private boolean hasValidData = false;
+	private String jdbcString = null;
+
+	// -----------------------------------------------------------
+
 	private String osaBase;
 	// private String osaName = null;
 	private String cyquestConfig;
@@ -31,7 +36,7 @@ public class OsaConfigExtractor {
 	public OsaConfigExtractor(String osaBase, String cyquestConfig) {
 		this.osaBase = osaBase;
 		this.cyquestConfig = cyquestConfig;
-		
+
 		osaNames = generateOsaList(osaBase);
 	}
 
@@ -50,6 +55,7 @@ public class OsaConfigExtractor {
 	}
 
 	public boolean extract(String osaName) {
+		hasValidData = false;
 
 		String[] basePathParts = { osaBase, osaName, cyquestConfig };
 		String path = generateBasePath(basePathParts);
@@ -101,7 +107,12 @@ public class OsaConfigExtractor {
 			count++;
 		}
 
-		return count == 4;
+		if (count == 4) {
+			hasValidData = true;
+			return true;
+		}
+
+		return false;
 	}
 
 	public List<String> generateOsaList(String base) {
@@ -115,7 +126,7 @@ public class OsaConfigExtractor {
 				names.add(name);
 			}
 		}
-		
+
 		return names;
 	}
 
@@ -144,8 +155,20 @@ public class OsaConfigExtractor {
 	public List<String> getOsaNames() {
 		return osaNames;
 	}
-	
+
 	public boolean hasOsa(String name) {
 		return osaNames.contains(name);
+	}
+
+	public String getJdbcString() {
+		return jdbcString;
+	}
+
+	public void setJdbcString(String jdbcString) {
+		this.jdbcString = jdbcString;
+	}
+
+	public boolean isHasValidData() {
+		return hasValidData;
 	}
 }

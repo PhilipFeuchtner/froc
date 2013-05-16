@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 import de.uniko.iwm.osa.data.model.OsaPage;
 import de.uniko.iwm.osa.data.model.UploadItem;
@@ -72,14 +73,19 @@ public class OsaController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public String create(UploadItem uploadItem, BindingResult result)
+	public ModelAndView create(UploadItem uploadItem, BindingResult result)
 			throws IOException {
+
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.addObject("osaPage", osaPage);
+		modelAndView.addObject("uploadItem", uploadItem);
+		
 		if (result.hasErrors()) {
 			for (ObjectError error : result.getAllErrors()) {
 				System.err.println("Error: " + error.getCode() + " - "
 						+ error.getDefaultMessage());
 			}
-			return "osadbform";
+			return new ModelAndView("osadbform");
 		}
 
 		// Some type of file processing...
@@ -88,8 +94,18 @@ public class OsaController {
 		System.err.println("Test upload: "
 				+ uploadItem.getFileData().getOriginalFilename());
 		System.err.println("-------------------------------------------");
-		System.err.println("Osas Name: "+ uploadItem.getOsaList().get(0));
+		System.err.println("Osas Name: " + uploadItem.getOsaList().get(0));
 		System.err.println("-------------------------------------------");
+		
+		OsaConfigExtractor dbce = new OsaConfigExtractor(OsaFileBase,
+				CYQUEST_PHP_CONFIG_FILE);
+		
+		modelAndView.addObject("dataBaseConfig", dbce);
+		
+		if (dbce.extract(uploadItem.getOsaList().get(0))) {			
+			dbce.setJdbcString("jdbc:mysql//" + dbce.getDb_server()
+					+ ":" + MAGIC_DB_PORT + "/" + osa_name);
+		}
 		
 		if (!uploadItem.getFileData().isEmpty()) {
 			InputStream qtiInput = uploadItem.getFileData().getInputStream();
@@ -97,6 +113,7 @@ public class OsaController {
 			osaPage = builder.run(qtiInput);
 		}
 
-		return "osa-status-ok";
+		modelAndView.setViewName("osa-status-ok");
+		return modelAndView;
 	}
 }
