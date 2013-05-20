@@ -29,21 +29,24 @@ import org.xml.sax.SAXException;
 public class HtmlFilter {
 
 	List<String> skipList;
+	List<String> skipIfEmptyList;
 	List<String> qtiInlineElementsList;
 	List<String> htmlImageElementsList;
 
 	static Document doc = null;
 
 	public enum Kind {
-		keep, skip, qti, image
+		keep, skip, skipIfEmpty, qti, image
 	};
 
 	public HtmlFilter() {
 		skipList = new ArrayList<String>();
 		skipList.add("span");
-		skipList.add("div");
 		skipList.add("font");
-		
+
+		skipIfEmptyList = new ArrayList<String>();
+		skipIfEmptyList.add("div");
+
 		qtiInlineElementsList = new ArrayList<String>();
 		qtiInlineElementsList.add("positionObjectStage");
 		qtiInlineElementsList.add("customInteraction");
@@ -121,7 +124,7 @@ public class HtmlFilter {
 		} else {
 			NodeList children = inspect.getChildNodes();
 			boolean changed = false;
-			
+
 			for (int i = 0; i < children.getLength(); i++) {
 				if (doIt(children.item(i))) {
 					changed = true;
@@ -143,6 +146,12 @@ public class HtmlFilter {
 			case keep:
 				someThingChanged = false;
 				break;
+
+			case skipIfEmpty:
+				if (inspect.hasAttributes()) {
+					someThingChanged = false;
+					break;
+				}
 
 			case skip:
 				Node mark = inspect;
@@ -184,6 +193,12 @@ public class HtmlFilter {
 		for (String test : skipList) {
 			if (test.equalsIgnoreCase(what)) {
 				return Kind.skip;
+			}
+		}
+
+		for (String test : skipIfEmptyList) {
+			if (test.equalsIgnoreCase(what)) {
+				return Kind.skipIfEmpty;
 			}
 		}
 
