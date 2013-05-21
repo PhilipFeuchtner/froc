@@ -23,6 +23,7 @@ import de.uniko.iwm.osa.data.assessmentItem.AssessmentItemType01;
 import de.uniko.iwm.osa.data.model.AssessmentSection;
 import de.uniko.iwm.osa.data.model.AssessmentTest;
 import de.uniko.iwm.osa.data.model.TestPart;
+import de.uniko.iwm.osa.utils.HtmlFilter;
 
 public class Parse {
 

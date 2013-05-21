@@ -25,6 +25,7 @@
 				<form:label for="osa" path="osaList">Osa</form:label>
 				<br />
 				<form:select path="osaList" multiple="false">
+					<form:option value="Select"></form:option>
 					<form:options items="${uploadItem.osaList}" />
 				</form:select>
 
