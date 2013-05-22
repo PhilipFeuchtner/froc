@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import de.uniko.iwm.osa.data.assessmentItem.AssessmentItemType01;
@@ -16,6 +17,8 @@ import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
 import de.uniko.iwm.osa.utils.UnZip;
 
 public class Builder {
+	static Logger log = Logger.getLogger(Builder.class.getName());
+
 
 	@Autowired
 	OsaDbQuestsService questsService;
@@ -52,7 +55,7 @@ public class Builder {
 							case INTERESSEN:
 								AssessmentItemType01 t = (AssessmentItemType01)item;
 								int newId = t.toOsaDbQuests(questsService);
-								System.out.println("   " + newId);
+								log.info("   " + newId);
 
 								osaItem.addQuestsNewId(newId);
 								osaItem.addQuestsQuestId(t.getQuestid());
@@ -61,7 +64,7 @@ public class Builder {
 								// do nothing
 								break;
 							default:
-								System.out.println("ERROR: Invalid item: " + item);
+								log.error("ERROR: Invalid item: " + item);
 							}
 						}
 

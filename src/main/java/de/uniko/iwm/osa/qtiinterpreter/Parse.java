@@ -6,6 +6,8 @@ import java.util.regex.Pattern;
 
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.log4j.Logger;
+
 import net.sf.saxon.s9api.Axis;
 import net.sf.saxon.s9api.DocumentBuilder;
 import net.sf.saxon.s9api.Processor;
@@ -26,6 +28,9 @@ import de.uniko.iwm.osa.data.model.TestPart;
 import de.uniko.iwm.osa.utils.HtmlFilter;
 
 public class Parse {
+	
+	static Logger log = Logger.getLogger(Parse.class.getName());
+
 
 	final String MANIFEST_NAME = "imsmanifest.xml";
 
@@ -123,7 +128,7 @@ public class Parse {
 			// selector.setContextItem(manifestDoc);
 			// XdmValue descs = selector.evaluate();
 			//
-			// System.out.println("ASS STRING search");
+			// log.info("ASS STRING search");
 			//
 			// for (XdmItem item : descs) {
 			// XdmNode resNode = (XdmNode) item;
@@ -179,7 +184,7 @@ public class Parse {
 			//
 			// tests
 			//
-			System.out.println("AssessmentTest");
+			log.info("AssessmentTest");
 
 			handle_AssessmentTest(child);
 		}
@@ -198,7 +203,7 @@ public class Parse {
 			//
 			// testParts
 			//
-			System.out.println("TestPart");
+			log.info("TestPart");
 
 			TestPart testPart = handle_TestPart(child);
 			assessmentTest.addTestPart(testPart);
@@ -221,7 +226,7 @@ public class Parse {
 			//
 			// assessment section
 			//
-			System.out.println("AssessmentSection");
+			log.info("AssessmentSection");
 
 			AssessmentSection assessmentSection = handle_AssessmentSection(
 					child, cy_questid);
@@ -253,7 +258,7 @@ public class Parse {
 			String text = att_titles.getStringValue();
 			assessmentSection.setTitle(text);
 
-			System.out.println(String.format("Att title: (%s)", text));
+			log.info(String.format("Att title: (%s)", text));
 		}
 
 		//
@@ -282,9 +287,9 @@ public class Parse {
 			count++;
 			cy_position++;
 
-			System.out.println(String.format("ref file: %s",
+			log.info(String.format("ref file: %s",
 					refs.getStringValue()));
-			System.out.println(String.format(
+			log.info(String.format(
 					"count [%2d], questid [%2d], position [%2d]", count,
 					cy_questid, cy_position));
 
@@ -296,7 +301,7 @@ public class Parse {
 				// it.setAssessmentType(AssessmentItemType.INTERESSEN);
 
 				assessmentSection.addAssessmentItem(it);
-				System.out.println("IT: " + it);
+				log.info("IT: " + it);
 			}
 		}
 
@@ -325,7 +330,7 @@ public class Parse {
 			XdmValue children_tiltes = selector.evaluate();
 
 			for (XdmItem item : children_tiltes) {
-				System.out.println(String.format("TITLE  : (%s)",
+				log.info(String.format("TITLE  : (%s)",
 						item.getStringValue()));
 			}
 
@@ -340,7 +345,7 @@ public class Parse {
 			XdmValue children_correct_responses = selector.evaluate();
 
 			for (XdmItem item : children_correct_responses) {
-				System.out.println(String.format("CORRECT: (%s)",
+				log.info(String.format("CORRECT: (%s)",
 						item.getStringValue()));
 			}
 
@@ -379,7 +384,7 @@ public class Parse {
 		XdmValue children = selector.evaluate();
 
 		for (XdmItem item : children) {
-			// System.out.println("------>" + item.toString());
+			// log.info("------>" + item.toString());
 
 			HtmlFilter hf = new HtmlFilter();
 			String fragment = hf.parseText(item.toString());
@@ -400,7 +405,7 @@ public class Parse {
 
 			result += html.toString().trim();
 		}
-		System.out.println(String.format("HTML   : (%s)", result));
+		log.info(String.format("HTML   : (%s)", result));
 
 		return result;
 	}

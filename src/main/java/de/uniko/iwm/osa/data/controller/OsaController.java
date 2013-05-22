@@ -3,6 +3,7 @@ package de.uniko.iwm.osa.data.controller;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,8 @@ import de.uniko.iwm.osa.utils.OsaConfigExtractor;
 @Controller
 @RequestMapping("/index")
 public class OsaController {
+
+	static Logger log = Logger.getLogger(OsaController.class.getName());
 
 	// @Autowired
 	// private DataSource osaConfiguration;
@@ -58,12 +61,12 @@ public class OsaController {
 			// <!-- <jee:jndi-lookup id="dataSource"
 			// jndi-name="java:comp/env/${JeeConnection}"
 			// jdbc:mysql//localhost:3306/dbname
-			System.out.println("Success: [(" + dbce.getDb_server() + ")("
+			log.info("Success: [(" + dbce.getDb_server() + ")("
 					+ dbce.getDb_user() + ")(" + dbce.getDb_password() + ")]");
-			System.out.println("Jdbc   : [jdbc:mysql//" + dbce.getDb_server()
-					+ ":" + MAGIC_DB_PORT + "/" + osa_name + "]");
+			log.info("Jdbc   : [jdbc:mysql//" + dbce.getDb_server() + ":"
+					+ MAGIC_DB_PORT + "/" + osa_name + "]");
 		} else
-			System.out.println("Fail");
+			log.info("Fail");
 
 		UploadItem it = new UploadItem();
 		it.setOsaList(dbce.getOsaNames());
@@ -79,34 +82,34 @@ public class OsaController {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.addObject("osaPage", osaPage);
 		modelAndView.addObject("uploadItem", uploadItem);
-		
+
 		if (result.hasErrors()) {
 			for (ObjectError error : result.getAllErrors()) {
-				System.err.println("Error: " + error.getCode() + " - "
+				log.error("Error: " + error.getCode() + " - "
 						+ error.getDefaultMessage());
 			}
 			return new ModelAndView("osadbform");
 		}
 
 		// Some type of file processing...
-		System.err.println("-------------------------------------------");
-		System.err.println("Test upload: " + uploadItem.getName());
-		System.err.println("Test upload: "
+		log.info("-------------------------------------------");
+		log.info("Test upload: " + uploadItem.getName());
+		log.info("Test upload: "
 				+ uploadItem.getFileData().getOriginalFilename());
-		System.err.println("-------------------------------------------");
-		System.err.println("Osas Name: " + uploadItem.getOsaList().get(0));
-		System.err.println("-------------------------------------------");
-		
+		log.info("-------------------------------------------");
+		log.info("Osas Name: " + uploadItem.getOsaList().get(0));
+		log.info("-------------------------------------------");
+
 		OsaConfigExtractor dbce = new OsaConfigExtractor(OsaFileBase,
 				CYQUEST_PHP_CONFIG_FILE);
-		
+
 		modelAndView.addObject("dataBaseConfig", dbce);
-		
-		if (dbce.extract(uploadItem.getOsaList().get(0))) {			
-			dbce.setJdbcString("jdbc:mysql//" + dbce.getDb_server()
-					+ ":" + MAGIC_DB_PORT + "/" + osa_name);
+
+		if (dbce.extract(uploadItem.getOsaList().get(0))) {
+			dbce.setJdbcString("jdbc:mysql//" + dbce.getDb_server() + ":"
+					+ MAGIC_DB_PORT + "/" + osa_name);
 		}
-		
+
 		if (!uploadItem.getFileData().isEmpty()) {
 			InputStream qtiInput = uploadItem.getFileData().getInputStream();
 
