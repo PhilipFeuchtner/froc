@@ -10,6 +10,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.log4j.Logger;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -18,6 +20,7 @@ import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.SAXException;
 
 public class HtmlFilter {
+	static Logger log = Logger.getLogger(HtmlFilter.class.getName());
 
 	List<String> skipList;
 	List<String> skipIfEmptyList;
@@ -160,14 +163,14 @@ public class HtmlFilter {
 				break;
 
 			case qti:
-				System.out.println("qti node: " + inspect.getNodeName());
+				log.info("qti node: " + inspect.getNodeName());
 
 				parent.removeChild(inspect);
 				someThingChanged = true;
 				break;
 
 			default:
-				System.out.println("Error: [missing node] "
+				log.info("Error: [missing node] "
 						+ inspect.getNodeName());
 
 				someThingChanged = false;
@@ -213,7 +216,7 @@ public class HtmlFilter {
 				.getImplementation();
 		LSSerializer lsSerializer = domImplementationLS.createLSSerializer();
 		String string = lsSerializer.writeToString(document);
-		System.out.println("-> " + string);
+		log.info("-> " + string);
 		return string;
 	}
 }
