@@ -2,10 +2,12 @@ package de.uniko.iwm.osa.data.assessmentItem;
 
 import java.util.List;
 
+import net.sf.saxon.s9api.XdmNode;
+
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
 import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
 
-public class AssessmentItemType01 extends Item {
+public class AssessmentItem_Type001 implements AssessmentItem {
 
 	final String MAGIC_INTERESSEN_TYPEVALUES = "a:5:{i:0;i:1;i:1;i:2;i:2;i:3;i:3;i:4;i:4;i:5;}";
 
@@ -22,7 +24,6 @@ public class AssessmentItemType01 extends Item {
 	 * @see de.uniko.iwm.osa.data.model.AssessmantItemI#getQuestid()
 	 */
 	
-	@Override
 	public Integer getQuestid() {
 		return questid;
 	}
@@ -32,17 +33,14 @@ public class AssessmentItemType01 extends Item {
 	 * 
 	 * @see de.uniko.iwm.osa.data.model.AssessmantItemI#setQuestid(int)
 	 */
-	@Override
 	public void setQuestid(Integer questid) {
 		this.questid = questid;
 	}
 
-	@Override
 	public Integer getId() {
 		return id;
 	}
 
-	@Override
 	public void setId(Integer id) {
 		this.id = id;
 	}
@@ -131,10 +129,9 @@ public class AssessmentItemType01 extends Item {
 		this.typevalues = typevalues;
 	}
 	
-	@Override
-	public ItemType getAssessmentType() {
-		return ItemType.INTERESSEN;
-	}
+	//public ItemType getAssessmentType() {
+	//	return ItemType.INTERESSEN;
+	//}
 
 	/* ----------------------------------------- */
 
@@ -190,5 +187,23 @@ public class AssessmentItemType01 extends Item {
 				shownum, showdesc, typevalues);
 		// return String.format("%s-%s-%s [%s]", id, questid, position,
 		// showdesc);
+	}
+
+	@Override
+	public boolean init(String identifier, String cyquest_question_type) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean create(XdmNode assecssmentItem) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean setSequenceValues(int a, int b, int c) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

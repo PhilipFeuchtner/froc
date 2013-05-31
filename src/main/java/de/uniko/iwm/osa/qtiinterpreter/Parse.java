@@ -2,8 +2,10 @@ package de.uniko.iwm.osa.qtiinterpreter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 import java.util.regex.Pattern;
 
+import javax.annotation.Resource;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.log4j.Logger;
@@ -20,7 +22,8 @@ import net.sf.saxon.s9api.XdmItem;
 import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XdmSequenceIterator;
 import net.sf.saxon.s9api.XdmValue;
-import de.uniko.iwm.osa.data.assessmentItem.AssessmentItemType01;
+import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem;
+import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type001;
 // import de.uniko.iwm.osa.data.assessmentItem.AssessmentItemImpl.AssessmentItemType;
 import de.uniko.iwm.osa.data.model.AssessmentSection;
 import de.uniko.iwm.osa.data.model.AssessmentTest;
@@ -89,18 +92,20 @@ public class Parse {
 	// private final String sep = System.getProperty("file.separator");
 
 	private String base;
-	private String image_base;
+	// private String image_base;
 
 	/* --- generated values --- */
 
 	private AssessmentTest assessmentTest = null;
 	// private OsaPage osaPage = null;
+	private HashMap<String, String> identifier2questionType;
 
 	private int count = 0;
 
 	public Parse(String base, String image_base) {
 		this.base = base;
-		this.image_base = image_base;
+		// this.image_base = image_base;
+		identifier2questionType = new HashMap<String, String>();
 
 		proc = new Processor(false);
 		xpath = proc.newXPathCompiler();
@@ -143,7 +148,7 @@ public class Parse {
 			// String text = resNode.getStringValue();
 			// System.out.println("ASS STRING:" + text);
 			// }
-			
+
 			//
 			// collect metadata
 			//
@@ -304,11 +309,11 @@ public class Parse {
 					"count [%2d], questid [%2d], position [%2d]", count,
 					cy_questid, cy_position));
 
-			AssessmentItemType01 it = handle_imsqti_item_xmlv2p1(
+			AssessmentItem it = handle_imsqti_item_xmlv2p1(
 					refs.getStringValue(), cy_questid, cy_position);
 
 			if (it != null) {
-				it.setShownum("" + count);
+				// it.setShownum("" + count);
 				// it.setAssessmentType(AssessmentItemType.INTERESSEN);
 
 				assessmentSection.addAssessmentItem(it);
@@ -319,10 +324,10 @@ public class Parse {
 		return assessmentSection;
 	}
 
-	private AssessmentItemType01 handle_imsqti_item_xmlv2p1(String href,
+	private AssessmentItem handle_imsqti_item_xmlv2p1(String href,
 			int cy_questid, int cy_position) throws FileNotFoundException {
 
-		AssessmentItemType01 question = new AssessmentItemType01();
+		AssessmentItem_Type001 question = new AssessmentItem_Type001();
 
 		XdmNode document;
 		try {
@@ -465,6 +470,9 @@ public class Parse {
 	private void handle_IMSMetadata(XdmItem item) throws FileNotFoundException,
 			SaxonApiException {
 
+		String identifier = ((XdmNode) item).getAttributeValue(new QName(
+				"identifier"));
+
 		XPathSelector selector = xpath.compile(QUERY_MANIFEST_CY_QUESTIONTYPE)
 				.load();
 		selector.setContextItem(item);
@@ -475,7 +483,13 @@ public class Parse {
 			//
 			// text nodes
 			//
-			log.info("Cyquest Question Type: " + resNode.getStringValue());
+			String questionType = resNode.getStringValue();
+			if (questionType.startsWith("qt")) {
+				identifier2questionType.put(identifier, questionType);
+				log.info("Cyquest Question Type: " + questionType);
+			} else {
+				log.error("Unknown Cyquest Question Type: " + questionType);
+			}
 		}
 	}
 
@@ -498,5 +512,36 @@ public class Parse {
 	// public void setOsaPage(OsaPage osaPage) {
 	// this.osaPage = osaPage;
 	// }
+
+	public class ItemConigurator {
+
+		public ItemConigurator() {
+		}
+
+		public Integer getId() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public void setId(Integer id) {
+			// TODO Auto-generated method stub
+
+		}
+
+		public Integer getQuestid() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public void setQuestid(Integer questid) {
+			// TODO Auto-generated method stub
+
+		}
+
+		// public ItemType getAssessmentType() {
+		// TODO Auto-generated method stub
+		// return null;
+		// }
+	}
 
 }

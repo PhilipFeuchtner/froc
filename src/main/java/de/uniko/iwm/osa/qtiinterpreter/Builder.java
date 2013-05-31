@@ -7,7 +7,8 @@ import java.io.InputStream;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import de.uniko.iwm.osa.data.assessmentItem.AssessmentItemType01;
+import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem;
+import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type001;
 import de.uniko.iwm.osa.data.model.AssessmentSection;
 import de.uniko.iwm.osa.data.model.AssessmentTest;
 import de.uniko.iwm.osa.data.model.OsaItem;
@@ -44,28 +45,28 @@ public class Builder {
 							.getAssessmentSections()) {
 						OsaItem osaItem = new OsaItem();
 
-						for (de.uniko.iwm.osa.data.assessmentItem.Item item : assessmentSection
+						for (AssessmentItem item : assessmentSection
 								.getAssessmentItems()) {
 
-							osaItem.addQuestsOldId(item.getId());
-
-							System.out.println("AssessmentItem: " + item);
-
-							switch (item.getAssessmentType()) {
-							case INTERESSEN:
-								AssessmentItemType01 t = (AssessmentItemType01)item;
-								int newId = t.toOsaDbQuests(questsService);
-								log.info("   " + newId);
-
-								osaItem.addQuestsNewId(newId);
-								osaItem.addQuestsQuestId(t.getQuestid());
-								break;
-							case EXTRASEITE:
-								// do nothing
-								break;
-							default:
-								log.error("ERROR: Invalid item: " + item);
-							}
+//							osaItem.addQuestsOldId(item.getId());
+//
+//							System.out.println("AssessmentItem: " + item);
+//
+//							switch (item.getAssessmentType()) {
+//							case INTERESSEN:
+//								AssessmentItem_Type001 t = (AssessmentItem_Type001)item;
+//								int newId = t.toOsaDbQuests(questsService);
+//								log.info("   " + newId);
+//
+//								osaItem.addQuestsNewId(newId);
+//								osaItem.addQuestsQuestId(t.getQuestid());
+//								break;
+//							case EXTRASEITE:
+//								// do nothing
+//								break;
+//							default:
+//								log.error("ERROR: Invalid item: " + item);
+//							}
 						}
 
 						osaPage.addQuestionPages(osaItem);
