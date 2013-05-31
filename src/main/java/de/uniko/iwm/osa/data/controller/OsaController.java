@@ -2,6 +2,9 @@ package de.uniko.iwm.osa.data.controller;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+
+import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +55,7 @@ public class OsaController {
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String contact(Model model) {
-
+		
 		// qtree.toDot();
 
 		OsaConfigExtractor dbce = new OsaConfigExtractor(OsaFileBase,

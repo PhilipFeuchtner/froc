@@ -5,7 +5,7 @@ import java.util.List;
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
 import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
 
-public class AssessmentItemType01 extends AssessmentItem {
+public class AssessmentItemType01 extends Item {
 
 	final String MAGIC_INTERESSEN_TYPEVALUES = "a:5:{i:0;i:1;i:1;i:2;i:2;i:3;i:3;i:4;i:4;i:5;}";
 

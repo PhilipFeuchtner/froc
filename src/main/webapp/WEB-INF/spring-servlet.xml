@@ -98,5 +98,23 @@
 	<bean id="qtree" class="de.uniko.iwm.osa.questsitemTree.QTree" />
 	<!-- <bean id="assessmentItem" class="de.uniko.iwm.osa.questsitemTree.AssessmentItem" 
 		/> -->
+		
+	<!-- mapping qti-keywords -> cyquest questiontypes -->
+	<bean id="keyword2cyquest" class="java.util.HashMap" scope="prototype" >
+    <constructor-arg>
+        <map key-type="java.lang.String" value-type="java.lang.String">
+            <entry key="qt1" value="1" />
+            <entry key="qt2" value="2" />
+            <entry key="qt3" value="3" />
+<!--             <entry key="qt4" value="" /> -->
+<!--             <entry key="qt5" value="" /> -->
+<!--             <entry key="qt6" value="" /> -->
+<!--             <entry key="qt7" value="" /> -->
+            <entry key="qt8" value="8" />
+<!--             <entry key="qt9" value="" /> -->
+<!--             <entry key="qt10" value="" /> -->
+        </map>
+    </constructor-arg>
+</bean>
 
 </beans>

@@ -3,7 +3,6 @@ package de.uniko.iwm.osa.data.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.uniko.iwm.osa.data.assessmentItem.AssessmentItemType01;
 import de.uniko.iwm.osa.data.assessmentItem.Item;
 
 public class AssessmentSection {
@@ -31,7 +30,7 @@ public class AssessmentSection {
 		this.assessmentItems = assessmentItems;
 	}
 	
-	public void addAssessmentItem(AssessmentItemType01 item) {
+	public void addAssessmentItem(Item item) {
 		assessmentItems.add(item);
 	}
 }

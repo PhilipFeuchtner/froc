@@ -28,9 +28,8 @@ import de.uniko.iwm.osa.data.model.TestPart;
 import de.uniko.iwm.osa.utils.HtmlFilter;
 
 public class Parse {
-	
-	static Logger log = Logger.getLogger(Parse.class.getName());
 
+	static Logger log = Logger.getLogger(Parse.class.getName());
 
 	final String MANIFEST_NAME = "imsmanifest.xml";
 
@@ -39,9 +38,17 @@ public class Parse {
 	//
 	// final String QUERY_MANIFEST_RESOURCE =
 	// "/imscp:manifest/imscp:resources/imscp:resource[@type='imsqti_item_xmlv2p1']";
-	final String QUERY_MANIFEST_ASSESSMENT = "/imscp:manifest/imscp:resources/imscp:resource[@type='imsqti_assessment_xmlv2p1']";
+	final String QUERY_MANIFEST_ASSESSMENT = "/imscp:manifest/imscp:resources"
+			+ "/imscp:resource[@type='imsqti_assessment_xmlv2p1']";
+	final String QUERY_MANIFEST_ITEM = "/imscp:manifest"
+			+ "/imscp:resources/imscp:resource[@type='imsqti_item_xmlv2p1']";
 	final String QUERY_MANIFEST_DESCRIPTION = "/imscp:manifest//imscp:resources/imscp:resource"
 			+ "/imsmd:metadata/imsmd:lom/imsmd:general/imsmd:description/imsmd:langstring";
+
+	// imsmd:metadata/imsmd:lom/imsmd:general/imsmd:keyword/imsmd:langstring
+	final String QUERY_MANIFEST_CY_QUESTIONTYPE = "imsmd:metadata/imsmd:lom/imsmd:general"
+			+ "//imsmd:keyword/imsmd:langstring/text()";
+
 	//
 	// imsqti
 	// assessment -> assessmentItemRef
@@ -136,6 +143,13 @@ public class Parse {
 			// String text = resNode.getStringValue();
 			// System.out.println("ASS STRING:" + text);
 			// }
+			
+			//
+			// collect metadata
+			//
+			System.err.println("IMSMetadata start");
+			handle_IMSItem(manifestDoc);
+			System.err.println("IMSMetadata end");
 
 			//
 			// query assessmentTest
@@ -146,11 +160,11 @@ public class Parse {
 			XdmValue children = selector.evaluate();
 
 			int num_tests = 0;
-			for (XdmItem item : children) {
-				XdmNode resNode = (XdmNode) item;
+			for (XdmItem child : children) {
+				XdmNode resNode = (XdmNode) child;
 
-				String id = resNode.getAttributeValue(new QName("href"));
-				num_tests = handle_AssessmentFile(id);
+				String href = resNode.getAttributeValue(new QName("href"));
+				num_tests = handle_AssessmentFile(href);
 			}
 
 			if (num_tests != 1)
@@ -240,7 +254,7 @@ public class Parse {
 			int cy_questid) throws FileNotFoundException, SaxonApiException {
 		AssessmentSection assessmentSection = new AssessmentSection();
 		// OsaItem osaItem = new OsaItem();
-		
+
 		int cy_position = 0;
 
 		//
@@ -268,8 +282,6 @@ public class Parse {
 		String text = cleanHtmlContent(selector, (XdmNode) item,
 				QUERY_ASSESSMENTSECTION_RUBRIC, PART_RUBRIC);
 		assessmentSection.setRubricBlock(text);
-		
-		
 
 		//
 		// find refs
@@ -287,8 +299,7 @@ public class Parse {
 			count++;
 			cy_position++;
 
-			log.info(String.format("ref file: %s",
-					refs.getStringValue()));
+			log.info(String.format("ref file: %s", refs.getStringValue()));
 			log.info(String.format(
 					"count [%2d], questid [%2d], position [%2d]", count,
 					cy_questid, cy_position));
@@ -330,8 +341,7 @@ public class Parse {
 			XdmValue children_tiltes = selector.evaluate();
 
 			for (XdmItem item : children_tiltes) {
-				log.info(String.format("TITLE  : (%s)",
-						item.getStringValue()));
+				log.info(String.format("TITLE  : (%s)", item.getStringValue()));
 			}
 
 			//
@@ -345,8 +355,7 @@ public class Parse {
 			XdmValue children_correct_responses = selector.evaluate();
 
 			for (XdmItem item : children_correct_responses) {
-				log.info(String.format("CORRECT: (%s)",
-						item.getStringValue()));
+				log.info(String.format("CORRECT: (%s)", item.getStringValue()));
 			}
 
 			//
@@ -426,6 +435,52 @@ public class Parse {
 		}
 	}
 
+	// ------------------------------------------------------------ //
+
+	private void handle_IMSItem(XdmItem item) throws FileNotFoundException,
+			SaxonApiException {
+
+		XPathSelector selector = xpath.compile(QUERY_MANIFEST_ITEM).load();
+		selector.setContextItem(item);
+		XdmValue children = selector.evaluate();
+
+		for (XdmItem child : children) {
+			XdmNode resNode = (XdmNode) child;
+
+			String href = resNode.getAttributeValue(new QName("href"));
+			String identifier = resNode.getAttributeValue(new QName(
+					"identifier"));
+			//
+			// item nodes
+			//
+			log.info("TestPart " + href + "/" + identifier);
+
+			//
+			// parse metadata
+			//
+			handle_IMSMetadata(child);
+		}
+	}
+
+	private void handle_IMSMetadata(XdmItem item) throws FileNotFoundException,
+			SaxonApiException {
+
+		XPathSelector selector = xpath.compile(QUERY_MANIFEST_CY_QUESTIONTYPE)
+				.load();
+		selector.setContextItem(item);
+		XdmValue children = selector.evaluate();
+
+		for (XdmItem child : children) {
+			XdmNode resNode = (XdmNode) child;
+			//
+			// text nodes
+			//
+			log.info("Cyquest Question Type: " + resNode.getStringValue());
+		}
+	}
+
+	/* --- helper --- */
+
 	/* --- getter & setter --- */
 
 	public AssessmentTest getAssessmentTest() {
@@ -436,12 +491,12 @@ public class Parse {
 		this.assessmentTest = assessmentTest;
 	}
 
-//	public OsaPage getOsaPage() {
-//		return osaPage;
-//	}
-//
-//	public void setOsaPage(OsaPage osaPage) {
-//		this.osaPage = osaPage;
-//	}
+	// public OsaPage getOsaPage() {
+	// return osaPage;
+	// }
+	//
+	// public void setOsaPage(OsaPage osaPage) {
+	// this.osaPage = osaPage;
+	// }
 
 }
