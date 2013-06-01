@@ -6,6 +6,7 @@ import net.sf.saxon.s9api.XdmNode;
 
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
 import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
+import de.uniko.iwm.osa.qtiinterpreter.Parse.ItemConigurator;
 
 public class AssessmentItem_Type001 implements AssessmentItem {
 
@@ -17,12 +18,18 @@ public class AssessmentItem_Type001 implements AssessmentItem {
 	private String shownum;
 	private String showdesc;
 	private String typevalues = MAGIC_INTERESSEN_TYPEVALUES;
+	
+	ItemConigurator ic = null;
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see de.uniko.iwm.osa.data.model.AssessmantItemI#getQuestid()
 	 */
+	
+	public AssessmentItem_Type001(ItemConigurator ic) {
+		this.ic = ic;
+	}
 	
 	public Integer getQuestid() {
 		return questid;

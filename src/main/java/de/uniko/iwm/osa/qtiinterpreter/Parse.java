@@ -2,7 +2,9 @@ package de.uniko.iwm.osa.qtiinterpreter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
@@ -325,9 +327,11 @@ public class Parse {
 	}
 
 	private AssessmentItem handle_imsqti_item_xmlv2p1(String href,
-			int cy_questid, int cy_position) throws FileNotFoundException {
+			int cy_questid, int cy_position) throws FileNotFoundException,
+			SaxonApiException {
 
-		AssessmentItem_Type001 question = new AssessmentItem_Type001();
+		AssessmentItem_Type001 question = new AssessmentItem_Type001(
+				new ItemConigurator(href));
 
 		XdmNode document;
 		try {
@@ -441,6 +445,9 @@ public class Parse {
 	}
 
 	// ------------------------------------------------------------ //
+	// --- imsmanifest
+	// --- handle imsqti:imsassessmetitem
+	// --- and lommd:metadata
 
 	private void handle_IMSItem(XdmItem item) throws FileNotFoundException,
 			SaxonApiException {
@@ -515,33 +522,54 @@ public class Parse {
 
 	public class ItemConigurator {
 
-		public ItemConigurator() {
+		XdmNode node;
+
+		ItemConigurator(XdmNode node) {
+			this.node = node;
 		}
 
-		public Integer getId() {
-			// TODO Auto-generated method stub
+		ItemConigurator(String href) throws SaxonApiException {
+			XdmNode document = builder.build(new File(base, href));
+
+			this.node = document;
+		}
+
+		private List<String> queryToStringList(String query)
+				throws SaxonApiException {
+			List<String> result = new ArrayList<String>();
+
+			XPathSelector selector = xpath.compile(query).load();
+			selector.setContextItem(node);
+
+			// Evaluate the expression.
+			XdmValue children_tiltes = selector.evaluate();
+
+			for (XdmItem item : children_tiltes) {
+				result.add(item.getStringValue());
+				log.info(String.format("Found: (%s)", item.getStringValue()));
+			}
+			return result;
+		}
+		
+		public List <String> queryTitle() {
+			try {
+				return queryToStringList(PART_ASS_TITLE);
+			} catch (SaxonApiException e) {
+				e.printStackTrace();
+			}
+			
+			return null;
+		}
+		
+		public List <String> queryCorrectResp() {
+			try {
+				return queryToStringList(PART_CORRECT_RESP);
+			} catch (SaxonApiException e) {
+				e.printStackTrace();
+			}
+			
 			return null;
 		}
 
-		public void setId(Integer id) {
-			// TODO Auto-generated method stub
-
-		}
-
-		public Integer getQuestid() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		public void setQuestid(Integer questid) {
-			// TODO Auto-generated method stub
-
-		}
-
-		// public ItemType getAssessmentType() {
-		// TODO Auto-generated method stub
-		// return null;
-		// }
 	}
-
 }
