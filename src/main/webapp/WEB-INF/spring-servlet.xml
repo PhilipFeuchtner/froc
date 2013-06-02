@@ -20,8 +20,8 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
 	<context:annotation-config />
-	<!-- <context:component-scan base-package="net.viralpatel.contact" /> -->
 	<context:component-scan base-package="de.uniko.iwm.osa.data" />
+<!-- 	<context:component-scan base-package="de.uniko.iwm.osa.qtiinterpreter" /> -->
 	
 	<mvc:annotation-driven />
     <mvc:resources mapping="/images/**" location="/images/" />
@@ -102,7 +102,7 @@
 	<!-- mapping qti-keywords -> cyquest questiontypes -->
 	<bean id="keyword2cyquest" class="java.util.HashMap" scope="prototype" >
     <constructor-arg>
-        <map key-type="java.lang.String" value-type="java.lang.String">
+        <map key-type="java.lang.String" value-type="java.lang.Integer">
             <entry key="qt1" value="1" />
             <entry key="qt2" value="2" />
             <entry key="qt3" value="3" />

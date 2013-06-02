@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import javax.annotation.Resource;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import net.sf.saxon.s9api.Axis;
@@ -76,6 +77,7 @@ public class Parse {
 
 	final String PART_ITEM_BODY = "/imsqti:assessmentItem/imsqti:itemBody";
 	final String PART_ASS_TITLE = "/imsqti:assessmentItem/@title";
+	final String PART_ASS_IDENTIFIER = "/imsqti:assessmentItem/@identifier";
 
 	final String PART_CORRECT_RESP = "/imsqti:assessmentItem/imsqti:responseDeclaration/imsqti:correctResponse/imsqti:value";
 
@@ -101,11 +103,14 @@ public class Parse {
 	private AssessmentTest assessmentTest = null;
 	// private OsaPage osaPage = null;
 	private HashMap<String, String> identifier2questionType;
+	private HashMap<String, Integer> questionType2CyquestQuestionType;
 
 	private int count = 0;
 
-	public Parse(String base, String image_base) {
+	public Parse(String base,
+			HashMap<String, Integer> questionType2CyquestQuestionType) {
 		this.base = base;
+		this.questionType2CyquestQuestionType = questionType2CyquestQuestionType;
 		// this.image_base = image_base;
 		identifier2questionType = new HashMap<String, String>();
 
@@ -261,6 +266,7 @@ public class Parse {
 			int cy_questid) throws FileNotFoundException, SaxonApiException {
 		AssessmentSection assessmentSection = new AssessmentSection();
 		// OsaItem osaItem = new OsaItem();
+		ItemConigurator ic = new ItemConigurator((XdmNode) item);
 
 		int cy_position = 0;
 
@@ -286,7 +292,7 @@ public class Parse {
 		// set rubricBlock
 		//
 
-		String text = cleanHtmlContent(selector, (XdmNode) item,
+		String text = ic.cleanHtmlContent(selector, (XdmNode) item,
 				QUERY_ASSESSMENTSECTION_RUBRIC, PART_RUBRIC);
 		assessmentSection.setRubricBlock(text);
 
@@ -330,8 +336,26 @@ public class Parse {
 			int cy_questid, int cy_position) throws FileNotFoundException,
 			SaxonApiException {
 
-		AssessmentItem_Type001 question = new AssessmentItem_Type001(
-				new ItemConigurator(href));
+		ItemConigurator ic = new ItemConigurator(href);
+		AssessmentItem question = null;
+
+		String questionType = identifier2questionType.get(ic.queryIdentifier());
+
+		if (questionType != null
+				&& questionType2CyquestQuestionType.containsKey(questionType)) {
+			int cyType = questionType2CyquestQuestionType.get(questionType);
+
+			switch (cyType) {
+			case 1:
+				return new AssessmentItem_Type001(ic);
+
+			default:
+				log.error("QuestionType not implemented: " + questionType);
+			}
+
+		} else {
+			log.error("QuestionType not defined: " + ic.queryIdentifier() + " " + questionType);
+		}
 
 		XdmNode document;
 		try {
@@ -371,13 +395,13 @@ public class Parse {
 			// parse content
 			//
 
-			String text = cleanHtmlContent(selector, document, PART_ITEM_BODY,
-					PART_HTML);
-			question.setShowdesc(text);
+			String text = ic.cleanHtmlContent(selector, document,
+					PART_ITEM_BODY, PART_HTML);
+			// question.setShowdesc(text);
 
-			question.setId(count);
-			question.setPosition(cy_position);
-			question.setQuestid(cy_questid);
+			// question.setId(count);
+			// question.setPosition(cy_position);
+			// question.setQuestid(cy_questid);
 
 		} catch (SaxonApiException e) {
 			question = null;
@@ -390,43 +414,6 @@ public class Parse {
 	}
 
 	// -------------------------------- helper ------------ //
-
-	public String cleanHtmlContent(XPathSelector selector, XdmNode doc,
-			String XPATH_NODE, String XPATH_CHILD) throws SaxonApiException {
-		String result = "";
-
-		selector = xpath.compile(XPATH_NODE).load();
-		selector.setContextItem(doc);
-
-		// Evaluate the expression.
-		XdmValue children = selector.evaluate();
-
-		for (XdmItem item : children) {
-			// log.info("------>" + item.toString());
-
-			HtmlFilter hf = new HtmlFilter();
-			String fragment = hf.parseText(item.toString());
-
-			XdmNode htmlDoc = builder.build(new StreamSource(
-					new java.io.StringReader(fragment)));
-
-			selector = xpath.compile(XPATH_CHILD).load();
-			selector.setContextItem(htmlDoc);
-
-			// Evaluate the expression.
-			XdmValue htmlNodes = selector.evaluate();
-
-			StringBuilder html = new StringBuilder();
-			for (XdmItem htmlNode : htmlNodes) {
-				html.append(htmlNode.toString());
-			}
-
-			result += html.toString().trim();
-		}
-		log.info(String.format("HTML   : (%s)", result));
-
-		return result;
-	}
 
 	/**
 	 * Helper method to get the first child of an element having a given name.
@@ -550,24 +537,74 @@ public class Parse {
 			}
 			return result;
 		}
-		
-		public List <String> queryTitle() {
+
+		public String cleanHtmlContent(XPathSelector selector, XdmNode doc,
+				String XPATH_NODE, String XPATH_CHILD) throws SaxonApiException {
+			String result = "";
+
+			selector = xpath.compile(XPATH_NODE).load();
+			selector.setContextItem(doc);
+
+			// Evaluate the expression.
+			XdmValue children = selector.evaluate();
+
+			for (XdmItem item : children) {
+				// log.info("------>" + item.toString());
+
+				HtmlFilter hf = new HtmlFilter();
+				String fragment = hf.parseText(item.toString());
+
+				XdmNode htmlDoc = builder.build(new StreamSource(
+						new java.io.StringReader(fragment)));
+
+				selector = xpath.compile(XPATH_CHILD).load();
+				selector.setContextItem(htmlDoc);
+
+				// Evaluate the expression.
+				XdmValue htmlNodes = selector.evaluate();
+
+				StringBuilder html = new StringBuilder();
+				for (XdmItem htmlNode : htmlNodes) {
+					html.append(htmlNode.toString());
+				}
+
+				result += html.toString().trim();
+			}
+			log.info(String.format("HTML   : (%s)", result));
+
+			return result;
+		}
+
+		// ----------------------------------------------------- //
+
+		public String queryIdentifier() {
 			try {
-				return queryToStringList(PART_ASS_TITLE);
+				return StringUtils.join(queryToStringList(PART_ASS_IDENTIFIER),
+						"");
 			} catch (SaxonApiException e) {
 				e.printStackTrace();
 			}
-			
+
 			return null;
 		}
-		
-		public List <String> queryCorrectResp() {
+
+		public String queryTitle() {
+			try {
+				return StringUtils.join(queryToStringList(PART_ASS_TITLE), "");
+			} catch (SaxonApiException e) {
+				e.printStackTrace();
+			}
+
+			return null;
+		}
+
+		public List<String> queryCorrectResp() {
 			try {
 				return queryToStringList(PART_CORRECT_RESP);
 			} catch (SaxonApiException e) {
 				e.printStackTrace();
 			}
-			
+
 			return null;
 		}
 

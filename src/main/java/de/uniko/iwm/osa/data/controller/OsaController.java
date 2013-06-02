@@ -53,6 +53,9 @@ public class OsaController {
 
 	private String TESTOSA = "psychosa";
 
+	@Resource(name = "keyword2cyquest")
+	private HashMap<String, Integer> questionType2CyquestQuestionType;
+
 	@RequestMapping(method = RequestMethod.GET)
 	public String contact(Model model) {
 		

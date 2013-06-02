@@ -3,6 +3,9 @@ package de.uniko.iwm.osa.qtiinterpreter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+
+import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,9 @@ public class Builder {
 
 	@Autowired
 	OsaDbQuestsService questsService;
+	
+	@Autowired
+	private HashMap<String, Integer> keyword2cyquest;
 
 	String image_base = null;
 
@@ -30,8 +36,9 @@ public class Builder {
 		OsaPage osaPage = new OsaPage();
 
 		try {
+			System.err.println("HERE: " +  keyword2cyquest.get("qt1"));
 			String base = UnZip.unzipFile(zipFile);
-			Parse parser = new Parse(base, image_base);
+			Parse parser = new Parse(base, keyword2cyquest);
 
 			//
 			// step one
