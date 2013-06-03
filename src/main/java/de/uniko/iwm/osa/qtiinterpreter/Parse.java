@@ -27,6 +27,9 @@ import net.sf.saxon.s9api.XdmSequenceIterator;
 import net.sf.saxon.s9api.XdmValue;
 import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem;
 import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type001;
+import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type002;
+import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type003;
+import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type008;
 // import de.uniko.iwm.osa.data.assessmentItem.AssessmentItemImpl.AssessmentItemType;
 import de.uniko.iwm.osa.data.model.AssessmentSection;
 import de.uniko.iwm.osa.data.model.AssessmentTest;
@@ -321,8 +324,6 @@ public class Parse {
 					refs.getStringValue(), cy_questid, cy_position);
 
 			if (it != null) {
-				// it.setShownum("" + count);
-				// it.setAssessmentType(AssessmentItemType.INTERESSEN);
 				it.setSequenceValues(count, cy_position);
 
 				assessmentSection.addAssessmentItem(it);
@@ -349,7 +350,13 @@ public class Parse {
 			switch (cyType) {
 			case 1:
 				return new AssessmentItem_Type001(ic);
-
+			case 2:
+				return new AssessmentItem_Type002(ic);
+			case 3:
+				return new AssessmentItem_Type003(ic);
+			case 8:
+				return new AssessmentItem_Type008(ic);
+				
 			default:
 				log.error("QuestionType not implemented: " + questionType);
 			}
@@ -357,59 +364,6 @@ public class Parse {
 		} else {
 			log.error("QuestionType not defined: " + ic.queryIdentifier() + " "
 					+ questionType);
-		}
-
-		XdmNode document;
-		try {
-			document = builder.build(new File(base, href));
-
-			XPathSelector selector;
-
-			//
-			// find title
-			//
-
-			selector = xpath.compile(PART_ASS_TITLE).load();
-			selector.setContextItem(document);
-
-			// Evaluate the expression.
-			XdmValue children_tiltes = selector.evaluate();
-
-			for (XdmItem item : children_tiltes) {
-				log.info(String.format("TITLE  : (%s)", item.getStringValue()));
-			}
-
-			//
-			// find correct responses
-			//
-
-			selector = xpath.compile(PART_CORRECT_RESP).load();
-			selector.setContextItem(document);
-
-			// Evaluate the expression.
-			XdmValue children_correct_responses = selector.evaluate();
-
-			for (XdmItem item : children_correct_responses) {
-				log.info(String.format("CORRECT: (%s)", item.getStringValue()));
-			}
-
-			//
-			// parse content
-			//
-
-			// String text = ic.cleanHtmlContent(
-			// PART_ITEM_BODY, PART_HTML);
-			// question.setShowdesc(text);
-
-			// question.setId(count);
-			// question.setPosition(cy_position);
-			// question.setQuestid(cy_questid);
-
-		} catch (SaxonApiException e) {
-			question = null;
-
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 
 		return question;

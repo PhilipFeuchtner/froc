@@ -29,6 +29,7 @@ public class AssessmentItem_Type001 implements AssessmentItem {
 	
 	public AssessmentItem_Type001(ItemConigurator ic) {
 		this.ic = ic;
+		showdesc = ic.queryShowdescr();
 	}
 	
 	public Integer getQuestid() {
@@ -209,7 +210,7 @@ public class AssessmentItem_Type001 implements AssessmentItem {
 	}
 
 	@Override
-	public boolean setSequenceValues(int a, int b, int c) {
+	public boolean setSequenceValues(int count, int cy_position) {
 		// TODO Auto-generated method stub
 		return false;
 	}
