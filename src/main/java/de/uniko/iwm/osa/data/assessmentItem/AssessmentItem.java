@@ -8,6 +8,6 @@ public interface AssessmentItem {
 	
 	public boolean init(String identifier, String cyquest_question_type);
 	public boolean create(XdmNode assecssmentItem);
-	public boolean setSequenceValues(int a, int b, int c);
+	public boolean setSequenceValues(int count, int cy_position);
 	public int toOsaDbQuests(OsaDbQuestsService questsService);
 }

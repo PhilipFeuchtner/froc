@@ -292,8 +292,8 @@ public class Parse {
 		// set rubricBlock
 		//
 
-		String text = ic.cleanHtmlContent(selector, (XdmNode) item,
-				QUERY_ASSESSMENTSECTION_RUBRIC, PART_RUBRIC);
+		String text = ic.cleanHtmlContent(QUERY_ASSESSMENTSECTION_RUBRIC,
+				PART_RUBRIC);
 		assessmentSection.setRubricBlock(text);
 
 		//
@@ -323,6 +323,7 @@ public class Parse {
 			if (it != null) {
 				// it.setShownum("" + count);
 				// it.setAssessmentType(AssessmentItemType.INTERESSEN);
+				it.setSequenceValues(count, cy_position);
 
 				assessmentSection.addAssessmentItem(it);
 				log.info("IT: " + it);
@@ -354,7 +355,8 @@ public class Parse {
 			}
 
 		} else {
-			log.error("QuestionType not defined: " + ic.queryIdentifier() + " " + questionType);
+			log.error("QuestionType not defined: " + ic.queryIdentifier() + " "
+					+ questionType);
 		}
 
 		XdmNode document;
@@ -395,8 +397,8 @@ public class Parse {
 			// parse content
 			//
 
-			String text = ic.cleanHtmlContent(selector, document,
-					PART_ITEM_BODY, PART_HTML);
+			// String text = ic.cleanHtmlContent(
+			// PART_ITEM_BODY, PART_HTML);
 			// question.setShowdesc(text);
 
 			// question.setId(count);
@@ -521,8 +523,11 @@ public class Parse {
 			this.node = document;
 		}
 
-		private List<String> queryToStringList(String query)
-				throws SaxonApiException {
+		String queryToString(String query) throws SaxonApiException {
+			return StringUtils.join(queryToStringList(query), "");
+		}
+
+		List<String> queryToStringList(String query) throws SaxonApiException {
 			List<String> result = new ArrayList<String>();
 
 			XPathSelector selector = xpath.compile(query).load();
@@ -538,12 +543,12 @@ public class Parse {
 			return result;
 		}
 
-		public String cleanHtmlContent(XPathSelector selector, XdmNode doc,
-				String XPATH_NODE, String XPATH_CHILD) throws SaxonApiException {
+		public String cleanHtmlContent(String XPATH_NODE, String XPATH_CHILD)
+				throws SaxonApiException {
 			String result = "";
 
-			selector = xpath.compile(XPATH_NODE).load();
-			selector.setContextItem(doc);
+			XPathSelector selector = xpath.compile(XPATH_NODE).load();
+			selector.setContextItem(node);
 
 			// Evaluate the expression.
 			XdmValue children = selector.evaluate();
@@ -579,8 +584,7 @@ public class Parse {
 
 		public String queryIdentifier() {
 			try {
-				return StringUtils.join(queryToStringList(PART_ASS_IDENTIFIER),
-						"");
+				return queryToString(PART_ASS_IDENTIFIER);
 			} catch (SaxonApiException e) {
 				e.printStackTrace();
 			}
@@ -590,7 +594,7 @@ public class Parse {
 
 		public String queryTitle() {
 			try {
-				return StringUtils.join(queryToStringList(PART_ASS_TITLE), "");
+				return queryToString(PART_ASS_TITLE);
 			} catch (SaxonApiException e) {
 				e.printStackTrace();
 			}
@@ -601,6 +605,16 @@ public class Parse {
 		public List<String> queryCorrectResp() {
 			try {
 				return queryToStringList(PART_CORRECT_RESP);
+			} catch (SaxonApiException e) {
+				e.printStackTrace();
+			}
+
+			return null;
+		}
+
+		public String queryShowdescr() {
+			try {
+				return cleanHtmlContent(PART_ITEM_BODY, PART_HTML);
 			} catch (SaxonApiException e) {
 				e.printStackTrace();
 			}
