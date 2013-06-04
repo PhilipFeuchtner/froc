@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import javax.annotation.Resource;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.lang3.StringUtils;
@@ -71,6 +70,7 @@ public class Parse {
 	final String QUERY_ASSESSMENTSECTION_RUBRIC = "imsqti:rubricBlock";
 	final String PART_RUBRIC = "imsqti:rubricBlock/child::node()";
 
+	final String QUERY_TITLE_ATTRIBUTE = "@title";
 	final String QUERY_IMSQTI_ASSESSMENTITEMREF = "imsqti:assessmentItemRef/@href";
 
 	//
@@ -162,9 +162,8 @@ public class Parse {
 			//
 			// collect metadata
 			//
-			System.err.println("IMSMetadata start");
+
 			handle_IMSItem(manifestDoc);
-			System.err.println("IMSMetadata end");
 
 			//
 			// query assessmentTest
@@ -277,20 +276,9 @@ public class Parse {
 		// title
 		//
 
-		XPathSelector selector = xpath.compile("@title").load();
-		selector.setContextItem(item);
-		XdmValue titles = selector.evaluate();
-
-		//
-		// set title
-		//
-		for (XdmItem att_titles : titles) {
-			String text = att_titles.getStringValue();
-			assessmentSection.setTitle(text);
-
-			log.info(String.format("Att title: (%s)", text));
-		}
-
+		String title = ic.queryToString(QUERY_TITLE_ATTRIBUTE);
+		assessmentSection.setTitle(title);
+		
 		//
 		// set rubricBlock
 		//
@@ -302,26 +290,24 @@ public class Parse {
 		//
 		// find refs
 		//
-
-		selector = xpath.compile(QUERY_IMSQTI_ASSESSMENTITEMREF).load();
-		selector.setContextItem(item);
-		XdmValue children_item3 = selector.evaluate();
-
+		
+		List<String> hrefs = ic.queryToStringList(QUERY_IMSQTI_ASSESSMENTITEMREF);
+		
 		//
 		// go on
 		//
 
-		for (XdmItem refs : children_item3) {
+		for (String href : hrefs) {
 			count++;
 			cy_position++;
 
-			log.info(String.format("ref file: %s", refs.getStringValue()));
+			log.info(String.format("ref file: %s", href));
 			log.info(String.format(
 					"count [%2d], questid [%2d], position [%2d]", count,
 					cy_questid, cy_position));
 
 			AssessmentItem it = handle_imsqti_item_xmlv2p1(
-					refs.getStringValue(), cy_questid, cy_position);
+					href, cy_questid, cy_position);
 
 			if (it != null) {
 				it.setSequenceValues(count, cy_position);
