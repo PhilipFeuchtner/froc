@@ -1,11 +1,15 @@
 package de.uniko.iwm.osa.data.assessmentItem;
 
+import org.apache.log4j.Logger;
+
 import net.sf.saxon.s9api.XdmNode;
 
 import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
 import de.uniko.iwm.osa.qtiinterpreter.Parse.ItemConigurator;
 
 public class AssessmentItem_Type002 implements AssessmentItem {
+	static Logger log = Logger.getLogger(AssessmentItem_Type002.class.getName());
+	
 
 	ItemConigurator ic = null;
 
@@ -16,6 +20,8 @@ public class AssessmentItem_Type002 implements AssessmentItem {
 	 */
 	
 	public AssessmentItem_Type002(ItemConigurator ic) {
+		log.info("Assessment item type 002 created");
+		
 		this.ic = ic;
 	}
 	

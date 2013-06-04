@@ -2,6 +2,8 @@ package de.uniko.iwm.osa.data.assessmentItem;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import net.sf.saxon.s9api.XdmNode;
 
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
@@ -10,6 +12,8 @@ import de.uniko.iwm.osa.qtiinterpreter.Parse.ItemConigurator;
 
 public class AssessmentItem_Type001 implements AssessmentItem {
 
+	static Logger log = Logger.getLogger(AssessmentItem_Type001.class.getName());
+	
 	final String MAGIC_INTERESSEN_TYPEVALUES = "a:5:{i:0;i:1;i:1;i:2;i:2;i:3;i:3;i:4;i:4;i:5;}";
 
 	private Integer id;
@@ -28,6 +32,8 @@ public class AssessmentItem_Type001 implements AssessmentItem {
 	 */
 	
 	public AssessmentItem_Type001(ItemConigurator ic) {
+		log.info("Assessment item type 001 created");
+		
 		this.ic = ic;
 		showdesc = ic.queryShowdescr();
 	}
