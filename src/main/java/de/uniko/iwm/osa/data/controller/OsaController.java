@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -119,7 +120,8 @@ public class OsaController {
 		if (!uploadItem.getFileData().isEmpty()) {
 			InputStream qtiInput = uploadItem.getFileData().getInputStream();
 
-			osaPage = builder.run(qtiInput);
+			String base = FilenameUtils.concat(OsaFileBase, osa_name);
+			osaPage = builder.run(qtiInput, base);
 		}
 
 		modelAndView.setViewName("osa-status-ok");

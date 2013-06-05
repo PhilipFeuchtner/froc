@@ -24,12 +24,12 @@ import net.sf.saxon.s9api.XdmItem;
 import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XdmSequenceIterator;
 import net.sf.saxon.s9api.XdmValue;
+
 import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem;
 import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type001;
 import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type002;
 import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type003;
 import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type008;
-// import de.uniko.iwm.osa.data.assessmentItem.AssessmentItemImpl.AssessmentItemType;
 import de.uniko.iwm.osa.data.model.AssessmentSection;
 import de.uniko.iwm.osa.data.model.AssessmentTest;
 import de.uniko.iwm.osa.data.model.TestPart;
@@ -173,16 +173,14 @@ public class Parse {
 			selector.setContextItem(manifestDoc);
 			XdmValue children = selector.evaluate();
 
-			int num_tests = 0;
 			for (XdmItem child : children) {
 				XdmNode resNode = (XdmNode) child;
 
 				String href = resNode.getAttributeValue(new QName("href"));
-				num_tests = handle_AssessmentFile(href);
+				if (handle_AssessmentFile(href)) {
+					return true;
+				}
 			}
-
-			if (num_tests != 1)
-				return false;
 
 		} catch (SaxonApiException e) {
 			// TODO Auto-generated catch block
@@ -191,13 +189,12 @@ public class Parse {
 			return false;
 		}
 
-		return true;
+		return false;
 	}
 
-	private int handle_AssessmentFile(String href)
+	private boolean handle_AssessmentFile(String href)
 			throws FileNotFoundException, SaxonApiException {
 
-		int num_tests = 0;
 		count = 0;
 
 		XdmNode item = builder.build(new File(base, href));
@@ -208,19 +205,19 @@ public class Parse {
 		XdmValue children = selector.evaluate();
 
 		for (XdmItem child : children) {
-			num_tests++;
 			//
 			// tests
 			//
 			log.info("AssessmentTest");
 
-			handle_AssessmentTest(child);
+			if (handle_AssessmentTest(child))
+				return true;
 		}
 
-		return num_tests;
+		return false;
 	}
 
-	private void handle_AssessmentTest(XdmItem item)
+	private boolean handle_AssessmentTest(XdmItem item)
 			throws FileNotFoundException, SaxonApiException {
 
 		XPathSelector selector = xpath.compile(QUERY_IMSQTI_TESTPART).load();
@@ -236,6 +233,8 @@ public class Parse {
 			TestPart testPart = handle_TestPart(child);
 			assessmentTest.addTestPart(testPart);
 		}
+
+		return true;
 	}
 
 	private TestPart handle_TestPart(XdmItem item)
@@ -278,7 +277,7 @@ public class Parse {
 
 		String title = ic.queryToString(QUERY_TITLE_ATTRIBUTE);
 		assessmentSection.setTitle(title);
-		
+
 		//
 		// set rubricBlock
 		//
@@ -290,9 +289,10 @@ public class Parse {
 		//
 		// find refs
 		//
-		
-		List<String> hrefs = ic.queryToStringList(QUERY_IMSQTI_ASSESSMENTITEMREF);
-		
+
+		List<String> hrefs = ic
+				.queryToStringList(QUERY_IMSQTI_ASSESSMENTITEMREF);
+
 		//
 		// go on
 		//
@@ -306,8 +306,8 @@ public class Parse {
 					"count [%2d], questid [%2d], position [%2d]", count,
 					cy_questid, cy_position));
 
-			AssessmentItem it = handle_imsqti_item_xmlv2p1(
-					href, cy_questid, cy_position);
+			AssessmentItem it = handle_imsqti_item_xmlv2p1(href, cy_questid,
+					cy_position);
 
 			if (it != null) {
 				it.setSequenceValues(count, cy_position);
@@ -342,7 +342,7 @@ public class Parse {
 				return new AssessmentItem_Type003(ic);
 			case 8:
 				return new AssessmentItem_Type008(ic);
-				
+
 			default:
 				log.error("QuestionType not implemented: " + questionType);
 			}
@@ -441,14 +441,7 @@ public class Parse {
 		this.assessmentTest = assessmentTest;
 	}
 
-	// public OsaPage getOsaPage() {
-	// return osaPage;
-	// }
-	//
-	// public void setOsaPage(OsaPage osaPage) {
-	// this.osaPage = osaPage;
-	// }
-
+	
 	public class ItemConigurator {
 
 		XdmNode node;

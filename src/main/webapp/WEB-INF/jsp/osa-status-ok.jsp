@@ -31,7 +31,7 @@
 			<tr>
 				<td>Values changed</td>
 				<td>&nbsp;</td>
-				<td><c:out value="${osaPage.questionPages.length}"></c:out></td>
+				<td><c:out value="osaPage.questionPages.length"></c:out></td>
 			</tr>
 			<tr>
 				<td>jdbc String</td>
