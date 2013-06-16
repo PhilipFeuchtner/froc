@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 
-import javax.annotation.Resource;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
@@ -35,6 +33,8 @@ public class Builder {
 	final String QTI_MEDIAFOLDER = "media";
 	final String CYQUEST_MEDIAFOLDER = "media";
 
+	final String IMSMANIFEST = "imsmanifest.xml";
+
 	public OsaPage run(InputStream zipFile, String osaBase) {
 		OsaPage osaPage = new OsaPage();
 
@@ -57,7 +57,7 @@ public class Builder {
 			// step one
 			// scan manifest
 			//
-			if (parser.handleManifest("imsmanifest.xml")) {
+			if (parser.handleManifest(IMSMANIFEST)) {
 				AssessmentTest assessmentTest = parser.getAssessmentTest();
 
 				for (TestPart testPart : assessmentTest.getTestParts()) {

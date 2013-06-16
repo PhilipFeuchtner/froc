@@ -2,12 +2,9 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:mvc="http://www.springframework.org/schema/mvc"
-	xmlns:jee="http://www.springframework.org/schema/jee" 
-	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
-	xmlns:lang="http://www.springframework.org/schema/lang" 
-	xmlns:p="http://www.springframework.org/schema/p"
-	xmlns:tx="http://www.springframework.org/schema/tx" 
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:lang="http://www.springframework.org/schema/lang"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
@@ -21,11 +18,12 @@
 
 	<context:annotation-config />
 	<context:component-scan base-package="de.uniko.iwm.osa.data" />
-<!-- 	<context:component-scan base-package="de.uniko.iwm.osa.qtiinterpreter" /> -->
-	
+	<!-- <context:component-scan base-package="de.uniko.iwm.osa.qtiinterpreter" 
+		/> -->
+
 	<mvc:annotation-driven />
-    <mvc:resources mapping="/images/**" location="/images/" />
-    <mvc:resources mapping="/css/**" location="/css/" />
+	<mvc:resources mapping="/images/**" location="/images/" />
+	<mvc:resources mapping="/css/**" location="/css/" />
 
 	<!-- Aspect -->
 	<aop:aspectj-autoproxy />
@@ -52,9 +50,14 @@
 
 	<!-- <jee:jndi-lookup id="dataSource" jndi-name="java:comp/env/${JeeConnection}" 
 		/> -->
-		 
-	<jee:jndi-lookup id="OsaFileBase" jndi-name="java:comp/env/osaFileBase" /> 
+
+	<jee:jndi-lookup id="OsaFileBase" jndi-name="java:comp/env/osaFileBase" />
 	<jee:jndi-lookup id="dataSource" jndi-name="java:comp/env/jdbc/MYSQLDB" />
+
+	<jdbc:initialize-database data-source="dataSource">
+	    <jdbc:script location="classpath:sql/init.sql" /> 
+		<jdbc:script location="classpath:sql/db_osa.sql" />
+	</jdbc:initialize-database>
 
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
@@ -98,23 +101,23 @@
 	<bean id="qtree" class="de.uniko.iwm.osa.questsitemTree.QTree" />
 	<!-- <bean id="assessmentItem" class="de.uniko.iwm.osa.questsitemTree.AssessmentItem" 
 		/> -->
-		
+
 	<!-- mapping qti-keywords -> cyquest questiontypes -->
-	<bean id="keyword2cyquest" class="java.util.HashMap" scope="prototype" >
-    <constructor-arg>
-        <map key-type="java.lang.String" value-type="java.lang.Integer">
-            <entry key="qt1" value="1" />
-            <entry key="qt2" value="2" />
-            <entry key="qt3" value="3" />
-<!--             <entry key="qt4" value="" /> -->
-<!--             <entry key="qt5" value="" /> -->
-<!--             <entry key="qt6" value="" /> -->
-<!--             <entry key="qt7" value="" /> -->
-            <entry key="qt8" value="8" />
-<!--             <entry key="qt9" value="" /> -->
-<!--             <entry key="qt10" value="" /> -->
-        </map>
-    </constructor-arg>
-</bean>
+	<bean id="keyword2cyquest" class="java.util.HashMap" scope="prototype">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="java.lang.Integer">
+				<entry key="qt1" value="1" />
+				<entry key="qt2" value="2" />
+				<entry key="qt3" value="3" />
+				<!-- <entry key="qt4" value="" /> -->
+				<!-- <entry key="qt5" value="" /> -->
+				<!-- <entry key="qt6" value="" /> -->
+				<!-- <entry key="qt7" value="" /> -->
+				<entry key="qt8" value="8" />
+				<!-- <entry key="qt9" value="" /> -->
+				<!-- <entry key="qt10" value="" /> -->
+			</map>
+		</constructor-arg>
+	</bean>
 
 </beans>
