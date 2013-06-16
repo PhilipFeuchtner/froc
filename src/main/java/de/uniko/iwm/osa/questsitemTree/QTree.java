@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.lorecraft.phparser.SerializedPhpParser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
 import de.uniko.iwm.osa.data.model.OsaDbPages;
 import de.uniko.iwm.osa.data.model.OsaDbQuestitems;
@@ -17,9 +16,6 @@ import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
 
 public class QTree {
 			
-	private @Value("${MAGIC_START_PAGES}") int MAGIC_START_PAGES;
-	private @Value("${MAGIC_END_PAGES}") int MAGIC_END_PAGES;
-
 	@Autowired
 	private OsaDbPagesService pagesService;
 	
@@ -29,17 +25,15 @@ public class QTree {
 	@Autowired
 	private OsaDbQuestsService questsService;
 	
-	public StringBuilder toDot() {
+	public StringBuilder toDot(int startPage) {
 		StringBuilder result = new StringBuilder();
 
 		//
 		// parse pages
 		//
 
-		int page = MAGIC_START_PAGES;
+		int page = startPage; 
 		boolean hasNextPage = true;
-
-		System.out.println("Magic values: " +MAGIC_START_PAGES + " : " + MAGIC_END_PAGES);
 		
 		while (hasNextPage) {
 
@@ -70,10 +64,14 @@ public class QTree {
 			page = (int) val.get("p");
 			
 			//
-			// end reached?
-			//
+			// is quest?, end reached?
+			// 
 			
-			hasNextPage = page != MAGIC_END_PAGES;
+			List<OsaDbQuestitems> questitems_list = questsitemsService.listOsaDbQuestitemsByPagesid(page);
+			hasNextPage = questitems_list.size() != 0;
+			
+			// System.err.println("Next " + hasNextPage);
+
 		}
 		return result;
 	}

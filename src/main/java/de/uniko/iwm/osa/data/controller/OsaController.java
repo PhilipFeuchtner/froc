@@ -38,6 +38,7 @@ public class OsaController {
 
 	@Autowired
 	private QTree qtree;
+	private @Value("${MAGIC_START_PAGES}") int MAGIC_START_PAGES;
 
 	private OsaPage osaPage;
 
@@ -123,7 +124,9 @@ public class OsaController {
 			String base = FilenameUtils.concat(OsaFileBase, osa_name);
 			osaPage = builder.run(qtiInput, base);
 		}
-
+		
+		qtree.toDot(MAGIC_START_PAGES);
+		
 		modelAndView.setViewName("osa-status-ok");
 		return modelAndView;
 	}
