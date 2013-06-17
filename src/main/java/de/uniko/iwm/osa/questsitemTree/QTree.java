@@ -29,77 +29,84 @@ public class QTree {
 	private OsaDbQuestsService questsService;
 
 	// resultset
-	Set<Integer> pages2remove = new TreeSet<Integer>();
-	Set<Integer> quests2remove = new TreeSet<Integer>();
-	Set<Integer> questitems2remove = new TreeSet<Integer>();
+	Set<Integer> pages2remove = null;
+	Set<Integer> quests2remove = null;
+	Set<Integer> questitems2remove = null;
 
 	public int scanDatabase(int startPage) {
 
+		pages2remove = new TreeSet<Integer>();
+		quests2remove = new TreeSet<Integer>();
+		questitems2remove = new TreeSet<Integer>();
+		
 		//
 		// parse pages
 		//
 
 		int page = startPage;
-		int lastPage = 0;
 		boolean hasNextPage = true;
 
 		while (hasNextPage) {
 
-			pages2remove.add(page);
+			List<OsaDbPages> current_pages = pagesService
+					.getOsaDbPagesById(new Integer(page));
 
-			OsaDbPages current_page = pagesService.getOsaDbPagesById(
-					new Integer(page)).get(0);
+			if (!current_pages.isEmpty()) {
 
-			System.out.println("HERE: " + current_page.getForwardform());
-			// System.out.println("    - " + res);
-			// System.out.println("    - " + res.getClass());
-			System.out.println("    - " + page);
+				pages2remove.add(page);
 
-			//
-			// process next level
-			//
+				OsaDbPages current_page = current_pages.get(0);
 
-			parse_questitems(page);
+				System.out.println("HERE: " + current_page.getForwardform());
+				// System.out.println("    - " + res);
+				// System.out.println("    - " + res.getClass());
+				System.out.println("    - " + page);
 
-			//
-			// extract next page
-			//
+				//
+				// process next level
+				//
 
-			SerializedPhpParser serializedPhpParser = new SerializedPhpParser(
-					current_page.getForwardform());
-			Object res = serializedPhpParser.parse();
+				parse_questitems(page);
 
-			@SuppressWarnings("unchecked")
-			HashMap<String, Object> val = (HashMap<String, Object>) res;
-			page = (int) val.get("p");
+				//
+				// extract next page
+				//
 
-			//
-			// is quest?, end reached?
-			//
+				SerializedPhpParser serializedPhpParser = new SerializedPhpParser(
+						current_page.getForwardform());
+				Object res = serializedPhpParser.parse();
 
-			List<OsaDbQuestitems> questitems_list = questsitemsService
-					.listOsaDbQuestitemsByPagesid(page);
-			if (questitems_list.size() == 0) {
+				@SuppressWarnings("unchecked")
+				HashMap<String, Object> val = (HashMap<String, Object>) res;
+				page = (int) val.get("p");
+
+				//
+				// is quest?, end reached?
+				//
+
+				List<OsaDbQuestitems> questitems_list = questsitemsService
+						.listOsaDbQuestitemsByPagesid(page);
+				if (questitems_list.size() == 0) {
+					hasNextPage = false;
+				}
+
+			} else {
 				hasNextPage = false;
-				lastPage = page;
 			}
-
-			// System.err.println("Next " + hasNextPage);
-
 		}
 
-		System.err.println("next content page: " + lastPage);
+		System.err.println("next content page: " + page);
 		System.err.println("pages    : " + pages2remove);
 		System.err.println("quests   : " + quests2remove);
 		System.err.println("questitem: " + questitems2remove);
-		
+
 		//
 		// remove items from db
 		//
-		
+
 		removeAllContent();
 
-		return lastPage;
+		return page;
 	}
 
 	void parse_questitems(int id) {
