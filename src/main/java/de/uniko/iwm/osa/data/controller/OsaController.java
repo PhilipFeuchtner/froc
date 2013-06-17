@@ -125,7 +125,7 @@ public class OsaController {
 			osaPage = builder.run(qtiInput, base);
 		}
 		
-		qtree.toDot(MAGIC_START_PAGES);
+		qtree.scanDatabase(MAGIC_START_PAGES);
 		
 		modelAndView.setViewName("osa-status-ok");
 		return modelAndView;

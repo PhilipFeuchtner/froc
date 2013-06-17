@@ -1,6 +1,9 @@
 package de.uniko.iwm.osa.questsitemTree;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
+import java.util.TreeSet;
 
 import java.util.List;
 
@@ -12,30 +15,37 @@ import de.uniko.iwm.osa.data.model.OsaDbQuestitems;
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
 import de.uniko.iwm.osa.data.service.OsaDbPagesService;
 import de.uniko.iwm.osa.data.service.OsaDbQuestitemsService;
-import de.uniko.iwm.osa.data.service.OsaDbQuestsService; 
+import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
 
 public class QTree {
-			
+
 	@Autowired
 	private OsaDbPagesService pagesService;
-	
+
 	@Autowired
 	private OsaDbQuestitemsService questsitemsService;
-	
+
 	@Autowired
 	private OsaDbQuestsService questsService;
-	
-	public StringBuilder toDot(int startPage) {
-		StringBuilder result = new StringBuilder();
+
+	// resultset
+	Set<Integer> pages2remove = new TreeSet<Integer>();
+	Set<Integer> quests2remove = new TreeSet<Integer>();
+	Set<Integer> questitems2remove = new TreeSet<Integer>();
+
+	public int scanDatabase(int startPage) {
 
 		//
 		// parse pages
 		//
 
-		int page = startPage; 
+		int page = startPage;
+		int lastPage = 0;
 		boolean hasNextPage = true;
-		
+
 		while (hasNextPage) {
+
+			pages2remove.add(page);
 
 			OsaDbPages current_page = pagesService.getOsaDbPagesById(
 					new Integer(page)).get(0);
@@ -44,17 +54,17 @@ public class QTree {
 			// System.out.println("    - " + res);
 			// System.out.println("    - " + res.getClass());
 			System.out.println("    - " + page);
-			
+
 			//
 			// process next level
 			//
-			
+
 			parse_questitems(page);
-			
+
 			//
 			// extract next page
 			//
-			
+
 			SerializedPhpParser serializedPhpParser = new SerializedPhpParser(
 					current_page.getForwardform());
 			Object res = serializedPhpParser.parse();
@@ -62,41 +72,78 @@ public class QTree {
 			@SuppressWarnings("unchecked")
 			HashMap<String, Object> val = (HashMap<String, Object>) res;
 			page = (int) val.get("p");
-			
+
 			//
 			// is quest?, end reached?
-			// 
-			
-			List<OsaDbQuestitems> questitems_list = questsitemsService.listOsaDbQuestitemsByPagesid(page);
-			hasNextPage = questitems_list.size() != 0;
-			
+			//
+
+			List<OsaDbQuestitems> questitems_list = questsitemsService
+					.listOsaDbQuestitemsByPagesid(page);
+			if (questitems_list.size() == 0) {
+				hasNextPage = false;
+				lastPage = page;
+			}
+
 			// System.err.println("Next " + hasNextPage);
 
 		}
-		return result;
+
+		System.err.println("next content page: " + lastPage);
+		System.err.println("pages    : " + pages2remove);
+		System.err.println("quests   : " + quests2remove);
+		System.err.println("questitem: " + questitems2remove);
+		
+		//
+		// remove items from db
+		//
+		
+		removeAllContent();
+
+		return lastPage;
 	}
 
-	public StringBuilder parse_questitems(int id) {
-		StringBuilder result = new StringBuilder();
-		
-		List<OsaDbQuestitems> questitems_list = questsitemsService.listOsaDbQuestitemsByPagesid(id);
+	void parse_questitems(int id) {
+
+		List<OsaDbQuestitems> questitems_list = questsitemsService
+				.listOsaDbQuestitemsByPagesid(id);
 		for (OsaDbQuestitems item : questitems_list) {
+			int itemId = item.getId();
 			System.out.println("   -> " + item);
-			
-			parse_quests(item.getId());
-		}
 
-		return result;
+			questitems2remove.add(itemId);
+
+			parse_quests(itemId);
+		}
 	}
-	
-	public StringBuilder parse_quests(int id) {
-		StringBuilder result = new StringBuilder();
-		
-		List<OsaDbQuests> quests_list = questsService.getOsaDbQuestsByQuestid(id);
+
+	void parse_quests(int id) {
+
+		List<OsaDbQuests> quests_list = questsService
+				.getOsaDbQuestsByQuestid(id);
 		for (OsaDbQuests item : quests_list) {
+			int questId = item.getId();
 			System.out.println("   +> " + item);
+
+			quests2remove.add(questId);
+		}
+	}
+
+	// -----------------------------------------------------------------------
+
+	boolean removeAllContent() {
+
+		for (Integer id : pages2remove) {
+			pagesService.removeOsaDbPages(id);
 		}
 
-		return result;
+		for (Integer id : quests2remove) {
+			questsService.removeOsaDbQuests(id);
+		}
+
+		for (Integer id : questitems2remove) {
+			questsitemsService.removeOsaDbQuestitems(id);
+		}
+
+		return true;
 	}
 }
