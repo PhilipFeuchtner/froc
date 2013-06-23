@@ -26,9 +26,9 @@ import de.uniko.iwm.osa.utils.OsaConfigExtractor;
 
 @Controller
 @RequestMapping("/index")
-public class OsaController {
+public class OsaWebInterface {
 
-	static Logger log = Logger.getLogger(OsaController.class.getName());
+	static Logger log = Logger.getLogger(OsaWebInterface.class.getName());
 
 	// @Autowired
 	// private DataSource osaConfiguration;
