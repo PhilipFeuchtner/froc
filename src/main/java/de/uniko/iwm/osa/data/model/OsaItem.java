@@ -20,12 +20,19 @@ public class OsaItem {
     )
 	private List<Item> headerList;
 
+	@XmlElementWrapper(name="pages")
+    @XmlElements({
+    @XmlElement(name="item") }
+    )
+	private List<Item> pageList;
+
 	public OsaItem() {
 	}
 
 	public OsaItem(String message) {
 		this.message = message;
 		headerList = new ArrayList<Item>();
+		pageList = new ArrayList<Item>();
 	}
 	
 	public void addHeader(String key, String value) {

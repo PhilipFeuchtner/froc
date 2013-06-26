@@ -134,5 +134,6 @@ public class OsaWebInterface {
 
 		modelAndView.setViewName("osa-status-ok");
 		return modelAndView;
+		
 	}
 }

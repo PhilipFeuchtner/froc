@@ -30,7 +30,7 @@
 
 		<table border="0">			
 			<tr>
-				<th colspan="3">Jdbc</th>
+				<th colspan="3" align="left">Jdbc</th>
 			</tr>
 			
 			<tr>
@@ -55,7 +55,7 @@
 			</tr>
 
 			<tr>
-				<th colspan="3">Deleted Item</th>
+				<th colspan="3" align="left">Deleted Item</th>
 			</tr>
 
 			<tr>
@@ -75,7 +75,7 @@
 					</c:forEach></td>
 			</tr>
 			<tr>
-				<td>Questsitems</td>
+				<td>Questitems</td>
 				<td>&nbsp;</td>
 				<td><c:forEach items="${deletedQuestitems}" var="item">
 						<c:out value="${item}">
