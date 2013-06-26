@@ -104,7 +104,7 @@ public class QTree {
 		// remove items from db
 		//
 
-		removeAllContent();
+		// removeAllContent();
 
 		return page;
 	}
@@ -153,4 +153,27 @@ public class QTree {
 
 		return true;
 	}
+	
+	// -----------------------------------------------------------------------
+
+	public List<Integer> getPages2remove() {
+		List<Integer> result = new ArrayList<Integer>();
+		result.addAll(pages2remove);
+		
+		return result;
+	}
+
+	public List<Integer> getQuests2remove() {
+		List<Integer> result = new ArrayList<Integer>();
+		result.addAll(quests2remove);
+		
+		return result;
+	}
+
+	public List<Integer> getQuestitems2remove() {
+		List<Integer> result = new ArrayList<Integer>();
+		result.addAll(questitems2remove);
+		
+		return result;
+	}	
 }

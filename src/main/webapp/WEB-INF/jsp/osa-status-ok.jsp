@@ -10,7 +10,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Status Ok</title>
- <link rel="stylesheet" type="text/css" href="<c:url value='/css/style.css'/>"/>
+<link rel="stylesheet" type="text/css"
+	href="<c:url value='/css/style.css'/>" />
 
 </head>
 <body>
@@ -27,12 +28,11 @@
 	<fieldset>
 		<legend>Debug</legend>
 
-		<table border="0">
+		<table border="0">			
 			<tr>
-				<td>Values changed</td>
-				<td>&nbsp;</td>
-				<td><c:out value="osaPage.questionPages.length"></c:out></td>
+				<th colspan="3">Jdbc</th>
 			</tr>
+			
 			<tr>
 				<td>jdbc String</td>
 				<td>&nbsp;</td>
@@ -52,6 +52,35 @@
 				<td>Valid?</td>
 				<td>&nbsp;</td>
 				<td><c:out value="${dataBaseConfig.hasValidData}"></c:out></td>
+			</tr>
+
+			<tr>
+				<th colspan="3">Deleted Item</th>
+			</tr>
+
+			<tr>
+				<td>QuestPages</td>
+				<td>&nbsp;</td>
+				<td><c:forEach items="${deletedPages}" var="item">
+						<c:out value="${item}">
+						</c:out>
+					</c:forEach></td>
+			</tr>
+			<tr>
+				<td>Quests</td>
+				<td>&nbsp;</td>
+				<td><c:forEach items="${deletedQuests}" var="item">
+						<c:out value="${item}">
+						</c:out>
+					</c:forEach></td>
+			</tr>
+			<tr>
+				<td>Questsitems</td>
+				<td>&nbsp;</td>
+				<td><c:forEach items="${deletedQuestitems}" var="item">
+						<c:out value="${item}">
+						</c:out>
+					</c:forEach></td>
 			</tr>
 		</table>
 	</fieldset>

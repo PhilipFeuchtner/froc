@@ -38,7 +38,8 @@ public class OsaWebInterface {
 
 	@Autowired
 	private QTree qtree;
-	private @Value("${MAGIC_START_PAGES}") int MAGIC_START_PAGES;
+	private @Value("${MAGIC_START_PAGES}")
+	int MAGIC_START_PAGES;
 
 	private OsaPage osaPage;
 
@@ -60,7 +61,7 @@ public class OsaWebInterface {
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String contact(Model model) {
-		
+
 		// qtree.toDot();
 
 		OsaConfigExtractor dbce = new OsaConfigExtractor(OsaFileBase,
@@ -124,9 +125,13 @@ public class OsaWebInterface {
 			String base = FilenameUtils.concat(OsaFileBase, osa_name);
 			osaPage = builder.run(qtiInput, base);
 		}
-		
+
 		qtree.scanDatabase(MAGIC_START_PAGES);
-		
+		modelAndView.addObject("deletedPages", qtree.getPages2remove());
+		modelAndView.addObject("deletedQuests", qtree.getQuests2remove());
+		modelAndView
+				.addObject("deletedQuestitems", qtree.getQuestitems2remove());
+
 		modelAndView.setViewName("osa-status-ok");
 		return modelAndView;
 	}

@@ -18,7 +18,6 @@ public class OsaEndpoint {
 		OsaItem oi = new OsaItem("Everyone is happy!");
 		
 		for (String key : headers.keySet()) {
-			System.err.println(" --> " + key + ": " + headers.get(key));
 			oi.addHeader(key, headers.get(key).toString());
 		}
 		
