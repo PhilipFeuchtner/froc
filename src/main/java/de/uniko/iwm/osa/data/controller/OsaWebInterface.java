@@ -127,7 +127,7 @@ public class OsaWebInterface {
 
 			// changedPages.setPageList(addedPages.getPageList());
 
-			modelAndView.addObject("addedPages", addedPages.getNewPageList());
+			modelAndView.addObject("addedPages", addedPages.getNewPageListAsStrings());
 		}
 
 		qtree.scanDatabase(MAGIC_START_PAGES);

@@ -42,7 +42,7 @@ public class OsaItem {
 	
 	// ------------------------------------------------------------------
 	
-	public List<String> getNewPageList() {
+	public List<String> getNewPageListAsStrings() {
 		
 		List <String> result = new ArrayList<String>();
 		for (Item item : pageList) {
