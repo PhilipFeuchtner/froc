@@ -82,6 +82,18 @@
 						</c:out>
 					</c:forEach></td>
 			</tr>
+						<tr>
+				<th colspan="3" align="left">Added Item</th>
+			</tr>
+
+			<tr>
+				<td>New Pages</td>
+				<td>&nbsp;</td>
+				<td><c:forEach items="${addedPages}" var="item">
+						<c:out value="${item}">
+						</c:out>
+					</c:forEach></td>
+			</tr>
 		</table>
 	</fieldset>
 </body>

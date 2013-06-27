@@ -10,4 +10,7 @@ public interface AssessmentItem {
 	public boolean create(XdmNode assecssmentItem);
 	public boolean setSequenceValues(int count, int cy_position);
 	public int toOsaDbQuests(OsaDbQuestsService questsService);
+	
+	public String getIdentifier();
+	public String getCqt();
 }

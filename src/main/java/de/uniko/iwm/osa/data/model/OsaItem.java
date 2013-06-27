@@ -18,24 +18,47 @@ public class OsaItem {
     @XmlElements({
     @XmlElement(name="item") }
     )
-	private List<Item> headerList;
+	private List<Item> headerList = new ArrayList<Item>();
 
 	@XmlElementWrapper(name="pages")
     @XmlElements({
     @XmlElement(name="item") }
     )
-	private List<Item> pageList;
+	private List<Item> pageList = new ArrayList<Item>();
 
 	public OsaItem() {
 	}
 
 	public OsaItem(String message) {
 		this.message = message;
-		headerList = new ArrayList<Item>();
-		pageList = new ArrayList<Item>();
 	}
-	
+
 	public void addHeader(String key, String value) {
 		headerList.add(new Item(key, value));
 	}	
+	public void addPage(String key, String value) {
+		pageList.add(new Item(key, value));
+	}
+	
+	// ------------------------------------------------------------------
+	
+	public List<String> getNewPageList() {
+		
+		List <String> result = new ArrayList<String>();
+		for (Item item : pageList) {
+			result.add(item.getName());
+		}
+		return result;
+	}
+	
+	// ------------------------------------------------------------------
+	
+	public List<Item> getPageList() {
+		return pageList;
+	}
+
+	public void setPageList(List<Item> pageList) {
+		this.pageList = pageList;
+	}
+
 }

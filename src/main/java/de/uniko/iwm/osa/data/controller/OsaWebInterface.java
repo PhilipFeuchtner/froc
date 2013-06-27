@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import de.uniko.iwm.osa.data.model.OsaPage;
+import de.uniko.iwm.osa.data.model.OsaItem;
 import de.uniko.iwm.osa.data.model.UploadItem;
 import de.uniko.iwm.osa.qtiinterpreter.Builder;
 import de.uniko.iwm.osa.questsitemTree.QTree;
@@ -41,7 +41,7 @@ public class OsaWebInterface {
 	private @Value("${MAGIC_START_PAGES}")
 	int MAGIC_START_PAGES;
 
-	private OsaPage osaPage;
+	private OsaItem changedPages;
 
 	private String osa_name = "psychosa";
 
@@ -89,7 +89,7 @@ public class OsaWebInterface {
 			throws IOException {
 
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.addObject("osaPage", osaPage);
+		modelAndView.addObject("osaPage", changedPages);
 		modelAndView.addObject("uploadItem", uploadItem);
 
 		if (result.hasErrors()) {
@@ -123,17 +123,21 @@ public class OsaWebInterface {
 			InputStream qtiInput = uploadItem.getFileData().getInputStream();
 
 			String base = FilenameUtils.concat(OsaFileBase, osa_name);
-			osaPage = builder.run(qtiInput, base);
+			OsaItem addedPages = builder.run(qtiInput, base);
+
+			// changedPages.setPageList(addedPages.getPageList());
+
+			modelAndView.addObject("addedPages", addedPages.getNewPageList());
 		}
 
 		qtree.scanDatabase(MAGIC_START_PAGES);
 		modelAndView.addObject("deletedPages", qtree.getPages2remove());
 		modelAndView.addObject("deletedQuests", qtree.getQuests2remove());
-		modelAndView
-				.addObject("deletedQuestitems", qtree.getQuestitems2remove());
+		modelAndView.addObject("deletedQuestitems",
+				qtree.getQuestitems2remove());
 
 		modelAndView.setViewName("osa-status-ok");
 		return modelAndView;
-		
+
 	}
 }

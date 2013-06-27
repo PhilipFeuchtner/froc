@@ -12,6 +12,9 @@ public class AssessmentItem_Type003 implements AssessmentItem {
 	static Logger log = Logger.getLogger(AssessmentItem_Type003.class.getName());
 
 	ItemConigurator ic = null;
+	
+	String identifier = "Cyquest-3";
+	String cyquest_question_type = null;
 
 	/*
 	 * (non-Javadoc)
@@ -47,5 +50,15 @@ public class AssessmentItem_Type003 implements AssessmentItem {
 	public int toOsaDbQuests(OsaDbQuestsService questsService) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+	
+	@Override
+	public String getIdentifier() {
+		return identifier;
+	}
+
+	@Override
+	public String getCqt() {
+		return cyquest_question_type;
 	}
 }

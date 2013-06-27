@@ -14,6 +14,9 @@ public class AssessmentItem_Type001 implements AssessmentItem {
 
 	static Logger log = Logger.getLogger(AssessmentItem_Type001.class.getName());
 	
+	String identifier = "Cyquest-1";
+	String cyquest_question_type = null;
+	
 	final String MAGIC_INTERESSEN_TYPEVALUES = "a:5:{i:0;i:1;i:1;i:2;i:2;i:3;i:3;i:4;i:4;i:5;}";
 
 	private Integer id;
@@ -219,5 +222,15 @@ public class AssessmentItem_Type001 implements AssessmentItem {
 	public boolean setSequenceValues(int count, int cy_position) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public String getIdentifier() {
+		return identifier;
+	}
+
+	@Override
+	public String getCqt() {
+		return cyquest_question_type;
 	}
 }

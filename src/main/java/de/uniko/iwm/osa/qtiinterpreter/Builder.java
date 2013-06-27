@@ -12,11 +12,9 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem;
-import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type001;
 import de.uniko.iwm.osa.data.model.AssessmentSection;
 import de.uniko.iwm.osa.data.model.AssessmentTest;
 import de.uniko.iwm.osa.data.model.OsaItem;
-import de.uniko.iwm.osa.data.model.OsaPage;
 import de.uniko.iwm.osa.data.model.TestPart;
 import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
 import de.uniko.iwm.osa.utils.UnZip;
@@ -35,8 +33,8 @@ public class Builder {
 
 	final String IMSMANIFEST = "imsmanifest.xml";
 
-	public OsaPage run(InputStream zipFile, String osaBase) {
-		OsaPage osaPage = new OsaPage();
+	public OsaItem run(InputStream zipFile, String osaBase) {
+		OsaItem changedPages = new OsaItem();
 
 		try {
 			String base = UnZip.unzipFile(zipFile);
@@ -63,7 +61,6 @@ public class Builder {
 				for (TestPart testPart : assessmentTest.getTestParts()) {
 					for (AssessmentSection assessmentSection : testPart
 							.getAssessmentSections()) {
-						OsaItem osaItem = new OsaItem();
 
 						for (AssessmentItem item : assessmentSection
 								.getAssessmentItems()) {
@@ -88,9 +85,9 @@ public class Builder {
 							// default:
 							// log.error("ERROR: Invalid item: " + item);
 							// }
+							
+							changedPages.addPage(item.getIdentifier(), item.getCqt());
 						}
-
-						osaPage.addQuestionPages(osaItem);
 					}
 				}
 			}
@@ -102,6 +99,6 @@ public class Builder {
 			e.printStackTrace();
 		}
 
-		return osaPage;
+		return changedPages;
 	}
 }

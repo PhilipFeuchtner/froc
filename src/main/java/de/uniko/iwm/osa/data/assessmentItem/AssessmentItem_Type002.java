@@ -10,9 +10,11 @@ import de.uniko.iwm.osa.qtiinterpreter.Parse.ItemConigurator;
 public class AssessmentItem_Type002 implements AssessmentItem {
 	static Logger log = Logger.getLogger(AssessmentItem_Type002.class.getName());
 	
-
 	ItemConigurator ic = null;
 
+	String identifier = "Cyquest-2";
+	String cyquest_question_type = null;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -27,8 +29,10 @@ public class AssessmentItem_Type002 implements AssessmentItem {
 	
 	@Override
 	public boolean init(String identifier, String cyquest_question_type) {
-		// TODO Auto-generated method stub
-		return false;
+		this.identifier = identifier;
+		this.cyquest_question_type = cyquest_question_type;
+		
+		return true;
 	}
 
 	@Override
@@ -47,5 +51,15 @@ public class AssessmentItem_Type002 implements AssessmentItem {
 	public int toOsaDbQuests(OsaDbQuestsService questsService) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+	
+	@Override
+	public String getIdentifier() {
+		return identifier;
+	}
+
+	@Override
+	public String getCqt() {
+		return cyquest_question_type;
 	}
 }
