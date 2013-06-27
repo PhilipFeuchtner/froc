@@ -10,6 +10,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem;
 import de.uniko.iwm.osa.data.model.AssessmentSection;
@@ -28,10 +29,12 @@ public class Builder {
 	@Autowired
 	private HashMap<String, Integer> keyword2cyquest;
 
-	final String QTI_MEDIAFOLDER = "media";
-	final String CYQUEST_MEDIAFOLDER = "media";
+	@Value("${QTI_MEDIAFOLDER}")
+	String QTI_MEDIAFOLDER;
+	@Value("${CYQUEST_MEDIAFOLDER}")
+	String CYQUEST_MEDIAFOLDER;
 
-	final String IMSMANIFEST = "imsmanifest.xml";
+	@Value("${IMSMANIFEST}") String IMSMANIFEST = "imsmanifest.xml";
 
 	public OsaItem run(InputStream zipFile, String osaBase) {
 		OsaItem changedPages = new OsaItem();
@@ -85,8 +88,9 @@ public class Builder {
 							// default:
 							// log.error("ERROR: Invalid item: " + item);
 							// }
-							
-							changedPages.addPage(item.getIdentifier(), item.getCqt());
+
+							changedPages.addPage(item.getIdentifier(),
+									item.getCqt());
 						}
 					}
 				}
