@@ -2,6 +2,9 @@ package de.uniko.iwm.osa.qtiinterpreter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +35,9 @@ import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type003;
 import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type008;
 import de.uniko.iwm.osa.data.model.AssessmentSection;
 import de.uniko.iwm.osa.data.model.AssessmentTest;
+import de.uniko.iwm.osa.data.model.OsaDbPages;
+import de.uniko.iwm.osa.data.model.OsaDbQuestitems;
+import de.uniko.iwm.osa.data.model.OsaDbQuests;
 import de.uniko.iwm.osa.data.model.TestPart;
 import de.uniko.iwm.osa.utils.HtmlFilter;
 
@@ -110,6 +116,9 @@ public class Parse {
 
 	private int count = 0;
 
+	private String MD5PREFIX = "MD5PREFIX ";
+	private int MD5Counter = 0;
+
 	public Parse(String base,
 			HashMap<String, Integer> questionType2CyquestQuestionType) {
 		this.base = base;
@@ -182,7 +191,7 @@ public class Parse {
 				}
 			}
 
-		} catch (SaxonApiException e) {
+		} catch (SaxonApiException | UnsupportedEncodingException | NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 
@@ -193,7 +202,7 @@ public class Parse {
 	}
 
 	private boolean handle_AssessmentFile(String href)
-			throws FileNotFoundException, SaxonApiException {
+			throws FileNotFoundException, SaxonApiException, UnsupportedEncodingException, NoSuchAlgorithmException {
 
 		count = 0;
 
@@ -218,7 +227,7 @@ public class Parse {
 	}
 
 	private boolean handle_AssessmentTest(XdmItem item)
-			throws FileNotFoundException, SaxonApiException {
+			throws FileNotFoundException, SaxonApiException, UnsupportedEncodingException, NoSuchAlgorithmException {
 
 		XPathSelector selector = xpath.compile(QUERY_IMSQTI_TESTPART).load();
 		selector.setContextItem(item);
@@ -238,7 +247,7 @@ public class Parse {
 	}
 
 	private TestPart handle_TestPart(XdmItem item)
-			throws FileNotFoundException, SaxonApiException {
+			throws FileNotFoundException, SaxonApiException, UnsupportedEncodingException, NoSuchAlgorithmException {
 		TestPart testPart = new TestPart();
 		int cy_questid = 0;
 
@@ -264,10 +273,24 @@ public class Parse {
 	}
 
 	private AssessmentSection handle_AssessmentSection(XdmItem item,
-			int cy_questid) throws FileNotFoundException, SaxonApiException {
+			int cy_questid) throws FileNotFoundException, SaxonApiException,
+			UnsupportedEncodingException, NoSuchAlgorithmException {
 		AssessmentSection assessmentSection = new AssessmentSection();
 		// OsaItem osaItem = new OsaItem();
 		ItemConigurator ic = new ItemConigurator((XdmNode) item);
+
+		OsaDbPages cy_page = new OsaDbPages();
+		OsaDbQuests cy_quest = new OsaDbQuests();
+
+		// md5 --------------------------------------------------
+
+		MD5Counter++;
+		byte[] bytesOfMessage = (MD5PREFIX + MD5Counter).getBytes("UTF-8");
+
+		MessageDigest md = MessageDigest.getInstance("MD5");
+		cy_page.setMd5key(new String(md.digest(bytesOfMessage)));
+
+		// --------------------------------------------------
 
 		int cy_position = 0;
 
@@ -307,7 +330,7 @@ public class Parse {
 					cy_questid, cy_position));
 
 			AssessmentItem it = handle_imsqti_item_xmlv2p1(href, cy_questid,
-					cy_position);
+					cy_position, cy_page, cy_quest);
 
 			if (it != null) {
 				it.setSequenceValues(count, cy_position);
@@ -321,10 +344,14 @@ public class Parse {
 	}
 
 	private AssessmentItem handle_imsqti_item_xmlv2p1(String href,
-			int cy_questid, int cy_position) throws FileNotFoundException,
+			int cy_questid, int cy_position, OsaDbPages cy_page,
+			OsaDbQuests cy_quest) throws FileNotFoundException,
 			SaxonApiException {
 
-		ItemConigurator ic = new ItemConigurator(href);
+		OsaDbQuestitems cy_questitem = new OsaDbQuestitems();
+
+		ItemConigurator ic = new ItemConigurator(href, cy_page, cy_quest,
+				cy_questitem);
 		AssessmentItem question = null;
 
 		String questionType = identifier2questionType.get(ic.queryIdentifier());
@@ -441,19 +468,27 @@ public class Parse {
 		this.assessmentTest = assessmentTest;
 	}
 
-	
 	public class ItemConigurator {
 
 		XdmNode node;
+
+		OsaDbPages cy_page = null;
+		OsaDbQuests cy_quest = null;
+		OsaDbQuestitems cy_questitem = null;
 
 		ItemConigurator(XdmNode node) {
 			this.node = node;
 		}
 
-		ItemConigurator(String href) throws SaxonApiException {
+		ItemConigurator(String href, OsaDbPages cy_page, OsaDbQuests cy_quest,
+				OsaDbQuestitems cy_questitem) throws SaxonApiException {
 			XdmNode document = builder.build(new File(base, href));
 
 			this.node = document;
+
+			this.cy_page = cy_page;
+			this.cy_quest = cy_quest;
+			this.cy_questitem = cy_questitem;
 		}
 
 		String queryToString(String query) throws SaxonApiException {
@@ -555,5 +590,30 @@ public class Parse {
 			return null;
 		}
 
+		// ---------------------------------------------------- //
+
+		public OsaDbPages getCy_page() {
+			return cy_page;
+		}
+
+		public void setCy_page(OsaDbPages cy_page) {
+			this.cy_page = cy_page;
+		}
+
+		public OsaDbQuests getCy_quest() {
+			return cy_quest;
+		}
+
+		public void setCy_quest(OsaDbQuests cy_quest) {
+			this.cy_quest = cy_quest;
+		}
+
+		public OsaDbQuestitems getCy_questitem() {
+			return cy_questitem;
+		}
+
+		public void setCy_questitem(OsaDbQuestitems cy_questitem) {
+			this.cy_questitem = cy_questitem;
+		}
 	}
 }
