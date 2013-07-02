@@ -13,10 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem;
-import de.uniko.iwm.osa.data.model.AssessmentSection;
-import de.uniko.iwm.osa.data.model.AssessmentTest;
 import de.uniko.iwm.osa.data.model.OsaItem;
-import de.uniko.iwm.osa.data.model.TestPart;
 import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
 import de.uniko.iwm.osa.utils.UnZip;
 
@@ -59,41 +56,8 @@ public class Builder {
 			// scan manifest
 			//
 			if (parser.handleManifest(IMSMANIFEST)) {
-				AssessmentTest assessmentTest = parser.getAssessmentTest();
+				
 
-				for (TestPart testPart : assessmentTest.getTestParts()) {
-					for (AssessmentSection assessmentSection : testPart
-							.getAssessmentSections()) {
-
-						for (AssessmentItem item : assessmentSection
-								.getAssessmentItems()) {
-
-							// osaItem.addQuestsOldId(item.getId());
-							//
-							// System.out.println("AssessmentItem: " + item);
-							//
-							// switch (item.getAssessmentType()) {
-							// case INTERESSEN:
-							// AssessmentItem_Type001 t =
-							// (AssessmentItem_Type001)item;
-							// int newId = t.toOsaDbQuests(questsService);
-							// log.info("   " + newId);
-							//
-							// osaItem.addQuestsNewId(newId);
-							// osaItem.addQuestsQuestId(t.getQuestid());
-							// break;
-							// case EXTRASEITE:
-							// // do nothing
-							// break;
-							// default:
-							// log.error("ERROR: Invalid item: " + item);
-							// }
-
-							changedPages.addPage(item.getIdentifier(),
-									item.getCqt());
-						}
-					}
-				}
 			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block

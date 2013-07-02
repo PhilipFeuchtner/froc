@@ -33,12 +33,10 @@ import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type001;
 import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type002;
 import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type003;
 import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type008;
-import de.uniko.iwm.osa.data.model.AssessmentSection;
-import de.uniko.iwm.osa.data.model.AssessmentTest;
+import de.uniko.iwm.osa.data.model.Cy_PageItem;
 import de.uniko.iwm.osa.data.model.OsaDbPages;
 import de.uniko.iwm.osa.data.model.OsaDbQuestitems;
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
-import de.uniko.iwm.osa.data.model.TestPart;
 import de.uniko.iwm.osa.utils.HtmlFilter;
 
 public class Parse {
@@ -109,7 +107,9 @@ public class Parse {
 
 	/* --- generated values --- */
 
-	private AssessmentTest assessmentTest = null;
+	// private AssessmentTest assessmentTest = null;
+	private List<Cy_PageItem> generated_pages = new ArrayList<Cy_PageItem>();
+
 	// private OsaPage osaPage = null;
 	private HashMap<String, String> identifier2questionType;
 	private HashMap<String, Integer> questionType2CyquestQuestionType;
@@ -143,7 +143,6 @@ public class Parse {
 	}
 
 	public boolean handleManifest(String filename) throws FileNotFoundException {
-		assessmentTest = new AssessmentTest();
 		// osaPage = new OsaPage();
 
 		XPathSelector selector;
@@ -191,7 +190,8 @@ public class Parse {
 				}
 			}
 
-		} catch (SaxonApiException | UnsupportedEncodingException | NoSuchAlgorithmException e) {
+		} catch (SaxonApiException | UnsupportedEncodingException
+				| NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 
@@ -202,7 +202,8 @@ public class Parse {
 	}
 
 	private boolean handle_AssessmentFile(String href)
-			throws FileNotFoundException, SaxonApiException, UnsupportedEncodingException, NoSuchAlgorithmException {
+			throws FileNotFoundException, SaxonApiException,
+			UnsupportedEncodingException, NoSuchAlgorithmException {
 
 		count = 0;
 
@@ -227,7 +228,8 @@ public class Parse {
 	}
 
 	private boolean handle_AssessmentTest(XdmItem item)
-			throws FileNotFoundException, SaxonApiException, UnsupportedEncodingException, NoSuchAlgorithmException {
+			throws FileNotFoundException, SaxonApiException,
+			UnsupportedEncodingException, NoSuchAlgorithmException {
 
 		XPathSelector selector = xpath.compile(QUERY_IMSQTI_TESTPART).load();
 		selector.setContextItem(item);
@@ -239,16 +241,16 @@ public class Parse {
 			//
 			log.info("TestPart");
 
-			TestPart testPart = handle_TestPart(child);
-			assessmentTest.addTestPart(testPart);
+			handle_TestPart(child);
 		}
 
 		return true;
 	}
 
-	private TestPart handle_TestPart(XdmItem item)
-			throws FileNotFoundException, SaxonApiException, UnsupportedEncodingException, NoSuchAlgorithmException {
-		TestPart testPart = new TestPart();
+	private void handle_TestPart(XdmItem item) throws FileNotFoundException,
+			SaxonApiException, UnsupportedEncodingException,
+			NoSuchAlgorithmException {
+
 		int cy_questid = 0;
 
 		XPathSelector selector = xpath.compile(QUERY_IMSQTI_ASSESSMENTSECTION)
@@ -264,23 +266,21 @@ public class Parse {
 			//
 			log.info("AssessmentSection");
 
-			AssessmentSection assessmentSection = handle_AssessmentSection(
-					child, cy_questid);
-			testPart.addAssessmentSection(assessmentSection);
+			handle_AssessmentSection(child, cy_questid);
 		}
-
-		return testPart;
 	}
 
-	private AssessmentSection handle_AssessmentSection(XdmItem item,
-			int cy_questid) throws FileNotFoundException, SaxonApiException,
+	private void handle_AssessmentSection(XdmItem item, int cy_questid)
+			throws FileNotFoundException, SaxonApiException,
 			UnsupportedEncodingException, NoSuchAlgorithmException {
-		AssessmentSection assessmentSection = new AssessmentSection();
+
 		// OsaItem osaItem = new OsaItem();
 		ItemConigurator ic = new ItemConigurator((XdmNode) item);
 
 		OsaDbPages cy_page = new OsaDbPages();
 		OsaDbQuests cy_quest = new OsaDbQuests();
+
+		generated_pages.add(new Cy_PageItem(cy_page));
 
 		// md5 --------------------------------------------------
 
@@ -299,7 +299,6 @@ public class Parse {
 		//
 
 		String title = ic.queryToString(QUERY_TITLE_ATTRIBUTE);
-		assessmentSection.setTitle(title);
 
 		//
 		// set rubricBlock
@@ -307,7 +306,6 @@ public class Parse {
 
 		String text = ic.cleanHtmlContent(QUERY_ASSESSMENTSECTION_RUBRIC,
 				PART_RUBRIC);
-		assessmentSection.setRubricBlock(text);
 
 		//
 		// find refs
@@ -335,12 +333,9 @@ public class Parse {
 			if (it != null) {
 				it.setSequenceValues(count, cy_position);
 
-				assessmentSection.addAssessmentItem(it);
 				log.info("IT: " + it);
 			}
 		}
-
-		return assessmentSection;
 	}
 
 	private AssessmentItem handle_imsqti_item_xmlv2p1(String href,
@@ -460,13 +455,7 @@ public class Parse {
 
 	/* --- getter & setter --- */
 
-	public AssessmentTest getAssessmentTest() {
-		return assessmentTest;
-	}
-
-	public void setAssessmentTest(AssessmentTest assessmentTest) {
-		this.assessmentTest = assessmentTest;
-	}
+	// ----------------------------------------------------------------------
 
 	public class ItemConigurator {
 
