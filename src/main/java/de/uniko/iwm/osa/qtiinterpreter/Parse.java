@@ -3,6 +3,7 @@ package de.uniko.iwm.osa.qtiinterpreter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.regex.Pattern;
 
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -285,11 +287,14 @@ public class Parse {
 		// md5 --------------------------------------------------
 
 		MD5Counter++;
-		byte[] bytesOfMessage = (MD5PREFIX + MD5Counter).getBytes("UTF-8");
+		String md5Text = MD5PREFIX + MD5Counter;
 
-		MessageDigest md = MessageDigest.getInstance("MD5");
-		cy_page.setMd5key(new String(md.digest(bytesOfMessage)));
-
+		final MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+		messageDigest.reset();
+		messageDigest.update(md5Text.getBytes(Charset.forName("UTF8")));
+		final String md5result = new String(Hex.encodeHex(messageDigest.digest()));
+		log.info("md5 " + md5result);
+		
 		// --------------------------------------------------
 
 		int cy_position = 0;
