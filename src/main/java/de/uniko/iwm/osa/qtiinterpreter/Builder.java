@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem;
+import de.uniko.iwm.osa.data.model.Cy_PageItem;
+import de.uniko.iwm.osa.data.model.Cy_QuestItem;
 import de.uniko.iwm.osa.data.model.OsaItem;
 import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
 import de.uniko.iwm.osa.utils.UnZip;
@@ -31,7 +34,8 @@ public class Builder {
 	@Value("${CYQUEST_MEDIAFOLDER}")
 	String CYQUEST_MEDIAFOLDER;
 
-	@Value("${IMSMANIFEST}") String IMSMANIFEST = "imsmanifest.xml";
+	@Value("${IMSMANIFEST}")
+	String IMSMANIFEST = "imsmanifest.xml";
 
 	public OsaItem run(InputStream zipFile, String osaBase) {
 		OsaItem changedPages = new OsaItem();
@@ -56,7 +60,19 @@ public class Builder {
 			// scan manifest
 			//
 			if (parser.handleManifest(IMSMANIFEST)) {
-				
+				List<Cy_PageItem> generatedPages = parser.getGenerated_pages();
+
+				int i = 0;
+				for (Cy_PageItem pi : generatedPages) {
+					int j = 0;
+					i++;
+					for (Cy_QuestItem qi : pi.getCy_QuestItem()) {
+						j++;
+						System.err.print(" --> [" + i + ", " + j + "]");
+					}
+					System.err.println("");
+
+				}
 
 			}
 		} catch (FileNotFoundException e) {

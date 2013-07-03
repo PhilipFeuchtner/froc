@@ -36,6 +36,7 @@ import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type002;
 import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type003;
 import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type008;
 import de.uniko.iwm.osa.data.model.Cy_PageItem;
+import de.uniko.iwm.osa.data.model.Cy_QuestItem;
 import de.uniko.iwm.osa.data.model.OsaDbPages;
 import de.uniko.iwm.osa.data.model.OsaDbQuestitems;
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
@@ -109,7 +110,6 @@ public class Parse {
 
 	/* --- generated values --- */
 
-	// private AssessmentTest assessmentTest = null;
 	private List<Cy_PageItem> generated_pages = new ArrayList<Cy_PageItem>();
 
 	// private OsaPage osaPage = null;
@@ -276,26 +276,34 @@ public class Parse {
 			throws FileNotFoundException, SaxonApiException,
 			UnsupportedEncodingException, NoSuchAlgorithmException {
 
-		// OsaItem osaItem = new OsaItem();
 		ItemConigurator ic = new ItemConigurator((XdmNode) item);
 
-		OsaDbPages cy_page = new OsaDbPages();
-		OsaDbQuests cy_quest = new OsaDbQuests();
+		OsaDbPages cy_db_page = new OsaDbPages();
+		OsaDbQuests cy_db_quest = new OsaDbQuests();
 
-		generated_pages.add(new Cy_PageItem(cy_page));
+		Cy_PageItem cy_page = new Cy_PageItem(cy_db_page);
+		Cy_QuestItem cy_quest = new Cy_QuestItem(cy_db_quest);
 
 		// md5 --------------------------------------------------
 
-		MD5Counter++;
-		String md5Text = MD5PREFIX + MD5Counter;
+		{
+			MD5Counter++;
+			String md5Text = MD5PREFIX + MD5Counter;
 
-		final MessageDigest messageDigest = MessageDigest.getInstance("MD5");
-		messageDigest.reset();
-		messageDigest.update(md5Text.getBytes(Charset.forName("UTF8")));
-		final String md5result = new String(Hex.encodeHex(messageDigest.digest()));
-		log.info("md5 " + md5result);
-		
-		// --------------------------------------------------
+			final MessageDigest messageDigest = MessageDigest
+					.getInstance("MD5");
+			messageDigest.reset();
+			messageDigest.update(md5Text.getBytes(Charset.forName("UTF8")));
+			final String result = new String(Hex.encodeHex(messageDigest
+					.digest()));
+			log.info("md5 [" + MD5PREFIX + MD5Counter + "] " + result);
+
+			// --------------------------------------------------
+
+			cy_db_page.setMd5key(result);
+		}
+
+		// ------------------------------------------------------
 
 		int cy_position = 0;
 
@@ -333,14 +341,23 @@ public class Parse {
 					cy_questid, cy_position));
 
 			AssessmentItem it = handle_imsqti_item_xmlv2p1(href, cy_questid,
-					cy_position, cy_page, cy_quest);
+					cy_position, cy_db_page, cy_db_quest);
 
 			if (it != null) {
 				it.setSequenceValues(count, cy_position);
 
 				log.info("IT: " + it);
+				
+				cy_quest.addItem(it.getOsaDbQuestItem());
 			}
 		}
+
+		// save results -----------------------------------------
+
+		cy_page.addQuest(cy_quest);
+		generated_pages.add(cy_page);
+
+		// ------------------------------------------------------
 	}
 
 	private AssessmentItem handle_imsqti_item_xmlv2p1(String href,
@@ -609,5 +626,15 @@ public class Parse {
 		public void setCy_questitem(OsaDbQuestitems cy_questitem) {
 			this.cy_questitem = cy_questitem;
 		}
+	}
+	
+	// getter & setter
+	
+	public List<Cy_PageItem> getGenerated_pages() {
+		return generated_pages;
+	}
+
+	public void setGenerated_pages(List<Cy_PageItem> generated_pages) {
+		this.generated_pages = generated_pages;
 	}
 }

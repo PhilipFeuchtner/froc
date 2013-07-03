@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 
 import net.sf.saxon.s9api.XdmNode;
 
+import de.uniko.iwm.osa.data.model.OsaDbQuestitems;
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
 import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
 import de.uniko.iwm.osa.qtiinterpreter.Parse.ItemConigurator;
@@ -170,26 +171,26 @@ public class AssessmentItem_Type001 implements AssessmentItem {
 	 * .osa.data.service.OsaDbQuestsService)
 	 */
 	
-	@Override
-	public int toOsaDbQuests(OsaDbQuestsService questsService) {
-
-		List<OsaDbQuests> questById = questsService
-				.getOsaDbQuestsById(new Integer(id));
-		OsaDbQuests q;
-
-		if (questById.size() == 1) {
-			q = questById.get(0);
-			q.setShowdesc(showdesc);
-
-			questsService.storeOsaDbQuests(q);
-			// questsService.addOsaDbQuests(q);
-
-			return q.getId();
-		} else {
-			System.out.println("--> ERROR incorrect questsdb:" + id);
-		}
-		return -1;
-	}
+//	@Override
+//	public int toOsaDbQuests(OsaDbQuestsService questsService) {
+//
+//		List<OsaDbQuests> questById = questsService
+//				.getOsaDbQuestsById(new Integer(id));
+//		OsaDbQuests q;
+//
+//		if (questById.size() == 1) {
+//			q = questById.get(0);
+//			q.setShowdesc(showdesc);
+//
+//			questsService.storeOsaDbQuests(q);
+//			// questsService.addOsaDbQuests(q);
+//
+//			return q.getId();
+//		} else {
+//			System.out.println("--> ERROR incorrect questsdb:" + id);
+//		}
+//		return -1;
+//	}
 
 	/* ----------------------------------------- */
 
@@ -232,5 +233,10 @@ public class AssessmentItem_Type001 implements AssessmentItem {
 	@Override
 	public String getCqt() {
 		return cyquest_question_type;
+	}
+
+	@Override
+	public OsaDbQuestitems getOsaDbQuestItem() {
+		return new OsaDbQuestitems();
 	}
 }

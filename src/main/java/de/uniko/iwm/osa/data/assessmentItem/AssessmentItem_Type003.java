@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 
 import net.sf.saxon.s9api.XdmNode;
 
+import de.uniko.iwm.osa.data.model.OsaDbQuestitems;
 import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
 import de.uniko.iwm.osa.qtiinterpreter.Parse.ItemConigurator;
 
@@ -45,12 +46,6 @@ public class AssessmentItem_Type003 implements AssessmentItem {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
-	@Override
-	public int toOsaDbQuests(OsaDbQuestsService questsService) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 	
 	@Override
 	public String getIdentifier() {
@@ -60,5 +55,10 @@ public class AssessmentItem_Type003 implements AssessmentItem {
 	@Override
 	public String getCqt() {
 		return cyquest_question_type;
+	}
+	
+	@Override
+	public OsaDbQuestitems getOsaDbQuestItem() {
+		return new OsaDbQuestitems();
 	}
 }
