@@ -31,19 +31,19 @@ public class OsaDbQuests {
 	private Integer id;
 	
 	@Column(name="questid")
-	private Integer questid;
+	private Integer questid = 0;
 	
 	@Column(name="position")
-	private Integer position;
+	private Integer position = 0;
 	
 	@Column(name="shownum")
-	private String shownum;
+	private String shownum = "Default";
 	
 	@Column(name="showdesc")
-	private String showdesc;
+	private String showdesc = "Default";
 	
 	@Column(name="typevalues")
-	private String typevalues;
+	private String typevalues = "Default";
 	
 	public Integer getId() {
 		return id;

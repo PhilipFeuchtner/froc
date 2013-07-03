@@ -26,6 +26,19 @@ public class OsaItem {
     )
 	private List<Item> pageList = new ArrayList<Item>();
 
+	@XmlElementWrapper(name="quests")
+    @XmlElements({
+    @XmlElement(name="item") }
+    )
+	private List<Item> questsList = new ArrayList<Item>();
+
+	@XmlElementWrapper(name="questitem")
+    @XmlElements({
+    @XmlElement(name="item") }
+    )
+	private List<Item> questitemList = new ArrayList<Item>();
+
+	
 	public OsaItem() {
 	}
 

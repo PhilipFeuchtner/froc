@@ -32,16 +32,16 @@ public class OsaDbPages {
 	@GeneratedValue
 	private Integer id;
 	
-	private String pid;
-	private String md5key;
-	private Integer display;
-	private Integer login;
-	private Integer sessionpos;
-	private Integer back;
-	private Integer forward;
-	private String forwardform;
-	private String name;
-	private Integer closed;
+	private String pid = "Default";
+	private String md5key = "Default";
+	private Integer display = 0;
+	private Integer login = 0;
+	private Integer sessionpos = 0;
+	private Integer back = 0;
+	private Integer forward = 0;
+	private String forwardform  = "Default";
+	private String name = "Default";
+	private Integer closed = 0;
 	
 	public Integer getId() {
 		return id;

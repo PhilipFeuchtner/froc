@@ -13,10 +13,12 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem;
 import de.uniko.iwm.osa.data.model.Cy_PageItem;
 import de.uniko.iwm.osa.data.model.Cy_QuestItem;
+import de.uniko.iwm.osa.data.model.OsaDbQuestitems;
 import de.uniko.iwm.osa.data.model.OsaItem;
+import de.uniko.iwm.osa.data.service.OsaDbPagesService;
+import de.uniko.iwm.osa.data.service.OsaDbQuestitemsService;
 import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
 import de.uniko.iwm.osa.utils.UnZip;
 
@@ -24,7 +26,13 @@ public class Builder {
 	static Logger log = Logger.getLogger(Builder.class.getName());
 
 	@Autowired
+	OsaDbPagesService pagesService;
+	
+	@Autowired
 	OsaDbQuestsService questsService;
+	
+	@Autowired
+	OsaDbQuestitemsService questitemsService;
 
 	@Autowired
 	private HashMap<String, Integer> keyword2cyquest;
@@ -66,9 +74,21 @@ public class Builder {
 				for (Cy_PageItem pi : generatedPages) {
 					int j = 0;
 					i++;
+					
+					pagesService.addOsaDbPages(pi.getPage());
+
 					for (Cy_QuestItem qi : pi.getCy_QuestItem()) {
+						int k = 0;
 						j++;
-						System.err.print(" --> [" + i + ", " + j + "]");
+						
+						questsService.addOsaDbQuests(qi.getQuest());
+
+						for (OsaDbQuestitems it : qi.getItemList()) {
+							System.err.print(" --> [" + i + ", " + j + ", " + k
+									+ "]");
+							
+							questitemsService.addOsaDbQuestitems(it);	
+						}
 					}
 					System.err.println("");
 

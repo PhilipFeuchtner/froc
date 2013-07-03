@@ -32,25 +32,25 @@ public class OsaDbQuestitems {
 	private Integer id;
 	
 	// @Column(name="pagesid")
-	private Integer pagesid;
+	private Integer pagesid = 0;
 	
 	// @Column(name="position")
-	private Integer position;
+	private Integer position = 0;
 	
 	// @Column(name="questhead")
-	private String questhead;
+	private String questhead  = "Default";
 	
 	// @Column(name="questsubhead")
-	private String questsubhead;
+	private String questsubhead = "Default";
 	
 	// @Column(name="questdesc")
-	private String questdesc;
+	private String questdesc = "Default";
 	
 	// @Column(name="questtype")
-	private Integer questtype;
+	private Integer questtype = 0;
 	
 	// @Column(name="questparam")
-	private String questparam;
+	private String questparam = "Default";
 	
 	
 	public Integer getId() {
