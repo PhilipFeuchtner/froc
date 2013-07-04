@@ -118,7 +118,7 @@ public class Parse {
 
 	private int count = 0;
 
-	private String MD5PREFIX = "MD5PREFIX ";
+	private String MD5PREFIX = "MD5PREFIX %s %d";
 	private int MD5Counter = 0;
 
 	public Parse(String base,
@@ -277,7 +277,9 @@ public class Parse {
 			UnsupportedEncodingException, NoSuchAlgorithmException {
 
 		ItemConigurator ic = new ItemConigurator((XdmNode) item);
-
+		
+		int cy_position = 0;
+		
 		OsaDbPages cy_db_page = new OsaDbPages();
 		OsaDbQuests cy_db_quest = new OsaDbQuests();
 
@@ -286,9 +288,9 @@ public class Parse {
 
 		// md5 --------------------------------------------------
 
-		{
+		{	
 			MD5Counter++;
-			String md5Text = MD5PREFIX + MD5Counter;
+			String md5Text = String.format(MD5PREFIX, MD5Counter, System.currentTimeMillis());
 
 			final MessageDigest messageDigest = MessageDigest
 					.getInstance("MD5");
@@ -296,7 +298,7 @@ public class Parse {
 			messageDigest.update(md5Text.getBytes(Charset.forName("UTF8")));
 			final String result = new String(Hex.encodeHex(messageDigest
 					.digest()));
-			log.info("md5 [" + MD5PREFIX + MD5Counter + "] " + result);
+			log.info("md5 [" + md5Text  + "] " + result);
 
 			// --------------------------------------------------
 
@@ -305,7 +307,7 @@ public class Parse {
 
 		// ------------------------------------------------------
 
-		int cy_position = 0;
+		
 
 		//
 		// title
