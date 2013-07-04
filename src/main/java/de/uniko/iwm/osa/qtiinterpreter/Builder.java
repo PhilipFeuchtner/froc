@@ -15,7 +15,10 @@ import org.springframework.beans.factory.annotation.Value;
 
 import de.uniko.iwm.osa.data.model.Cy_PageItem;
 import de.uniko.iwm.osa.data.model.Cy_QuestItem;
+import de.uniko.iwm.osa.data.model.Item;
+import de.uniko.iwm.osa.data.model.OsaDbPages;
 import de.uniko.iwm.osa.data.model.OsaDbQuestitems;
+import de.uniko.iwm.osa.data.model.OsaDbQuests;
 import de.uniko.iwm.osa.data.model.OsaItem;
 import de.uniko.iwm.osa.data.service.OsaDbPagesService;
 import de.uniko.iwm.osa.data.service.OsaDbQuestitemsService;
@@ -27,10 +30,10 @@ public class Builder {
 
 	@Autowired
 	OsaDbPagesService pagesService;
-	
+
 	@Autowired
 	OsaDbQuestsService questsService;
-	
+
 	@Autowired
 	OsaDbQuestitemsService questitemsService;
 
@@ -74,20 +77,26 @@ public class Builder {
 				for (Cy_PageItem pi : generatedPages) {
 					int j = 0;
 					i++;
-					
-					pagesService.addOsaDbPages(pi.getPage());
+
+					OsaDbPages p = pi.getPage();
+					pagesService.addOsaDbPages(p);
+					changedPages.addPage("" + p.getId(), p.getPid());
 
 					for (Cy_QuestItem qi : pi.getCy_QuestItem()) {
 						int k = 0;
 						j++;
-						
-						questsService.addOsaDbQuests(qi.getQuest());
+
+						OsaDbQuests q = qi.getQuest();
+						questsService.addOsaDbQuests(q);
 
 						for (OsaDbQuestitems it : qi.getItemList()) {
+							questitemsService.addOsaDbQuestitems(it);
+
 							System.err.print(" --> [" + i + ", " + j + ", " + k
 									+ "]");
-							
-							questitemsService.addOsaDbQuestitems(it);	
+							System.err.print("     [" + p.getId() + ", "
+									+ q.getId() + ", " + it.getId() + "]");
+
 						}
 					}
 					System.err.println("");

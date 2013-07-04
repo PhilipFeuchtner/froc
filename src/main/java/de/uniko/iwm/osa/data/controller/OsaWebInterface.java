@@ -125,8 +125,6 @@ public class OsaWebInterface {
 			String base = FilenameUtils.concat(OsaFileBase, osa_name);
 			OsaItem addedPages = builder.run(qtiInput, base);
 
-			// changedPages.setPageList(addedPages.getPageList());
-
 			modelAndView.addObject("addedPages", addedPages.getNewPageListAsStrings());
 		}
 
