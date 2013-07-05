@@ -80,7 +80,7 @@ public class Builder {
 
 					OsaDbPages p = pi.getPage();
 					pagesService.addOsaDbPages(p);
-					changedPages.addPage("" + p.getId(), p.getPid());
+					changedPages.addNewPage(p.getId());
 
 					for (Cy_QuestItem qi : pi.getCy_QuestItem()) {
 						int k = 0;

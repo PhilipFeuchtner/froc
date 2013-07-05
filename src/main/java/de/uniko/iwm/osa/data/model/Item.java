@@ -1,30 +1,47 @@
 package de.uniko.iwm.osa.data.model;
 
-import javax.xml.bind.annotation.XmlAttribute;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlValue;
 
 @XmlRootElement(name = "Item")
 public class Item {
-	
-	@XmlAttribute
-	private String name;
-	@XmlValue
-	private String value;
 
-	public Item(String name, String value) {
-		this.name = name;
-		this.value = value;
-	}
+	private List<Integer> pageList = new ArrayList<Integer>();
+	private List<Integer> questsList = new ArrayList<Integer>();
+	private List<Integer> questitemList = new ArrayList<Integer>();
 
 	public Item() {
 	}
 
-	public String getName() {
-		return name;
+	@XmlElement(name = "pages")
+	public List<Integer> getPageList() {
+		return pageList;
+	}
+
+	@XmlElement(name = "quests")
+	public List<Integer> getQuestsList() {
+		return questsList;
+	}
+
+	@XmlElement(name = "questsitems")
+	public List<Integer> getQuestItemList() {
+		return questitemList;
 	}
 	
-	public void setName(String name) {
-		this.name = name;
+	// ---------------------------------------------------------
+	
+	public void addPage(Integer id) {
+		pageList.add(id);
+	}
+	
+	public void addQuests(Integer id) {
+		questsList.add(id);
+	}
+	
+	public void addQuestitem(Integer id) {
+		questitemList.add(id);
 	}
 }

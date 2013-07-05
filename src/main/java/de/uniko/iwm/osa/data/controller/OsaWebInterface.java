@@ -125,7 +125,7 @@ public class OsaWebInterface {
 			String base = FilenameUtils.concat(OsaFileBase, osa_name);
 			OsaItem addedPages = builder.run(qtiInput, base);
 
-			modelAndView.addObject("addedPages", addedPages.getNewPageListAsStrings());
+			modelAndView.addObject("addedPages", addedPages.getItemNew().getPageList());
 		}
 
 		qtree.scanDatabase(MAGIC_START_PAGES);
