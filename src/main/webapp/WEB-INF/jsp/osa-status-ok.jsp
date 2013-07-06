@@ -28,11 +28,11 @@
 	<fieldset>
 		<legend>Debug</legend>
 
-		<table border="0">			
+		<table border="0">
 			<tr>
 				<th colspan="3" align="left">Jdbc</th>
 			</tr>
-			
+
 			<tr>
 				<td>jdbc String</td>
 				<td>&nbsp;</td>
@@ -59,9 +59,10 @@
 			</tr>
 
 			<tr>
-				<td>QuestPages</td>
+				<td>Pages</td>
 				<td>&nbsp;</td>
-				<td><c:forEach items="${deletedPages}" var="item">
+				<td><c:forEach items="${osaPage.itemDeleted.pagesList}"
+						var="item">
 						<c:out value="${item}">
 						</c:out>
 					</c:forEach></td>
@@ -69,7 +70,8 @@
 			<tr>
 				<td>Quests</td>
 				<td>&nbsp;</td>
-				<td><c:forEach items="${deletedQuests}" var="item">
+				<td><c:forEach items="${osaPage.itemDeleted.questsList}"
+						var="item">
 						<c:out value="${item}">
 						</c:out>
 					</c:forEach></td>
@@ -77,19 +79,38 @@
 			<tr>
 				<td>Questitems</td>
 				<td>&nbsp;</td>
-				<td><c:forEach items="${deletedQuestitems}" var="item">
+				<td><c:forEach items="${osaPage.itemDeleted.questitemList}"
+						var="item">
 						<c:out value="${item}">
 						</c:out>
 					</c:forEach></td>
 			</tr>
-						<tr>
+			<tr>
 				<th colspan="3" align="left">Added Item</th>
 			</tr>
 
 			<tr>
-				<td>New Pages</td>
+				<td>Pages</td>
 				<td>&nbsp;</td>
-				<td><c:forEach items="${addedPages}" var="item">
+				<td><c:forEach items="${osaPage.itemNew.pagesList}" var="item">
+						<c:out value="${item}">
+						</c:out>
+					</c:forEach></td>
+			</tr>
+
+			<tr>
+				<td>Quests</td>
+				<td>&nbsp;</td>
+				<td><c:forEach items="${osaPage.itemNew.questsList}" var="item">
+						<c:out value="${item}">
+						</c:out>
+					</c:forEach></td>
+			</tr>
+			<tr>
+				<td>Questitems</td>
+				<td>&nbsp;</td>
+				<td><c:forEach items="${osaPage.itemNew.questitemList}"
+						var="item">
 						<c:out value="${item}">
 						</c:out>
 					</c:forEach></td>

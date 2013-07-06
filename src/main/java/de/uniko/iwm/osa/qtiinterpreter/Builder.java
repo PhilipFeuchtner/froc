@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Value;
 
 import de.uniko.iwm.osa.data.model.Cy_PageItem;
 import de.uniko.iwm.osa.data.model.Cy_QuestItem;
-import de.uniko.iwm.osa.data.model.Item;
 import de.uniko.iwm.osa.data.model.OsaDbPages;
 import de.uniko.iwm.osa.data.model.OsaDbQuestitems;
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
@@ -48,8 +47,7 @@ public class Builder {
 	@Value("${IMSMANIFEST}")
 	String IMSMANIFEST = "imsmanifest.xml";
 
-	public OsaItem run(InputStream zipFile, String osaBase) {
-		OsaItem changedPages = new OsaItem();
+	public boolean run(InputStream zipFile, String osaBase, OsaItem oi) {
 
 		try {
 			String base = UnZip.unzipFile(zipFile);
@@ -80,7 +78,7 @@ public class Builder {
 
 					OsaDbPages p = pi.getPage();
 					pagesService.addOsaDbPages(p);
-					changedPages.addNewPage(p.getId());
+					oi.addNewPage(p.getId());
 
 					for (Cy_QuestItem qi : pi.getCy_QuestItem()) {
 						int k = 0;
@@ -104,14 +102,13 @@ public class Builder {
 				}
 
 			}
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			
+			return false;
 		}
 
-		return changedPages;
+		return true;
 	}
 }

@@ -10,9 +10,11 @@ import java.util.List;
 import org.lorecraft.phparser.SerializedPhpParser;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import de.uniko.iwm.osa.data.model.Item;
 import de.uniko.iwm.osa.data.model.OsaDbPages;
 import de.uniko.iwm.osa.data.model.OsaDbQuestitems;
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
+import de.uniko.iwm.osa.data.model.OsaItem;
 import de.uniko.iwm.osa.data.service.OsaDbPagesService;
 import de.uniko.iwm.osa.data.service.OsaDbQuestitemsService;
 import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
@@ -33,7 +35,7 @@ public class QTree {
 	Set<Integer> quests2remove = null;
 	Set<Integer> questitems2remove = null;
 
-	public int scanDatabase(int startPage) {
+	public int scanDatabase(int startPage, OsaItem oi) {
 
 		pages2remove = new TreeSet<Integer>();
 		quests2remove = new TreeSet<Integer>();
@@ -99,7 +101,19 @@ public class QTree {
 		System.err.println("pages    : " + pages2remove);
 		System.err.println("quests   : " + quests2remove);
 		System.err.println("questitem: " + questitems2remove);
+		
+		for (Integer i : pages2remove) {
+			oi.addDeletedPage(i);
+		}
 
+		for (Integer i : quests2remove) {
+			oi.addDeletedQuest(i);
+		}
+		
+		for (Integer i : questitems2remove) {
+			oi.addDeletedQuestitem(i);
+		}
+		
 		//
 		// remove items from db
 		//

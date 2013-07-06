@@ -41,7 +41,7 @@ public class OsaWebInterface {
 	private @Value("${MAGIC_START_PAGES}")
 	int MAGIC_START_PAGES;
 
-	private OsaItem changedPages;
+	private OsaItem oi;
 
 	private String osa_name = "psychosa";
 
@@ -88,8 +88,10 @@ public class OsaWebInterface {
 	public ModelAndView create(UploadItem uploadItem, BindingResult result)
 			throws IOException {
 
+		oi = new OsaItem();
+
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.addObject("osaPage", changedPages);
+		modelAndView.addObject("osaPage", oi);
 		modelAndView.addObject("uploadItem", uploadItem);
 
 		if (result.hasErrors()) {
@@ -123,18 +125,15 @@ public class OsaWebInterface {
 			InputStream qtiInput = uploadItem.getFileData().getInputStream();
 
 			String base = FilenameUtils.concat(OsaFileBase, osa_name);
-			OsaItem addedPages = builder.run(qtiInput, base);
-
-			modelAndView.addObject("addedPages", addedPages.getItemNew().getPageList());
+			if (builder.run(qtiInput, base, oi)) {
+				qtree.scanDatabase(MAGIC_START_PAGES, oi);
+				
+				modelAndView.setViewName("osa-status-ok");
+				return modelAndView;
+			}
 		}
 
-		qtree.scanDatabase(MAGIC_START_PAGES);
-		modelAndView.addObject("deletedPages", qtree.getPages2remove());
-		modelAndView.addObject("deletedQuests", qtree.getQuests2remove());
-		modelAndView.addObject("deletedQuestitems",
-				qtree.getQuestitems2remove());
-
-		modelAndView.setViewName("osa-status-ok");
+		modelAndView.setViewName("osa-status-fail");
 		return modelAndView;
 
 	}
