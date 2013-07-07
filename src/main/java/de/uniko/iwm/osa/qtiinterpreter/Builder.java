@@ -86,9 +86,11 @@ public class Builder {
 
 						OsaDbQuests q = qi.getQuest();
 						questsService.addOsaDbQuests(q);
+						oi.addNewQuest(p.getId());
 
 						for (OsaDbQuestitems it : qi.getItemList()) {
 							questitemsService.addOsaDbQuestitems(it);
+							oi.addNewQuestitem(it.getId());
 
 							System.err.print(" --> [" + i + ", " + j + ", " + k
 									+ "]");
