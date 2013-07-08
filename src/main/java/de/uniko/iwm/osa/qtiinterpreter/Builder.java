@@ -84,13 +84,13 @@ public class Builder {
 						int k = 0;
 						j++;
 
-						OsaDbQuests q = qi.getQuest();
-						questsService.addOsaDbQuests(q);
-						oi.addNewQuest(q.getId());
+						OsaDbQuestitems it = qi.getQuestitem();
+						questitemsService.addOsaDbQuestitems(it);
+						oi.addNewQuestitem(it.getId());
 
-						for (OsaDbQuestitems it : qi.getItemList()) {
-							questitemsService.addOsaDbQuestitems(it);
-							oi.addNewQuestitem(it.getId());
+						for (OsaDbQuests q : qi.getQuestsList()) {
+							questsService.addOsaDbQuests(q);
+							oi.addNewQuest(q.getId());
 
 							System.err.print(" --> [" + i + ", " + j + ", " + k
 									+ "]");

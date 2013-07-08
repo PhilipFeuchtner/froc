@@ -5,33 +5,33 @@ import java.util.List;
 
 public class Cy_QuestItem {
 	
-	OsaDbQuests quest = null;
-	List<OsaDbQuestitems> itemList = new ArrayList<OsaDbQuestitems>();
+	OsaDbQuestitems questitem = null;
+	List<OsaDbQuests> questsList = new ArrayList<OsaDbQuests>();
 	
 	public Cy_QuestItem() {
 	}
 	
-	public Cy_QuestItem(OsaDbQuests quest) {
-		this.quest = quest;
+	public Cy_QuestItem(OsaDbQuestitems item) {
+		this.questitem = item;
 	}
 	
-	public OsaDbQuests getQuest() {
-		return quest;
+	public OsaDbQuestitems getQuestitem() {
+		return questitem;
 	}
-	public void setQuest(OsaDbQuests quest) {
-		this.quest = quest;
+	public void setQuestitem(OsaDbQuestitems item) {
+		this.questitem = item;
 	}
-	public List<OsaDbQuestitems> getItemList() {
-		return itemList;
+	public List<OsaDbQuests> getQuestsList() {
+		return questsList;
 	}
-	public void setItemList(List<OsaDbQuestitems> itemList) {
-		this.itemList = itemList;
+	public void setQuestsList(List<OsaDbQuests> itemList) {
+		this.questsList = itemList;
 	}
 	
 	// ----------------------------------------------------------
 	
-	public void addItem(OsaDbQuestitems item) {
-		itemList.add(item);
+	public void addQuest(OsaDbQuests quest) {
+		questsList.add(quest);
 	}
 
 }
