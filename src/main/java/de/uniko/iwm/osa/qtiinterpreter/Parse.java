@@ -281,7 +281,7 @@ public class Parse {
 		int cy_position = 0;
 		
 		OsaDbPages cy_db_page = new OsaDbPages();
-		OsaDbQuests cy_db_quest = new OsaDbQuests();
+		OsaDbQuestitems cy_db_quest = new OsaDbQuestitems();
 
 		Cy_PageItem cy_page = new Cy_PageItem(cy_db_page);
 		Cy_QuestItem cy_quest = new Cy_QuestItem(cy_db_quest);
@@ -342,15 +342,15 @@ public class Parse {
 					"count [%2d], questid [%2d], position [%2d]", count,
 					cy_questid, cy_position));
 
-			AssessmentItem it = handle_imsqti_item_xmlv2p1(href, cy_questid,
+			AssessmentItem ai = handle_imsqti_item_xmlv2p1(href, cy_questid,
 					cy_position, cy_db_page, cy_db_quest);
 
-			if (it != null) {
-				it.setSequenceValues(count, cy_position);
+			if (ai != null) {
+				ai.setSequenceValues(count, cy_position);
 
-				log.info("IT: " + it);
+				log.info("IT: " + ai);
 				
-				cy_quest.addItem(it.getOsaDbQuestItem());
+				cy_quest.addQuest(ai.getOsaDbQuest());
 			}
 		}
 
@@ -364,13 +364,12 @@ public class Parse {
 
 	private AssessmentItem handle_imsqti_item_xmlv2p1(String href,
 			int cy_questid, int cy_position, OsaDbPages cy_page,
-			OsaDbQuests cy_quest) throws FileNotFoundException,
+			OsaDbQuestitems cy_questitem) throws FileNotFoundException,
 			SaxonApiException {
 
-		OsaDbQuestitems cy_questitem = new OsaDbQuestitems();
+		OsaDbQuests cy_quest = new OsaDbQuests();
 
-		ItemConigurator ic = new ItemConigurator(href, cy_page, cy_quest,
-				cy_questitem);
+		ItemConigurator ic = new ItemConigurator(href, cy_page);
 		AssessmentItem question = null;
 
 		String questionType = identifier2questionType.get(ic.queryIdentifier());
@@ -381,13 +380,13 @@ public class Parse {
 
 			switch (cyType) {
 			case 1:
-				return new AssessmentItem_Type001(ic);
+				return new AssessmentItem_Type001(cy_quest, ic);
 			case 2:
-				return new AssessmentItem_Type002(ic);
+				return new AssessmentItem_Type002(cy_quest, ic);
 			case 3:
-				return new AssessmentItem_Type003(ic);
+				return new AssessmentItem_Type003(cy_quest, ic);
 			case 8:
-				return new AssessmentItem_Type008(ic);
+				return new AssessmentItem_Type008(cy_quest, ic);
 
 			default:
 				log.error("QuestionType not implemented: " + questionType);
@@ -485,23 +484,14 @@ public class Parse {
 
 		XdmNode node;
 
-		OsaDbPages cy_page = null;
-		OsaDbQuests cy_quest = null;
-		OsaDbQuestitems cy_questitem = null;
-
 		ItemConigurator(XdmNode node) {
 			this.node = node;
 		}
 
-		ItemConigurator(String href, OsaDbPages cy_page, OsaDbQuests cy_quest,
-				OsaDbQuestitems cy_questitem) throws SaxonApiException {
+		ItemConigurator(String href, OsaDbPages cy_page) throws SaxonApiException {
 			XdmNode document = builder.build(new File(base, href));
 
 			this.node = document;
-
-			this.cy_page = cy_page;
-			this.cy_quest = cy_quest;
-			this.cy_questitem = cy_questitem;
 		}
 
 		String queryToString(String query) throws SaxonApiException {
@@ -605,29 +595,21 @@ public class Parse {
 
 		// ---------------------------------------------------- //
 
-		public OsaDbPages getCy_page() {
-			return cy_page;
-		}
-
-		public void setCy_page(OsaDbPages cy_page) {
-			this.cy_page = cy_page;
-		}
-
-		public OsaDbQuests getCy_quest() {
-			return cy_quest;
-		}
-
-		public void setCy_quest(OsaDbQuests cy_quest) {
-			this.cy_quest = cy_quest;
-		}
-
-		public OsaDbQuestitems getCy_questitem() {
-			return cy_questitem;
-		}
-
-		public void setCy_questitem(OsaDbQuestitems cy_questitem) {
-			this.cy_questitem = cy_questitem;
-		}
+//		public OsaDbPages getCy_page() {
+//			return cy_page;
+//		}
+//
+//		public void setCy_page(OsaDbPages cy_page) {
+//			this.cy_page = cy_page;
+//		}
+//
+//		public OsaDbQuests getCy_quest() {
+//			return cy_quest;
+//		}
+//
+//		public void setCy_quest(OsaDbQuests cy_quest) {
+//			this.cy_quest = cy_quest;
+//		}
 	}
 	
 	// getter & setter

@@ -4,74 +4,52 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "osaItem")
 public class OsaItem {
 
-	@XmlElement
-	private String message;
-	
-	@XmlElementWrapper(name="headers")
-    @XmlElements({
-    @XmlElement(name="item") }
-    )
-	private List<Item> headerList = new ArrayList<Item>();
+	private Item itemNew = new Item();
+	private Item itemDeleted = new Item();
 
-	@XmlElementWrapper(name="pages")
-    @XmlElements({
-    @XmlElement(name="item") }
-    )
-	private List<Item> pageList = new ArrayList<Item>();
-
-	@XmlElementWrapper(name="quests")
-    @XmlElements({
-    @XmlElement(name="item") }
-    )
-	private List<Item> questsList = new ArrayList<Item>();
-
-	@XmlElementWrapper(name="questitem")
-    @XmlElements({
-    @XmlElement(name="item") }
-    )
-	private List<Item> questitemList = new ArrayList<Item>();
-
-	
 	public OsaItem() {
 	}
-
-	public OsaItem(String message) {
-		this.message = message;
-	}
-
-	public void addHeader(String key, String value) {
-		headerList.add(new Item(key, value));
-	}	
-	public void addPage(String key, String value) {
-		pageList.add(new Item(key, value));
-	}
 	
 	// ------------------------------------------------------------------
+
+	public void addNewPage(Integer id) {
+		itemNew.addPage(id);
+	}
 	
-	public List<String> getNewPageListAsStrings() {
+	public void addNewQuest(Integer id) {
+		itemNew.addQuest(id);
+	}
+	
+	public void addNewQuestitem(Integer id) {
+		itemNew.addQuestitem(id);
+	}
+	
+	public void addDeletedPage(Integer id) {
+		itemDeleted.addPage(id);
+	}
+	
+	public void addDeletedQuest(Integer id) {
+		itemDeleted.addQuest(id);
+	}
+	
+	public void addDeletedQuestitem(Integer id) {
+		itemDeleted.addQuestitem(id);
+	}
 		
-		List <String> result = new ArrayList<String>();
-		for (Item item : pageList) {
-			result.add(item.getName());
-		}
-		return result;
-	}
-	
 	// ------------------------------------------------------------------
-	
-	public List<Item> getPageList() {
-		return pageList;
+
+    @XmlElement(name="new")
+  	public Item getItemNew() {
+		return itemNew;
 	}
 
-	public void setPageList(List<Item> pageList) {
-		this.pageList = pageList;
+    @XmlElement(name="deleted")
+	public Item getItemDeleted() {
+		return itemDeleted;
 	}
-
 }

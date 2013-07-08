@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "Item")
 public class Item {
 
-	private List<Integer> pageList = new ArrayList<Integer>();
+	private List<Integer> pagesList = new ArrayList<Integer>();
 	private List<Integer> questsList = new ArrayList<Integer>();
 	private List<Integer> questitemList = new ArrayList<Integer>();
 
@@ -17,8 +17,8 @@ public class Item {
 	}
 
 	@XmlElement(name = "pages")
-	public List<Integer> getPageList() {
-		return pageList;
+	public List<Integer> getPagesList() {
+		return pagesList;
 	}
 
 	@XmlElement(name = "quests")
@@ -27,17 +27,29 @@ public class Item {
 	}
 
 	@XmlElement(name = "questsitems")
-	public List<Integer> getQuestItemList() {
+	public List<Integer> getQuestitemList() {
 		return questitemList;
+	}
+	
+	public void setPageList(List<Integer> pageList) {
+		this.pagesList = pageList;
+	}
+
+	public void setQuestsList(List<Integer> questsList) {
+		this.questsList = questsList;
+	}
+
+	public void setQuestitemList(List<Integer> questitemList) {
+		this.questitemList = questitemList;
 	}
 	
 	// ---------------------------------------------------------
 	
 	public void addPage(Integer id) {
-		pageList.add(id);
+		pagesList.add(id);
 	}
 	
-	public void addQuests(Integer id) {
+	public void addQuest(Integer id) {
 		questsList.add(id);
 	}
 	
