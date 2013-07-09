@@ -71,18 +71,13 @@ public class Builder {
 			if (parser.handleManifest(IMSMANIFEST)) {
 				List<Cy_PageItem> generatedPages = parser.getGenerated_pages();
 
-				int i = 0;
 				for (Cy_PageItem pi : generatedPages) {
-					int j = 0;
-					i++;
 
 					OsaDbPages p = pi.getPage();
 					pagesService.addOsaDbPages(p);
 					oi.addNewPage(p.getId());
 
 					for (Cy_QuestItem qi : pi.getCy_QuestItem()) {
-						int k = 0;
-						j++;
 
 						OsaDbQuestitems it = qi.getQuestitem();
 						questitemsService.addOsaDbQuestitems(it);
@@ -91,12 +86,6 @@ public class Builder {
 						for (OsaDbQuests q : qi.getQuestsList()) {
 							questsService.addOsaDbQuests(q);
 							oi.addNewQuest(q.getId());
-
-//							System.err.print(" --> [" + i + ", " + j + ", " + k
-//									+ "]");
-//							System.err.print("     [" + p.getId() + ", "
-//									+ q.getId() + ", " + it.getId() + "]");
-
 						}
 					}
 					System.err.println("");
