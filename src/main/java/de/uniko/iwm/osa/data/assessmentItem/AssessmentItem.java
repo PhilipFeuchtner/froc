@@ -8,12 +8,6 @@ public interface AssessmentItem {
 		QESTION, EXTRASEITE
 	};
 
-	public boolean init(String identifier, String cyquest_question_type);
-
-	public boolean create(XdmNode assecssmentItem);
-
-	public boolean setSequenceValues(int count, int cy_position);
-
 	public String getIdentifier();
 
 	public String getCqt();

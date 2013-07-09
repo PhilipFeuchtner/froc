@@ -33,7 +33,6 @@ public class AssessmentItem_Type001 implements AssessmentItem {
 		this.ic = ic;
 		this.quest = quest;
 
-		quest.setShowdesc(ic.queryShowdescr());
 		quest.setTypevalues(MAGIC_INTERESSEN_TYPEVALUES);
 
 	}
@@ -44,24 +43,6 @@ public class AssessmentItem_Type001 implements AssessmentItem {
 		return String.format("%s-%s-%s [%s][%s][%s]", quest.getId(),
 				quest.getQuestid(), quest.getPosition(), quest.getShownum(),
 				quest.getShowdesc(), quest.getTypevalues());
-	}
-
-	@Override
-	public boolean init(String identifier, String cyquest_question_type) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean create(XdmNode assecssmentItem) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean setSequenceValues(int count, int cy_position) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override

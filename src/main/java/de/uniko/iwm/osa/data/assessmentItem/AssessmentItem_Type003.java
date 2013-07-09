@@ -33,24 +33,6 @@ public class AssessmentItem_Type003 implements AssessmentItem {
 	}
 
 	@Override
-	public boolean init(String identifier, String cyquest_question_type) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean create(XdmNode assecssmentItem) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean setSequenceValues(int count, int cy_position) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public String getIdentifier() {
 		return identifier;
 	}

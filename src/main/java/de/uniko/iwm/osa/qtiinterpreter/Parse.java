@@ -336,6 +336,9 @@ public class Parse {
 		for (String href : hrefs) {
 			count++;
 			cy_position++;
+			
+			
+			
 
 			log.info(String.format("ref file: %s", href));
 			log.info(String.format(
@@ -346,8 +349,6 @@ public class Parse {
 					cy_position, cy_db_page, cy_db_quest);
 
 			if (ai != null) {
-				ai.setSequenceValues(count, cy_position);
-
 				log.info("IT: " + ai);
 				
 				cy_quest.addQuest(ai.getOsaDbQuest());
@@ -368,8 +369,12 @@ public class Parse {
 			SaxonApiException {
 
 		OsaDbQuests cy_quest = new OsaDbQuests();
-
 		ItemConigurator ic = new ItemConigurator(href, cy_page);
+		
+		cy_quest.setPosition(cy_position);
+		cy_quest.setShownum(String.format("%d", count));
+		cy_quest.setShowdesc(ic.queryShowdescr());
+		
 		AssessmentItem question = null;
 
 		String questionType = identifier2questionType.get(ic.queryIdentifier());

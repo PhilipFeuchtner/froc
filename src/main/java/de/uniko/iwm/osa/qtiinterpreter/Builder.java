@@ -84,6 +84,8 @@ public class Builder {
 						oi.addNewQuestitem(it.getId());
 
 						for (OsaDbQuests q : qi.getQuestsList()) {
+							q.setQuestid(it.getId());
+							
 							questsService.addOsaDbQuests(q);
 							oi.addNewQuest(q.getId());
 						}
