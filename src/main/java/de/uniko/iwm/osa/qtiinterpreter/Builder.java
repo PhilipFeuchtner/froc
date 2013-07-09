@@ -92,10 +92,10 @@ public class Builder {
 							questsService.addOsaDbQuests(q);
 							oi.addNewQuest(q.getId());
 
-							System.err.print(" --> [" + i + ", " + j + ", " + k
-									+ "]");
-							System.err.print("     [" + p.getId() + ", "
-									+ q.getId() + ", " + it.getId() + "]");
+//							System.err.print(" --> [" + i + ", " + j + ", " + k
+//									+ "]");
+//							System.err.print("     [" + p.getId() + ", "
+//									+ q.getId() + ", " + it.getId() + "]");
 
 						}
 					}
