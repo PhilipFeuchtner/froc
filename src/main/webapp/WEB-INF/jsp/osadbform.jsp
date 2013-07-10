@@ -32,11 +32,17 @@
 			</p>
 
 			<p>
+				<form:label for="pagesid" path="pagesid">Pages Id</form:label>
+				<br />
+				<form:input path="pagesid"/>
+			</p>
+			
+			<p>
 				<form:label for="fileData" path="fileData">Qti-File</form:label>
 				<br />
 				<form:input path="fileData" type="file" />
 			</p>
-
+			
 			<p>
 				<input type="submit" />
 			</p>

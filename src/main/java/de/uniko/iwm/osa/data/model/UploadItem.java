@@ -10,6 +10,15 @@ public class UploadItem {
 	private CommonsMultipartFile fileData;
 
 	List<String> osaList = new ArrayList<String>();
+	String pagesid;
+
+	public String getPagesid() {
+		return pagesid;
+	}
+
+	public void setPagesid(String pagesid) {
+		this.pagesid = pagesid;
+	}
 
 	public String getName() {
 		return name;

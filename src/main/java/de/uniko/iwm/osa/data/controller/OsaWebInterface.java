@@ -126,7 +126,7 @@ public class OsaWebInterface {
 			InputStream qtiInput = uploadItem.getFileData().getInputStream();
 
 			String base = FilenameUtils.concat(OsaFileBase, osa_name);
-			if (builder.run(qtiInput, base, oi, JUMPTOPAGE)) {
+			if (builder.run(qtiInput, base, oi, JUMPTOPAGE, uploadItem.getPagesid())) {
 				qtree.scanDatabase(MAGIC_START_PAGES, oi);
 				
 				modelAndView.setViewName("osa-status-ok");

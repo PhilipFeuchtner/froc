@@ -126,10 +126,15 @@ public class Parse {
 
 	private String MD5PREFIX = "MD5PREFIX %s %d";
 	private int MD5Counter = 0;
+	
+	private int pageCount = 0;
+	
+	private String pagesid;
 
 	public Parse(String base,
-			HashMap<String, Integer> questionType2CyquestQuestionType) {
+			HashMap<String, Integer> questionType2CyquestQuestionType, String pagesid) {
 		this.base = base;
+		this.pagesid = pagesid;
 		this.questionType2CyquestQuestionType = questionType2CyquestQuestionType;
 		// this.image_base = image_base;
 		identifier2questionType = new HashMap<String, String>();
@@ -291,7 +296,11 @@ public class Parse {
 
 		Cy_PageItem cy_page = new Cy_PageItem(cy_db_page);
 		Cy_QuestItem cy_quest = new Cy_QuestItem(cy_db_quest);
+		
+		// pagesid ----------------------------------------------
 
+		cy_db_page.setPid(pagesid + pageCount++);
+		
 		// md5 --------------------------------------------------
 
 		{

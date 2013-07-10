@@ -47,14 +47,15 @@ public class Builder {
 
 	@Value("${IMSMANIFEST}")
 	String IMSMANIFEST = "imsmanifest.xml";
-	
+
 	String fwdftemplate = "a:2:{s:1:\"p\";i:%d;s:1:\"t\";s:6:\"weiter\";}";
 
-	public boolean run(InputStream zipFile, String osaBase, OsaItem oi, int jumpToPage) {
-
+	public boolean run(InputStream zipFile, String osaBase, OsaItem oi,
+			int jumpToPage, String pagesid) {
+		
 		try {
 			String base = UnZip.unzipFile(zipFile);
-			Parse parser = new Parse(base, keyword2cyquest);
+			Parse parser = new Parse(base, keyword2cyquest, pagesid);
 
 			//
 			// step zero
@@ -83,12 +84,14 @@ public class Builder {
 					for (Cy_QuestItem qi : pi.getCy_QuestItem()) {
 
 						OsaDbQuestitems it = qi.getQuestitem();
+						it.setPagesid(p.getId());
+						
 						questitemsService.addOsaDbQuestitems(it);
 						oi.addNewQuestitem(it.getId());
 
 						for (OsaDbQuests q : qi.getQuestsList()) {
 							q.setQuestid(it.getId());
-							
+
 							questsService.addOsaDbQuests(q);
 							oi.addNewQuest(q.getId());
 						}
@@ -96,23 +99,24 @@ public class Builder {
 					System.err.println("");
 
 				}
-				
+
 				//
 				// set navigation
 				//
+
 				Collections.reverse(generatedPages);
 				for (Cy_PageItem pi : generatedPages) {
 					OsaDbPages p = pi.getPage();
 					p.setForwardform(String.format(fwdftemplate, jumpToPage));
 					// pagesService.up addOsaDbPages(p);
-					
+
 					jumpToPage = p.getId();
 				}
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			
+
 			return false;
 		}
 
