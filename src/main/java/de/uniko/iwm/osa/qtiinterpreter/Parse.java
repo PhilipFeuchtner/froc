@@ -94,6 +94,12 @@ public class Parse {
 	final String IMAGE_TAG = "//imsqti:img";
 	final String IMAGE_PREFIX = "<img";
 
+	final String IQ_QUERY_TASK = PART_ITEM_BODY + "/p/text()";
+	final String IQ_QUERY_QUESTION = PART_ITEM_BODY + "/p/imsqti:img/@src";
+	final String IQ_QUERY_CHOICES = PART_ITEM_BODY
+			+ "/imsqti:choiceInteraction"
+			+ "//imsqti:simpleChoice/imsqti:img/@src";
+
 	final String PART_HTML = "//imsqti:itemBody/child::node()";
 	// final String PART_HTML = "//imsqti:itemBody";
 
@@ -348,7 +354,7 @@ public class Parse {
 					cy_questid, cy_position));
 
 			// cy_db_quest.setQuestsubhead(String.format("Aufgabe %d von %d",
-			//		cy_position, hrefs.size()));
+			// cy_position, hrefs.size()));
 
 			AssessmentItem ai = handle_imsqti_item_xmlv2p1(href, cy_questid,
 					cy_position, cy_db_page, cy_db_quest);
@@ -609,23 +615,37 @@ public class Parse {
 			return null;
 		}
 
-		// ---------------------------------------------------- //
+		// type 8
 
-		// public OsaDbPages getCy_page() {
-		// return cy_page;
-		// }
-		//
-		// public void setCy_page(OsaDbPages cy_page) {
-		// this.cy_page = cy_page;
-		// }
-		//
-		// public OsaDbQuests getCy_quest() {
-		// return cy_quest;
-		// }
-		//
-		// public void setCy_quest(OsaDbQuests cy_quest) {
-		// this.cy_quest = cy_quest;
-		// }
+		public String queryIQTask() {
+			try {
+				return queryToString(IQ_QUERY_TASK);
+			} catch (SaxonApiException e) {
+				e.printStackTrace();
+			}
+
+			return null;
+		}
+
+		public String queryIQQuestion() {
+			try {
+				return queryToString(IQ_QUERY_QUESTION);
+			} catch (SaxonApiException e) {
+				e.printStackTrace();
+			}
+
+			return null;
+		}
+
+		public List<String> queryIQChoices() {
+			try {
+				return queryToStringList(IQ_QUERY_CHOICES);
+			} catch (SaxonApiException e) {
+				e.printStackTrace();
+			}
+
+			return null;
+		}
 	}
 
 	// getter & setter

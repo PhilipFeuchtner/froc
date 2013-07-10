@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -46,8 +47,10 @@ public class Builder {
 
 	@Value("${IMSMANIFEST}")
 	String IMSMANIFEST = "imsmanifest.xml";
+	
+	String fwdftemplate = "a:2:{s:1:\"p\";i:%d;s:1:\"t\";s:6:\"weiter\";}";
 
-	public boolean run(InputStream zipFile, String osaBase, OsaItem oi) {
+	public boolean run(InputStream zipFile, String osaBase, OsaItem oi, int jumpToPage) {
 
 		try {
 			String base = UnZip.unzipFile(zipFile);
@@ -93,7 +96,18 @@ public class Builder {
 					System.err.println("");
 
 				}
-
+				
+				//
+				// set navigation
+				//
+				Collections.reverse(generatedPages);
+				for (Cy_PageItem pi : generatedPages) {
+					OsaDbPages p = pi.getPage();
+					p.setForwardform(String.format(fwdftemplate, jumpToPage));
+					// pagesService.up addOsaDbPages(p);
+					
+					jumpToPage = p.getId();
+				}
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

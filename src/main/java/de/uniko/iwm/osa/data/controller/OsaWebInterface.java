@@ -40,6 +40,7 @@ public class OsaWebInterface {
 	private QTree qtree;
 	private @Value("${MAGIC_START_PAGES}")
 	int MAGIC_START_PAGES;
+	int JUMPTOPAGE = 177;
 
 	private OsaItem oi;
 
@@ -125,7 +126,7 @@ public class OsaWebInterface {
 			InputStream qtiInput = uploadItem.getFileData().getInputStream();
 
 			String base = FilenameUtils.concat(OsaFileBase, osa_name);
-			if (builder.run(qtiInput, base, oi)) {
+			if (builder.run(qtiInput, base, oi, JUMPTOPAGE)) {
 				qtree.scanDatabase(MAGIC_START_PAGES, oi);
 				
 				modelAndView.setViewName("osa-status-ok");
