@@ -34,14 +34,14 @@ public class OsaDbPages {
 	
 	private String pid = "Default";
 	private String md5key = "Default";
-	private Integer display = 0;
-	private Integer login = 0;
-	private Integer sessionpos = 0;
+	private Integer display = 1;
+	private Integer login = 1;
+	private Integer sessionpos = 1;
 	private Integer back = 0;
 	private Integer forward = 0;
 	private String forwardform  = "Default";
 	private String name = "Default";
-	private Integer closed = 0;
+	private Integer closed = 1;
 	
 	public Integer getId() {
 		return id;

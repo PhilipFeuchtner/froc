@@ -277,9 +277,9 @@ public class Parse {
 			UnsupportedEncodingException, NoSuchAlgorithmException {
 
 		ItemConigurator ic = new ItemConigurator((XdmNode) item);
-		
+
 		int cy_position = 0;
-		
+
 		OsaDbPages cy_db_page = new OsaDbPages();
 		OsaDbQuestitems cy_db_quest = new OsaDbQuestitems();
 
@@ -288,9 +288,10 @@ public class Parse {
 
 		// md5 --------------------------------------------------
 
-		{	
+		{
 			MD5Counter++;
-			String md5Text = String.format(MD5PREFIX, MD5Counter, System.currentTimeMillis());
+			String md5Text = String.format(MD5PREFIX, MD5Counter,
+					System.currentTimeMillis());
 
 			final MessageDigest messageDigest = MessageDigest
 					.getInstance("MD5");
@@ -298,7 +299,7 @@ public class Parse {
 			messageDigest.update(md5Text.getBytes(Charset.forName("UTF8")));
 			final String result = new String(Hex.encodeHex(messageDigest
 					.digest()));
-			log.info("md5 [" + md5Text  + "] " + result);
+			log.info("md5 [" + md5Text + "] " + result);
 
 			// --------------------------------------------------
 
@@ -307,20 +308,24 @@ public class Parse {
 
 		// ------------------------------------------------------
 
-		
-
 		//
 		// title
 		//
 
-		String title = ic.queryToString(QUERY_TITLE_ATTRIBUTE);
+		{
+			String text = ic.queryToString(QUERY_TITLE_ATTRIBUTE);
+			cy_db_quest.setQuesthead(text);
+		}
 
 		//
 		// set rubricBlock
 		//
 
-		String text = ic.cleanHtmlContent(QUERY_ASSESSMENTSECTION_RUBRIC,
-				PART_RUBRIC);
+		{
+			String text = ic.cleanHtmlContent(QUERY_ASSESSMENTSECTION_RUBRIC,
+					PART_RUBRIC);
+			cy_db_quest.setQuestdesc(text);
+		}
 
 		//
 		// find refs
@@ -336,21 +341,21 @@ public class Parse {
 		for (String href : hrefs) {
 			count++;
 			cy_position++;
-			
-			
-			
 
 			log.info(String.format("ref file: %s", href));
 			log.info(String.format(
 					"count [%2d], questid [%2d], position [%2d]", count,
 					cy_questid, cy_position));
 
+			// cy_db_quest.setQuestsubhead(String.format("Aufgabe %d von %d",
+			//		cy_position, hrefs.size()));
+
 			AssessmentItem ai = handle_imsqti_item_xmlv2p1(href, cy_questid,
 					cy_position, cy_db_page, cy_db_quest);
 
 			if (ai != null) {
 				log.info("IT: " + ai);
-				
+
 				cy_quest.addQuest(ai.getOsaDbQuest());
 			}
 		}
@@ -370,11 +375,11 @@ public class Parse {
 
 		OsaDbQuests cy_quest = new OsaDbQuests();
 		ItemConigurator ic = new ItemConigurator(href, cy_page);
-		
+
 		cy_quest.setPosition(cy_position);
 		cy_quest.setShownum(String.format("%d", count));
 		cy_quest.setShowdesc(ic.queryShowdescr());
-		
+
 		AssessmentItem question = null;
 
 		String questionType = identifier2questionType.get(ic.queryIdentifier());
@@ -396,6 +401,11 @@ public class Parse {
 			default:
 				log.error("QuestionType not implemented: " + questionType);
 			}
+
+			//
+			// set cyquest-question-type
+			//
+			cy_questitem.setQuesttype(cyType);
 
 		} else {
 			log.error("QuestionType not defined: " + ic.queryIdentifier() + " "
@@ -493,7 +503,8 @@ public class Parse {
 			this.node = node;
 		}
 
-		ItemConigurator(String href, OsaDbPages cy_page) throws SaxonApiException {
+		ItemConigurator(String href, OsaDbPages cy_page)
+				throws SaxonApiException {
 			XdmNode document = builder.build(new File(base, href));
 
 			this.node = document;
@@ -600,25 +611,25 @@ public class Parse {
 
 		// ---------------------------------------------------- //
 
-//		public OsaDbPages getCy_page() {
-//			return cy_page;
-//		}
-//
-//		public void setCy_page(OsaDbPages cy_page) {
-//			this.cy_page = cy_page;
-//		}
-//
-//		public OsaDbQuests getCy_quest() {
-//			return cy_quest;
-//		}
-//
-//		public void setCy_quest(OsaDbQuests cy_quest) {
-//			this.cy_quest = cy_quest;
-//		}
+		// public OsaDbPages getCy_page() {
+		// return cy_page;
+		// }
+		//
+		// public void setCy_page(OsaDbPages cy_page) {
+		// this.cy_page = cy_page;
+		// }
+		//
+		// public OsaDbQuests getCy_quest() {
+		// return cy_quest;
+		// }
+		//
+		// public void setCy_quest(OsaDbQuests cy_quest) {
+		// this.cy_quest = cy_quest;
+		// }
 	}
-	
+
 	// getter & setter
-	
+
 	public List<Cy_PageItem> getGenerated_pages() {
 		return generated_pages;
 	}

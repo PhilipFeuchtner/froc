@@ -41,7 +41,7 @@ public class OsaDbQuestitems {
 	private String questhead  = "Default";
 	
 	// @Column(name="questsubhead")
-	private String questsubhead = "Default";
+	private String questsubhead = "";
 	
 	// @Column(name="questdesc")
 	private String questdesc = "Default";
