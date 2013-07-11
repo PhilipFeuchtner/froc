@@ -107,8 +107,9 @@ public class Builder {
 				Collections.reverse(generatedPages);
 				for (Cy_PageItem pi : generatedPages) {
 					OsaDbPages p = pi.getPage();
+					
 					p.setForwardform(String.format(fwdftemplate, jumpToPage));
-					// pagesService.up addOsaDbPages(p);
+					pagesService.storeOsaDbPages(p);
 
 					jumpToPage = p.getId();
 				}

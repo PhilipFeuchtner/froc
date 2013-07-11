@@ -22,8 +22,8 @@ public class OsaDbPagesDAOImpl implements OsaDbPagesDAO {
 	@SuppressWarnings("unchecked")
 	public List<OsaDbPages> listOsaDbPages() {
 
-		return (List<OsaDbPages>) sessionFactory.getCurrentSession().createQuery("from OsaDbPages")
-				.list();
+		return (List<OsaDbPages>) sessionFactory.getCurrentSession()
+				.createQuery("from OsaDbPages").list();
 	}
 
 	public void removeOsaDbPages(Integer id) {
@@ -36,8 +36,13 @@ public class OsaDbPagesDAOImpl implements OsaDbPagesDAO {
 
 	@SuppressWarnings("unchecked")
 	public List<OsaDbPages> getOsaDbPagesById(Integer id) {
-		Query query = sessionFactory.getCurrentSession().createQuery("from OsaDbPages p where p.id=?");
+		Query query = sessionFactory.getCurrentSession().createQuery(
+				"from OsaDbPages p where p.id=?");
 		query.setInteger(0, id);
 		return query.list();
+	}
+
+	public void storeOsaDbPages(OsaDbPages p) {
+		sessionFactory.getCurrentSession().saveOrUpdate(p);
 	}
 }

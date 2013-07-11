@@ -14,7 +14,7 @@ public class OsaDbPagesServiceImpl implements OsaDbPagesService {
 
 	@Autowired
 	private OsaDbPagesDAO pDAO;
-	
+
 	@Transactional
 	public void addOsaDbPages(OsaDbPages p) {
 		pDAO.addOsaDbPages(p);
@@ -34,5 +34,10 @@ public class OsaDbPagesServiceImpl implements OsaDbPagesService {
 	@Transactional
 	public List<OsaDbPages> getOsaDbPagesById(Integer id) {
 		return pDAO.getOsaDbPagesById(id);
+	}
+
+	@Transactional
+	public void storeOsaDbPages(OsaDbPages p) {
+		pDAO.storeOsaDbPages(p);
 	}
 }

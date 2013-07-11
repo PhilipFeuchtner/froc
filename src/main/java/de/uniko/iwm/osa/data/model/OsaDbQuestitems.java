@@ -50,7 +50,7 @@ public class OsaDbQuestitems {
 	private Integer questtype = 0;
 	
 	// @Column(name="questparam")
-	private String questparam = "Default";
+	private String questparam = "";
 	
 	
 	public Integer getId() {

@@ -14,40 +14,44 @@ public class OsaDbQuestitemsDAOImpl implements OsaDbQuestitemsDAO {
 
 	@Autowired
 	private SessionFactory sessionFactory;
-	
+
 	public void addOsaDbQuestitems(OsaDbQuestitems qi) {
 		sessionFactory.getCurrentSession().save(qi);
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<OsaDbQuestitems> listOsaDbQuestitems() {
-		return sessionFactory.getCurrentSession().createQuery("from OsaDbQuestitems")				
-				.list();
+		return sessionFactory.getCurrentSession()
+				.createQuery("from OsaDbQuestitems").list();
 	}
 
 	public void removeOsaDbQuestitems(Integer id) {
-		OsaDbQuestitems qi = (OsaDbQuestitems) sessionFactory.getCurrentSession().load(
-				OsaDbQuestitems.class, id);
+		OsaDbQuestitems qi = (OsaDbQuestitems) sessionFactory
+				.getCurrentSession().load(OsaDbQuestitems.class, id);
 		if (null != qi) {
 			sessionFactory.getCurrentSession().delete(qi);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public List<OsaDbQuestitems> listOsaDbQuestitemsById(Integer id) {
-		Query query = sessionFactory.getCurrentSession().createQuery("from OsaDbQuestitems p where p.id=?");
+		Query query = sessionFactory.getCurrentSession().createQuery(
+				"from OsaDbQuestitems p where p.id=?");
 		query.setInteger(0, id);
 
 		return query.list();
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public List<OsaDbQuestitems> listOsaDbQuestitemsByPagesid(Integer pid) {
-		Query query = sessionFactory.getCurrentSession().createQuery("from OsaDbQuestitems p where p.pagesid=?");			
+		Query query = sessionFactory.getCurrentSession().createQuery(
+				"from OsaDbQuestitems p where p.pagesid=?");
 		query.setInteger(0, pid);
 
 		return query.list();
+	}
+
+	public void storeOsaDbQuestitems(OsaDbQuestitems q) {
+		sessionFactory.getCurrentSession().saveOrUpdate(q);
 	}
 }

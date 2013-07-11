@@ -11,4 +11,5 @@ public interface OsaDbQuestitemsDAO {
 	public List<OsaDbQuestitems> listOsaDbQuestitemsById(Integer id);
 	public List<OsaDbQuestitems> listOsaDbQuestitemsByPagesid(Integer pid);
 	public void removeOsaDbQuestitems(Integer id);
+	public void storeOsaDbQuestitems(OsaDbQuestitems q);
 }
