@@ -15,6 +15,8 @@ public class AssessmentItem_Type002 implements AssessmentItem {
 
 	String identifier = "Cyquest-2";
 	String cyquest_question_type = null;
+	
+	final String MAGIC_INTERESSEN_TYPEVALUES = "a:1:{s:8:\"scaledir\";s:2:\"up\";}";
 
 	OsaDbQuests quest;
 
@@ -29,6 +31,8 @@ public class AssessmentItem_Type002 implements AssessmentItem {
 
 		this.quest = quest;
 		this.ic = ic;
+		
+		quest.setTypevalues(MAGIC_INTERESSEN_TYPEVALUES);
 	}
 
 	@Override

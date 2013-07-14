@@ -11,7 +11,8 @@ public class OsaItem {
 
 	private Item itemNew = new Item();
 	private Item itemDeleted = new Item();
-
+	private List<String> errors = new ArrayList<String>();
+ 
 	public OsaItem() {
 	}
 	
@@ -40,6 +41,10 @@ public class OsaItem {
 	public void addDeletedQuestitem(Integer id) {
 		itemDeleted.addQuestitem(id);
 	}
+	
+	public void addErrorEntry(String text) {
+		errors.add(text);
+	}
 		
 	// ------------------------------------------------------------------
 
@@ -51,5 +56,10 @@ public class OsaItem {
     @XmlElement(name="deleted")
 	public Item getItemDeleted() {
 		return itemDeleted;
+	}
+
+    @XmlElement(name="error")
+	public List<String> getErrors() {
+		return errors;
 	}
 }

@@ -34,7 +34,6 @@ public class AssessmentItem_Type001 implements AssessmentItem {
 		this.quest = quest;
 
 		quest.setTypevalues(MAGIC_INTERESSEN_TYPEVALUES);
-
 	}
 
 	@Override

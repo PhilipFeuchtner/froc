@@ -55,7 +55,7 @@ public class Builder {
 		
 		try {
 			String base = UnZip.unzipFile(zipFile);
-			Parse parser = new Parse(base, keyword2cyquest, pagesid);
+			Parse parser = new Parse(base, keyword2cyquest, pagesid, oi);
 
 			//
 			// step zero
@@ -115,7 +115,7 @@ public class Builder {
 				}
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			oi.addErrorEntry(e.getMessage());
 			e.printStackTrace();
 
 			return false;

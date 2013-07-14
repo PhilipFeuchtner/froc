@@ -40,6 +40,7 @@ import de.uniko.iwm.osa.data.model.Cy_QuestItem;
 import de.uniko.iwm.osa.data.model.OsaDbPages;
 import de.uniko.iwm.osa.data.model.OsaDbQuestitems;
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
+import de.uniko.iwm.osa.data.model.OsaItem;
 import de.uniko.iwm.osa.utils.HtmlFilter;
 
 public class Parse {
@@ -105,6 +106,8 @@ public class Parse {
 
 	Pattern PATTERN_IMAGE_SRC = Pattern.compile("src=\"media");
 
+	final String MAGIC_INTERESSEN_TYPEVALUES = "a:1:{s:8:\"scaledir\";s:2:\"up\";}";
+
 	Processor proc;
 	XPathCompiler xpath;
 	DocumentBuilder builder;
@@ -126,16 +129,20 @@ public class Parse {
 
 	private String MD5PREFIX = "MD5PREFIX %s %d";
 	private int MD5Counter = 0;
-	
+
 	private int pageCount = 0;
-	
+
 	private String pagesid;
 
+	private OsaItem oi = null;
+
 	public Parse(String base,
-			HashMap<String, Integer> questionType2CyquestQuestionType, String pagesid) {
+			HashMap<String, Integer> questionType2CyquestQuestionType,
+			String pagesid, OsaItem oi) {
 		this.base = base;
 		this.pagesid = pagesid;
 		this.questionType2CyquestQuestionType = questionType2CyquestQuestionType;
+		this.oi = oi;
 		// this.image_base = image_base;
 		identifier2questionType = new HashMap<String, String>();
 
@@ -205,7 +212,7 @@ public class Parse {
 
 		} catch (SaxonApiException | UnsupportedEncodingException
 				| NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
+			oi.addErrorEntry(e.getMessage());
 			e.printStackTrace();
 
 			return false;
@@ -296,11 +303,11 @@ public class Parse {
 
 		Cy_PageItem cy_page = new Cy_PageItem(cy_db_page);
 		Cy_QuestItem cy_quest = new Cy_QuestItem(cy_db_quest);
-		
+
 		// pagesid ----------------------------------------------
 
 		cy_db_page.setPid(pagesid + pageCount++);
-		
+
 		// md5 --------------------------------------------------
 
 		{
@@ -362,8 +369,8 @@ public class Parse {
 					"count [%2d], questid [%2d], position [%2d]", count,
 					cy_questid, cy_position));
 
-			// cy_db_quest.setQuestsubhead(String.format("Aufgabe %d von %d",
-			// cy_position, hrefs.size()));
+			cy_db_quest.setQuestsubhead(String.format("Aufgabe %d von %d",
+					cy_questid, hrefs.size()));
 
 			AssessmentItem ai = handle_imsqti_item_xmlv2p1(href, cy_questid,
 					cy_position, cy_db_page, cy_db_quest);
@@ -403,6 +410,11 @@ public class Parse {
 				&& questionType2CyquestQuestionType.containsKey(questionType)) {
 			int cyType = questionType2CyquestQuestionType.get(questionType);
 
+			//
+			// set cyquest-question-type
+			//
+			cy_questitem.setQuesttype(cyType);
+
 			switch (cyType) {
 			case 1:
 				return new AssessmentItem_Type001(cy_quest, ic);
@@ -414,15 +426,14 @@ public class Parse {
 				return new AssessmentItem_Type008(cy_quest, ic);
 
 			default:
+				oi.addErrorEntry("QuestionType not implemented: "
+						+ questionType);
 				log.error("QuestionType not implemented: " + questionType);
 			}
 
-			//
-			// set cyquest-question-type
-			//
-			cy_questitem.setQuesttype(cyType);
-
 		} else {
+			oi.addErrorEntry("QuestionType not defined: "
+					+ ic.queryIdentifier() + " " + questionType);
 			log.error("QuestionType not defined: " + ic.queryIdentifier() + " "
 					+ questionType);
 		}
@@ -499,6 +510,7 @@ public class Parse {
 				identifier2questionType.put(identifier, questionType);
 				log.info("Cyquest Question Type: " + questionType);
 			} else {
+				oi.addErrorEntry("Unknown Cyquest Question Type: " + questionType);
 				log.error("Unknown Cyquest Question Type: " + questionType);
 			}
 		}
@@ -588,6 +600,7 @@ public class Parse {
 			try {
 				return queryToString(PART_ASS_IDENTIFIER);
 			} catch (SaxonApiException e) {
+				oi.addErrorEntry(e.getMessage());
 				e.printStackTrace();
 			}
 
@@ -598,6 +611,7 @@ public class Parse {
 			try {
 				return queryToString(PART_ASS_TITLE);
 			} catch (SaxonApiException e) {
+				oi.addErrorEntry(e.getMessage());
 				e.printStackTrace();
 			}
 
@@ -608,6 +622,7 @@ public class Parse {
 			try {
 				return queryToStringList(PART_CORRECT_RESP);
 			} catch (SaxonApiException e) {
+				oi.addErrorEntry(e.getMessage());
 				e.printStackTrace();
 			}
 
@@ -618,6 +633,7 @@ public class Parse {
 			try {
 				return cleanHtmlContent(PART_ITEM_BODY, PART_HTML);
 			} catch (SaxonApiException e) {
+				oi.addErrorEntry(e.getMessage());
 				e.printStackTrace();
 			}
 
@@ -630,6 +646,7 @@ public class Parse {
 			try {
 				return queryToString(IQ_QUERY_TASK);
 			} catch (SaxonApiException e) {
+				oi.addErrorEntry(e.getMessage());
 				e.printStackTrace();
 			}
 
@@ -641,6 +658,7 @@ public class Parse {
 				return queryToString(IQ_QUERY_QUESTION);
 			} catch (SaxonApiException e) {
 				e.printStackTrace();
+				oi.addErrorEntry(e.getMessage());
 			}
 
 			return null;
@@ -651,6 +669,7 @@ public class Parse {
 				return queryToStringList(IQ_QUERY_CHOICES);
 			} catch (SaxonApiException e) {
 				e.printStackTrace();
+				oi.addErrorEntry(e.getMessage());
 			}
 
 			return null;
