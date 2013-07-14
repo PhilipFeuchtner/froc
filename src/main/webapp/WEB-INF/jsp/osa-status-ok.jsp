@@ -115,6 +115,17 @@
 						</c:out>
 					</c:forEach></td>
 			</tr>
+
+			<tr>
+				<th colspan="3" align="left">Errors</th>
+			</tr>
+			<tr>
+
+				<c:forEach items="${osaPage.errors}" var="item">
+					<td colspan="3"><c:out value="${item}">
+						</c:out></td>
+				</c:forEach>
+			</tr>
 		</table>
 	</fieldset>
 </body>

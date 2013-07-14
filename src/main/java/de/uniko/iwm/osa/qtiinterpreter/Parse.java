@@ -509,6 +509,7 @@ public class Parse {
 			if (questionType.startsWith("qt")) {
 				identifier2questionType.put(identifier, questionType);
 				log.info("Cyquest Question Type: " + questionType);
+				return;
 			} else {
 				oi.addErrorEntry("Unknown Cyquest Question Type: " + questionType);
 				log.error("Unknown Cyquest Question Type: " + questionType);
