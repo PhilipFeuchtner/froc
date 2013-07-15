@@ -1,4 +1,4 @@
-package de.uniko.iwm.osa.questsitemTree;
+package de.uniko.iwm.osa.qtiinterpreter;
 
 import java.util.ArrayList;
 import java.util.HashMap;

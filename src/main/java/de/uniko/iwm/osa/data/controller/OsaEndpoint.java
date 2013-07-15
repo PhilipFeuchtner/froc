@@ -16,50 +16,59 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import de.uniko.iwm.osa.data.model.OsaItem;
 import de.uniko.iwm.osa.qtiinterpreter.Builder;
-import de.uniko.iwm.osa.questsitemTree.QTree;
+import de.uniko.iwm.osa.qtiinterpreter.QTree;
 
 @Controller
 public class OsaEndpoint {
 	static Logger log = Logger.getLogger(OsaEndpoint.class.getName());
-	
+
 	@Value("classpath:/questtype_templates.zip")
 	private Resource inputFile;
-	
+
 	String pagesId = "6000";
-	
+
 	@Autowired
 	private String OsaFileBase;
-	
+
 	@Autowired
 	private QTree qtree;
-	
+
 	@Autowired
 	Builder builder;
-	
+
 	private @Value("${MAGIC_START_PAGES}")
 	int MAGIC_START_PAGES;
-	int JUMPTOPAGE = 177;
 	private String osa_name = "psychosa";
-	
+
 	@RequestMapping("/upload")
-	public @ResponseBody OsaItem getResponse(@RequestHeader Map<String,Object> headers) throws IOException {
+	public @ResponseBody
+	OsaItem getResponse(@RequestHeader Map<String, Object> headers) {
 
 		// OsaItem oi = new OsaItem("Everyone is happy!");
 		OsaItem oi = new OsaItem();
-		
-		for (String key : headers.keySet()) {
-			log.info(key + " -> " +  headers.get(key));
-		}
-		
-		log.info("Input: " + inputFile.contentLength());
-		
-		
-		InputStream qtiInput =  inputFile.getInputStream();
 
-		String base = FilenameUtils.concat(OsaFileBase, osa_name);
-		
-		if (builder.run(qtiInput, base, oi, JUMPTOPAGE, pagesId)) {
-			qtree.scanDatabase(MAGIC_START_PAGES, oi);
+		for (String key : headers.keySet()) {
+			log.info(key + " -> " + headers.get(key));
+		}
+
+		InputStream qtiInput;
+		try {
+			qtiInput = inputFile.getInputStream();
+
+			String base = FilenameUtils.concat(OsaFileBase, osa_name);
+
+			int jumpToPage = qtree.scanDatabase(MAGIC_START_PAGES, oi);
+
+			if (builder.run(qtiInput, base, oi, jumpToPage, pagesId)) {
+				log.info("Upfdated: " + inputFile.getFilename());
+			} else {
+				String text = "Update failed.";
+				log.error(text);
+				oi.addErrorEntry(text);
+			}
+		} catch (IOException e) {
+			oi.addErrorEntry(e.getMessage());
+			e.printStackTrace();
 		}
 		
 		return oi;

@@ -21,7 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 import de.uniko.iwm.osa.data.model.OsaItem;
 import de.uniko.iwm.osa.data.model.UploadItem;
 import de.uniko.iwm.osa.qtiinterpreter.Builder;
-import de.uniko.iwm.osa.questsitemTree.QTree;
+import de.uniko.iwm.osa.qtiinterpreter.QTree;
 import de.uniko.iwm.osa.utils.OsaConfigExtractor;
 
 @Controller
