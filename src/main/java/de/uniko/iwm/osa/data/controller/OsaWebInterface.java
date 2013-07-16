@@ -148,20 +148,12 @@ public class OsaWebInterface {
 
 			ParseAndBuild pab = new ParseAndBuild(oi);
 
-			if (pab.prepare(qtiInput, base) && pab.parse(uploadItem.getPagesid())
-					&& pab.build() && pab.cleanUp(MAGIC_START_PAGES)) {
+			if (pab.prepare(qtiInput, base)
+					&& pab.parse(uploadItem.getPagesid()) && pab.build()
+					&& pab.cleanUp(MAGIC_START_PAGES)) {
 				modelAndView.setViewName("osa-status-ok");
 				return modelAndView;
 			}
-
-			
-			// if (builder.run(qtiInput, base, oi, JUMPTOPAGE,
-			// uploadItem.getPagesid())) {
-			// qtree.scanDatabase(MAGIC_START_PAGES, oi);
-			//
-			// modelAndView.setViewName("osa-status-ok");
-			// return modelAndView;
-			// }
 		}
 
 		modelAndView.setViewName("osa-status-fail");
@@ -180,25 +172,22 @@ public class OsaWebInterface {
 			log.info(key + " -> " + headers.get(key));
 		}
 
-		// InputStream qtiInput;
-		// try {
-		// qtiInput = inputFile.getInputStream();
-		//
-		// String base = FilenameUtils.concat(OsaFileBase, osa_name);
-		//
-		// int jumpToPage = qtree.scanDatabase(MAGIC_START_PAGES, oi);
-		//
-		// if (builder.run(qtiInput, base, oi, jumpToPage, "7000")) {
-		// log.info("Updated: " + inputFile.getFilename());
-		// } else {
-		// String text = "Update failed.";
-		// log.error(text);
-		// oi.addErrorEntry(text);
-		// }
-		// } catch (IOException e) {
-		// oi.addErrorEntry(e.getMessage());
-		// e.printStackTrace();
-		// }
+		InputStream qtiInput;
+		try {
+			qtiInput = inputFile.getInputStream();
+
+			String base = FilenameUtils.concat(OsaFileBase, osa_name);
+
+			ParseAndBuild pab = new ParseAndBuild(oi);
+
+			if (pab.prepare(qtiInput, base) && pab.parse("7000") && pab.build()
+					&& pab.cleanUp(MAGIC_START_PAGES)) {
+				// pass
+			}
+		} catch (IOException e) {
+			oi.addErrorEntry(e.getMessage());
+			e.printStackTrace();
+		}
 
 		return oi;
 	}
@@ -207,7 +196,7 @@ public class OsaWebInterface {
 		Parse parser;
 		// Builder builder;
 		OsaItem oi;
-		
+
 		String source;
 
 		boolean hasErrors;
@@ -222,10 +211,12 @@ public class OsaWebInterface {
 			try {
 				source = UnZip.unzipFile(zipFile);
 
-				FileUtils.copyDirectory(
-						new File(FilenameUtils.concat(source, QTI_MEDIAFOLDER)),
-						new File(FilenameUtils.concat(base,
-								CYQUEST_MEDIAFOLDER)));
+				FileUtils
+						.copyDirectory(
+								new File(FilenameUtils.concat(source,
+										QTI_MEDIAFOLDER)),
+								new File(FilenameUtils.concat(base,
+										CYQUEST_MEDIAFOLDER)));
 
 				return true;
 			} catch (IOException e) {
@@ -262,9 +253,10 @@ public class OsaWebInterface {
 
 		public boolean cleanUp(int startPage) {
 			// QTree qtree = new QTree();
-			
+
 			int jtp = qtree.scanDatabase(startPage, oi);
-			hasErrors = hasErrors || !builder.setNavigation(generatedPages, jtp);
+			hasErrors = hasErrors
+					|| !builder.setNavigation(generatedPages, jtp);
 
 			return !hasErrors;
 		}
