@@ -40,7 +40,7 @@ public class OsaEndpoint {
 	int MAGIC_START_PAGES;
 	private String osa_name = "psychosa";
 
-	@RequestMapping("/upload")
+	@RequestMapping("/upload-killed")
 	public @ResponseBody
 	OsaItem getResponse(@RequestHeader Map<String, Object> headers) {
 
@@ -60,7 +60,7 @@ public class OsaEndpoint {
 			int jumpToPage = qtree.scanDatabase(MAGIC_START_PAGES, oi);
 
 			if (builder.run(qtiInput, base, oi, jumpToPage, pagesId)) {
-				log.info("Upfdated: " + inputFile.getFilename());
+				log.info("Updated: " + inputFile.getFilename());
 			} else {
 				String text = "Update failed.";
 				log.error(text);

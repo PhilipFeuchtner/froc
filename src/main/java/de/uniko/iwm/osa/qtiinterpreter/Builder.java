@@ -46,7 +46,7 @@ public class Builder {
 	String CYQUEST_MEDIAFOLDER;
 
 	@Value("${IMSMANIFEST}")
-	String IMSMANIFEST = "imsmanifest.xml";
+	String IMSMANIFEST;
 
 	String fwdftemplate = "a:2:{s:1:\"p\";i:%d;s:1:\"t\";s:6:\"weiter\";}";
 
@@ -96,8 +96,6 @@ public class Builder {
 							oi.addNewQuest(q.getId());
 						}
 					}
-					System.err.println("");
-
 				}
 
 				//

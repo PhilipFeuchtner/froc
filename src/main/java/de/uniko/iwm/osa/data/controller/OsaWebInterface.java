@@ -3,19 +3,21 @@ package de.uniko.iwm.osa.data.controller;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-
-import javax.annotation.Resource;
+import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import de.uniko.iwm.osa.data.model.OsaItem;
@@ -25,13 +27,14 @@ import de.uniko.iwm.osa.qtiinterpreter.QTree;
 import de.uniko.iwm.osa.utils.OsaConfigExtractor;
 
 @Controller
-@RequestMapping("/index")
 public class OsaWebInterface {
 
 	static Logger log = Logger.getLogger(OsaWebInterface.class.getName());
 
 	// @Autowired
 	// private DataSource osaConfiguration;
+	@Value("classpath:/questtype_templates.zip")
+	private Resource inputFile;
 
 	@Autowired
 	Builder builder;
@@ -57,10 +60,11 @@ public class OsaWebInterface {
 
 	private String TESTOSA = "psychosa";
 
-	@Resource(name = "keyword2cyquest")
-	private HashMap<String, Integer> questionType2CyquestQuestionType;
+	@Autowired  //("keyword2cyquest")
+	private HashMap<String, Integer> keyword2cyquest;
 
-	@RequestMapping(method = RequestMethod.GET)
+
+	@RequestMapping(value="/index", method = RequestMethod.GET)
 	public String contact(Model model) {
 
 		// qtree.toDot();
@@ -85,7 +89,7 @@ public class OsaWebInterface {
 		return "osadbform";
 	}
 
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping(value="/index", method = RequestMethod.POST)
 	public ModelAndView create(UploadItem uploadItem, BindingResult result)
 			throws IOException {
 
@@ -137,5 +141,39 @@ public class OsaWebInterface {
 		modelAndView.setViewName("osa-status-fail");
 		return modelAndView;
 
+	}
+	
+	@RequestMapping("/upload")
+	public @ResponseBody
+	OsaItem getResponse(@RequestHeader Map<String, Object> headers) {
+
+		// OsaItem oi = new OsaItem("Everyone is happy!");
+		OsaItem oi = new OsaItem();
+
+		for (String key : headers.keySet()) {
+			log.info(key + " -> " + headers.get(key));
+		}
+
+		InputStream qtiInput;
+		try {
+			qtiInput = inputFile.getInputStream();
+
+			String base = FilenameUtils.concat(OsaFileBase, osa_name);
+
+			int jumpToPage = qtree.scanDatabase(MAGIC_START_PAGES, oi);
+
+			if (builder.run(qtiInput, base, oi, jumpToPage, "7000")) {
+				log.info("Updated: " + inputFile.getFilename());
+			} else {
+				String text = "Update failed.";
+				log.error(text);
+				oi.addErrorEntry(text);
+			}
+		} catch (IOException e) {
+			oi.addErrorEntry(e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return oi;
 	}
 }
