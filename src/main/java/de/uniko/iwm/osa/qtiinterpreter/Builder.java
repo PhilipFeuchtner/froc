@@ -40,83 +40,100 @@ public class Builder {
 	@Autowired
 	private HashMap<String, Integer> keyword2cyquest;
 
-	@Value("${QTI_MEDIAFOLDER}")
-	String QTI_MEDIAFOLDER;
-	@Value("${CYQUEST_MEDIAFOLDER}")
-	String CYQUEST_MEDIAFOLDER;
-
-	@Value("${IMSMANIFEST}")
-	String IMSMANIFEST;
+//	@Value("${QTI_MEDIAFOLDER}")
+//	String QTI_MEDIAFOLDER;
+//	@Value("${CYQUEST_MEDIAFOLDER}")
+//	String CYQUEST_MEDIAFOLDER;
+//
+//	@Value("${IMSMANIFEST}")
+//	String IMSMANIFEST;
 
 	String fwdftemplate = "a:2:{s:1:\"p\";i:%d;s:1:\"t\";s:6:\"weiter\";}";
 
-	public boolean run(InputStream zipFile, String osaBase, OsaItem oi,
-			int jumpToPage, String pagesid) {
+	public boolean build(OsaItem oi, List<Cy_PageItem> generatedPages) {
 		
-		try {
-			String base = UnZip.unzipFile(zipFile);
-			Parse parser = new Parse(base, keyword2cyquest, pagesid, oi);
+		// System.err.println("gp: " + generatedPages.size());
 
-			//
-			// step zero
-			// copy media files
+		// try {
+		// String base = UnZip.unzipFile(zipFile);
+		// Parse parser = new Parse(base, keyword2cyquest, pagesid, oi);
+		//
+		// //
+		// // step zero
+		// // copy media files
+		//
+		// FileUtils
+		// .copyDirectory(
+		// new File(FilenameUtils
+		// .concat(base, QTI_MEDIAFOLDER)),
+		// new File(FilenameUtils.concat(osaBase,
+		// CYQUEST_MEDIAFOLDER)));
+		//
+		// //
+		// // step one
+		// // scan manifest
+		// //
+		// if (parser.handleManifest(IMSMANIFEST)) {
+		// List<Cy_PageItem> generatedPages = parser.getGenerated_pages();
 
-			FileUtils
-					.copyDirectory(
-							new File(FilenameUtils
-									.concat(base, QTI_MEDIAFOLDER)),
-							new File(FilenameUtils.concat(osaBase,
-									CYQUEST_MEDIAFOLDER)));
+		for (Cy_PageItem pi : generatedPages) {
 
-			//
-			// step one
-			// scan manifest
-			//
-			if (parser.handleManifest(IMSMANIFEST)) {
-				List<Cy_PageItem> generatedPages = parser.getGenerated_pages();
+			OsaDbPages p = pi.getPage();
+			pagesService.addOsaDbPages(p);
+			oi.addNewPage(p.getId());
 
-				for (Cy_PageItem pi : generatedPages) {
+			for (Cy_QuestItem qi : pi.getCy_QuestItem()) {
 
-					OsaDbPages p = pi.getPage();
-					pagesService.addOsaDbPages(p);
-					oi.addNewPage(p.getId());
+				OsaDbQuestitems it = qi.getQuestitem();
+				it.setPagesid(p.getId());
 
-					for (Cy_QuestItem qi : pi.getCy_QuestItem()) {
+				questitemsService.addOsaDbQuestitems(it);
+				oi.addNewQuestitem(it.getId());
 
-						OsaDbQuestitems it = qi.getQuestitem();
-						it.setPagesid(p.getId());
-						
-						questitemsService.addOsaDbQuestitems(it);
-						oi.addNewQuestitem(it.getId());
+				for (OsaDbQuests q : qi.getQuestsList()) {
+					q.setQuestid(it.getId());
 
-						for (OsaDbQuests q : qi.getQuestsList()) {
-							q.setQuestid(it.getId());
-
-							questsService.addOsaDbQuests(q);
-							oi.addNewQuest(q.getId());
-						}
-					}
-				}
-
-				//
-				// set navigation
-				//
-
-				Collections.reverse(generatedPages);
-				for (Cy_PageItem pi : generatedPages) {
-					OsaDbPages p = pi.getPage();
-					
-					p.setForwardform(String.format(fwdftemplate, jumpToPage));
-					pagesService.storeOsaDbPages(p);
-
-					jumpToPage = p.getId();
+					questsService.addOsaDbQuests(q);
+					oi.addNewQuest(q.getId());
 				}
 			}
-		} catch (IOException e) {
-			oi.addErrorEntry(e.getMessage());
-			e.printStackTrace();
+		}
 
-			return false;
+		//
+		// set navigation
+		//
+
+		// Collections.reverse(generatedPages);
+		// for (Cy_PageItem pi : generatedPages) {
+		// OsaDbPages p = pi.getPage();
+		//
+		// p.setForwardform(String.format(fwdftemplate, jumpToPage));
+		// pagesService.storeOsaDbPages(p);
+		//
+		// jumpToPage = p.getId();
+		// }
+		// }
+		// } catch (IOException e) {
+		// oi.addErrorEntry(e.getMessage());
+		// e.printStackTrace();
+		//
+		// return false;
+		// }
+
+		return true;
+	}
+
+	public boolean setNavigation(List<Cy_PageItem> generatedPages,
+			int jumpToPage) {
+		
+		Collections.reverse(generatedPages);
+		for (Cy_PageItem pi : generatedPages) {
+			OsaDbPages p = pi.getPage();
+
+			p.setForwardform(String.format(fwdftemplate, jumpToPage));
+			pagesService.storeOsaDbPages(p);
+
+			jumpToPage = p.getId();
 		}
 
 		return true;

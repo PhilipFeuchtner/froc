@@ -549,9 +549,9 @@ public class Parse {
 			selector.setContextItem(node);
 
 			// Evaluate the expression.
-			XdmValue children_tiltes = selector.evaluate();
+			XdmValue children_titles = selector.evaluate();
 
-			for (XdmItem item : children_tiltes) {
+			for (XdmItem item : children_titles) {
 				result.add(item.getStringValue());
 				log.info(String.format("Found: (%s)", item.getStringValue()));
 			}

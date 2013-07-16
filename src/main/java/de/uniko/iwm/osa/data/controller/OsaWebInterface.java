@@ -1,10 +1,14 @@
 package de.uniko.iwm.osa.data.controller;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +24,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import de.uniko.iwm.osa.data.model.Cy_PageItem;
 import de.uniko.iwm.osa.data.model.OsaItem;
 import de.uniko.iwm.osa.data.model.UploadItem;
 import de.uniko.iwm.osa.qtiinterpreter.Builder;
+import de.uniko.iwm.osa.qtiinterpreter.Parse;
 import de.uniko.iwm.osa.qtiinterpreter.QTree;
 import de.uniko.iwm.osa.utils.OsaConfigExtractor;
+import de.uniko.iwm.osa.utils.UnZip;
 
 @Controller
 public class OsaWebInterface {
@@ -41,9 +48,12 @@ public class OsaWebInterface {
 
 	@Autowired
 	private QTree qtree;
+
 	private @Value("${MAGIC_START_PAGES}")
 	int MAGIC_START_PAGES;
 	int JUMPTOPAGE = 177;
+	@Value("${IMSMANIFEST}")
+	String IMSMANIFEST;
 
 	private OsaItem oi;
 
@@ -60,11 +70,16 @@ public class OsaWebInterface {
 
 	private String TESTOSA = "psychosa";
 
-	@Autowired  //("keyword2cyquest")
+	@Autowired
+	// ("keyword2cyquest")
 	private HashMap<String, Integer> keyword2cyquest;
 
+	@Value("${QTI_MEDIAFOLDER}")
+	String QTI_MEDIAFOLDER;
+	@Value("${CYQUEST_MEDIAFOLDER}")
+	String CYQUEST_MEDIAFOLDER;
 
-	@RequestMapping(value="/index", method = RequestMethod.GET)
+	@RequestMapping(value = "/index", method = RequestMethod.GET)
 	public String contact(Model model) {
 
 		// qtree.toDot();
@@ -89,7 +104,7 @@ public class OsaWebInterface {
 		return "osadbform";
 	}
 
-	@RequestMapping(value="/index", method = RequestMethod.POST)
+	@RequestMapping(value = "/index", method = RequestMethod.POST)
 	public ModelAndView create(UploadItem uploadItem, BindingResult result)
 			throws IOException {
 
@@ -130,19 +145,30 @@ public class OsaWebInterface {
 			InputStream qtiInput = uploadItem.getFileData().getInputStream();
 
 			String base = FilenameUtils.concat(OsaFileBase, osa_name);
-			if (builder.run(qtiInput, base, oi, JUMPTOPAGE, uploadItem.getPagesid())) {
-				qtree.scanDatabase(MAGIC_START_PAGES, oi);
-				
+
+			ParseAndBuild pab = new ParseAndBuild(oi);
+
+			if (pab.prepare(qtiInput, base) && pab.parse(uploadItem.getPagesid())
+					&& pab.build() && pab.cleanUp(MAGIC_START_PAGES)) {
 				modelAndView.setViewName("osa-status-ok");
 				return modelAndView;
 			}
+
+			
+			// if (builder.run(qtiInput, base, oi, JUMPTOPAGE,
+			// uploadItem.getPagesid())) {
+			// qtree.scanDatabase(MAGIC_START_PAGES, oi);
+			//
+			// modelAndView.setViewName("osa-status-ok");
+			// return modelAndView;
+			// }
 		}
 
 		modelAndView.setViewName("osa-status-fail");
 		return modelAndView;
 
 	}
-	
+
 	@RequestMapping("/upload")
 	public @ResponseBody
 	OsaItem getResponse(@RequestHeader Map<String, Object> headers) {
@@ -154,26 +180,93 @@ public class OsaWebInterface {
 			log.info(key + " -> " + headers.get(key));
 		}
 
-		InputStream qtiInput;
-		try {
-			qtiInput = inputFile.getInputStream();
+		// InputStream qtiInput;
+		// try {
+		// qtiInput = inputFile.getInputStream();
+		//
+		// String base = FilenameUtils.concat(OsaFileBase, osa_name);
+		//
+		// int jumpToPage = qtree.scanDatabase(MAGIC_START_PAGES, oi);
+		//
+		// if (builder.run(qtiInput, base, oi, jumpToPage, "7000")) {
+		// log.info("Updated: " + inputFile.getFilename());
+		// } else {
+		// String text = "Update failed.";
+		// log.error(text);
+		// oi.addErrorEntry(text);
+		// }
+		// } catch (IOException e) {
+		// oi.addErrorEntry(e.getMessage());
+		// e.printStackTrace();
+		// }
 
-			String base = FilenameUtils.concat(OsaFileBase, osa_name);
-
-			int jumpToPage = qtree.scanDatabase(MAGIC_START_PAGES, oi);
-
-			if (builder.run(qtiInput, base, oi, jumpToPage, "7000")) {
-				log.info("Updated: " + inputFile.getFilename());
-			} else {
-				String text = "Update failed.";
-				log.error(text);
-				oi.addErrorEntry(text);
-			}
-		} catch (IOException e) {
-			oi.addErrorEntry(e.getMessage());
-			e.printStackTrace();
-		}
-		
 		return oi;
+	}
+
+	public class ParseAndBuild {
+		Parse parser;
+		// Builder builder;
+		OsaItem oi;
+		
+		String source;
+
+		boolean hasErrors;
+		List<Cy_PageItem> generatedPages;
+
+		public ParseAndBuild(OsaItem oi) {
+			this.oi = oi;
+			hasErrors = false;
+		}
+
+		public boolean prepare(InputStream zipFile, String base) {
+			try {
+				source = UnZip.unzipFile(zipFile);
+
+				FileUtils.copyDirectory(
+						new File(FilenameUtils.concat(source, QTI_MEDIAFOLDER)),
+						new File(FilenameUtils.concat(base,
+								CYQUEST_MEDIAFOLDER)));
+
+				return true;
+			} catch (IOException e) {
+				hasErrors = true;
+
+				oi.addErrorEntry(e.getMessage());
+				e.printStackTrace();
+
+				return false;
+			}
+		}
+
+		public boolean parse(String pagesid) {
+			parser = new Parse(source, keyword2cyquest, pagesid, oi);
+
+			try {
+				hasErrors = hasErrors || !parser.handleManifest(IMSMANIFEST);
+				generatedPages = parser.getGenerated_pages();
+			} catch (FileNotFoundException e) {
+				oi.addErrorEntry(e.getMessage());
+				e.printStackTrace();
+				hasErrors = true;
+			}
+
+			return !hasErrors;
+		}
+
+		public boolean build() {
+			// builder = new Builder();
+			hasErrors = hasErrors || !builder.build(oi, generatedPages);
+
+			return !hasErrors;
+		}
+
+		public boolean cleanUp(int startPage) {
+			// QTree qtree = new QTree();
+			
+			int jtp = qtree.scanDatabase(startPage, oi);
+			hasErrors = hasErrors || !builder.setNavigation(generatedPages, jtp);
+
+			return !hasErrors;
+		}
 	}
 }
