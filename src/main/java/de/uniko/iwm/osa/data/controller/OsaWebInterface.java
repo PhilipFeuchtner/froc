@@ -78,6 +78,25 @@ public class OsaWebInterface {
 	String QTI_MEDIAFOLDER;
 	@Value("${CYQUEST_MEDIAFOLDER}")
 	String CYQUEST_MEDIAFOLDER;
+	
+	//
+	// froc 
+	// header values
+	//
+	// Parameter beim Aufruf des Froc:
+	//	1. Ein Zip per QTI / bzw. Aufruf - Link absolut (im OSA) - "x-path-to-qti"
+	//	2. Name des OSAs - "x-name-of-osa"
+	//	3. Für jedes Quizz: Start-PID - "x-qti-start-pid"
+	//
+	
+	@Value("${FROC_PATH}")
+	String FROC_PATH;
+	@Value("${FROC_NAME}")
+	String FROC_NAME;
+	@Value("${FROC_PID}")
+	String FROC_PID;
+	
+	//
 
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
 	public String contact(Model model) {
