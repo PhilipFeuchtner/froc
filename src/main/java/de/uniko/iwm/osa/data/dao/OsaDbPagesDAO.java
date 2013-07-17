@@ -14,5 +14,7 @@ public interface OsaDbPagesDAO {
 
 	public List<OsaDbPages> getOsaDbPagesById(Integer id);
 
+	public List<OsaDbPages> getOsaDbPagesByPid(String pid);
+	
 	public void storeOsaDbPages(OsaDbPages p);
 }

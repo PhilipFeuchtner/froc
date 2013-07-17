@@ -37,6 +37,11 @@ public class OsaDbPagesServiceImpl implements OsaDbPagesService {
 	}
 
 	@Transactional
+	public List<OsaDbPages> getOsaDbPagesByPid(String pid) {
+		return pDAO.getOsaDbPagesByPid(pid);
+	}
+	
+	@Transactional
 	public void storeOsaDbPages(OsaDbPages p) {
 		pDAO.storeOsaDbPages(p);
 	}

@@ -1,6 +1,7 @@
 package de.uniko.iwm.osa.data.controller;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,7 +14,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,8 +25,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import de.uniko.iwm.osa.data.model.Cy_PageItem;
+import de.uniko.iwm.osa.data.model.OsaDbPages;
 import de.uniko.iwm.osa.data.model.OsaItem;
 import de.uniko.iwm.osa.data.model.UploadItem;
+import de.uniko.iwm.osa.data.service.OsaDbPagesService;
 import de.uniko.iwm.osa.qtiinterpreter.Builder;
 import de.uniko.iwm.osa.qtiinterpreter.Parse;
 import de.uniko.iwm.osa.qtiinterpreter.QTree;
@@ -40,14 +42,17 @@ public class OsaWebInterface {
 
 	// @Autowired
 	// private DataSource osaConfiguration;
-	@Value("classpath:/questtype_templates.zip")
-	private Resource inputFile;
+	// @Value("classpath:/questtype_templates.zip")
+	// private Resource inputFile;
 
 	@Autowired
 	Builder builder;
 
 	@Autowired
 	private QTree qtree;
+
+	@Autowired
+	OsaDbPagesService pagesService;
 
 	private @Value("${MAGIC_START_PAGES}")
 	int MAGIC_START_PAGES;
@@ -78,24 +83,25 @@ public class OsaWebInterface {
 	String QTI_MEDIAFOLDER;
 	@Value("${CYQUEST_MEDIAFOLDER}")
 	String CYQUEST_MEDIAFOLDER;
-	
+
 	//
-	// froc 
+	// froc
 	// header values
 	//
 	// Parameter beim Aufruf des Froc:
-	//	1. Ein Zip per QTI / bzw. Aufruf - Link absolut (im OSA) - "x-path-to-qti"
-	//	2. Name des OSAs - "x-name-of-osa"
-	//	3. Für jedes Quizz: Start-PID - "x-qti-start-pid"
+	// 1. Ein Zip per QTI / bzw. Aufruf - Link absolut (im OSA) -
+	// "x-path-to-qti"
+	// 2. Name des OSAs - "x-name-of-osa"
+	// 3. Für jedes Quizz: Start-PID - "x-qti-start-pid"
 	//
-	
+
 	@Value("${FROC_PATH}")
 	String FROC_PATH;
 	@Value("${FROC_NAME}")
 	String FROC_NAME;
 	@Value("${FROC_PID}")
 	String FROC_PID;
-	
+
 	//
 
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
@@ -184,23 +190,45 @@ public class OsaWebInterface {
 	public @ResponseBody
 	OsaItem getResponse(@RequestHeader Map<String, Object> headers) {
 
-		// OsaItem oi = new OsaItem("Everyone is happy!");
 		OsaItem oi = new OsaItem();
 
-		for (String key : headers.keySet()) {
-			log.info(key + " -> " + headers.get(key));
+		//
+		// debug
+		//
+
+		headers.put(FROC_NAME, TESTOSA);
+		headers.put(FROC_PATH, "/home/user/iwm/osa/questtype_templates.zip");
+		headers.put(FROC_PID, "5101");
+
+		// debug end
+
+		if (!headers.containsKey(FROC_NAME) || !headers.containsKey(FROC_PATH)
+				|| !headers.containsKey(FROC_PID)) {
+			oi.addErrorEntry("Missing header-key.");
+			return oi;
 		}
 
-		InputStream qtiInput;
+		List<OsaDbPages> pagesByPid = pagesService
+				.getOsaDbPagesByPid((String) headers.get(FROC_PID));
+		int startPage;
+		if (pagesByPid.isEmpty()) {
+			oi.addErrorEntry("Missing page: " + headers.get(FROC_PID));
+			return oi;
+		} else {
+			startPage = pagesByPid.get(0).getId();
+		}
+
 		try {
-			qtiInput = inputFile.getInputStream();
+			InputStream qtiInput = new FileInputStream(new File(
+					(String) headers.get(FROC_PATH)));
 
 			String base = FilenameUtils.concat(OsaFileBase, osa_name);
 
 			ParseAndBuild pab = new ParseAndBuild(oi);
 
-			if (pab.prepare(qtiInput, base) && pab.parse("7000") && pab.build()
-					&& pab.cleanUp(MAGIC_START_PAGES)) {
+			if (pab.prepare(qtiInput, base)
+					&& pab.parse((String) headers.get(FROC_PID)) && pab.build()
+					&& pab.cleanUp(startPage)) {
 				// pass
 			}
 		} catch (IOException e) {

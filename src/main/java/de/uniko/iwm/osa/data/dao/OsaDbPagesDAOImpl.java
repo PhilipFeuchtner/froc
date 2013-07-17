@@ -42,6 +42,14 @@ public class OsaDbPagesDAOImpl implements OsaDbPagesDAO {
 		return query.list();
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<OsaDbPages> getOsaDbPagesByPid(String pid) {
+		Query query = sessionFactory.getCurrentSession().createQuery(
+				"from OsaDbPages p where p.pid=?");
+		query.setString(0, pid);
+		return query.list();
+	}
+	
 	public void storeOsaDbPages(OsaDbPages p) {
 		sessionFactory.getCurrentSession().saveOrUpdate(p);
 	}
