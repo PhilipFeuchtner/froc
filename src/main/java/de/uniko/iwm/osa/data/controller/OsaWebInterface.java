@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.UniqueConstraint;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
@@ -62,12 +64,9 @@ public class OsaWebInterface {
 
 	private OsaItem oi;
 
-	private String osa_name = "psychosa";
-
 	@Autowired
 	private String OsaFileBase;
 
-	final String image_base = "new_images";
 	private @Value("${CYQUEST_DBCONFIG}")
 	String CYQUEST_PHP_CONFIG_FILE;
 	private @Value("${DATABASE_PORT}")
@@ -76,7 +75,6 @@ public class OsaWebInterface {
 	private String TESTOSA = "psychosa";
 
 	@Autowired
-	// ("keyword2cyquest")
 	private HashMap<String, Integer> keyword2cyquest;
 
 	@Value("${QTI_MEDIAFOLDER}")
@@ -107,20 +105,8 @@ public class OsaWebInterface {
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
 	public String contact(Model model) {
 
-		// qtree.toDot();
-
 		OsaConfigExtractor dbce = new OsaConfigExtractor(OsaFileBase,
 				CYQUEST_PHP_CONFIG_FILE);
-		if (dbce.extract(TESTOSA)) {
-			// <!-- <jee:jndi-lookup id="dataSource"
-			// jndi-name="java:comp/env/${JeeConnection}"
-			// jdbc:mysql//localhost:3306/dbname
-			log.info("Success: [(" + dbce.getDb_server() + ")("
-					+ dbce.getDb_user() + ")(" + dbce.getDb_password() + ")]");
-			log.info("Jdbc   : [jdbc:mysql//" + dbce.getDb_server() + ":"
-					+ MAGIC_DB_PORT + "/" + osa_name + "]");
-		} else
-			log.info("Fail");
 
 		UploadItem it = new UploadItem();
 		it.setOsaList(dbce.getOsaNames());
@@ -147,13 +133,15 @@ public class OsaWebInterface {
 			return new ModelAndView("osadbform");
 		}
 
+		String osa_name = uploadItem.getOsaList().get(0);
+
 		// Some type of file processing...
 		log.info("-------------------------------------------");
 		log.info("Test upload: " + uploadItem.getName());
 		log.info("Test upload: "
 				+ uploadItem.getFileData().getOriginalFilename());
 		log.info("-------------------------------------------");
-		log.info("Osas Name: " + uploadItem.getOsaList().get(0));
+		log.info("Osas Name: " + osa_name);
 		log.info("-------------------------------------------");
 
 		OsaConfigExtractor dbce = new OsaConfigExtractor(OsaFileBase,
@@ -222,15 +210,15 @@ public class OsaWebInterface {
 			InputStream qtiInput = new FileInputStream(new File(
 					(String) headers.get(FROC_PATH)));
 
-			String base = FilenameUtils.concat(OsaFileBase, osa_name);
+			String base = FilenameUtils.concat(OsaFileBase,
+					(String) headers.get(FROC_NAME));
 
 			ParseAndBuild pab = new ParseAndBuild(oi);
 
-			if (pab.prepare(qtiInput, base)
+			@SuppressWarnings(value="unused")
+			boolean success = pab.prepare(qtiInput, base)
 					&& pab.parse((String) headers.get(FROC_PID)) && pab.build()
-					&& pab.cleanUp(startPage)) {
-				// pass
-			}
+					&& pab.cleanUp(startPage);
 		} catch (IOException e) {
 			oi.addErrorEntry(e.getMessage());
 			e.printStackTrace();
@@ -241,7 +229,6 @@ public class OsaWebInterface {
 
 	public class ParseAndBuild {
 		Parse parser;
-		// Builder builder;
 		OsaItem oi;
 
 		String source;
@@ -292,14 +279,12 @@ public class OsaWebInterface {
 		}
 
 		public boolean build() {
-			// builder = new Builder();
 			hasErrors = hasErrors || !builder.build(oi, generatedPages);
 
 			return !hasErrors;
 		}
 
 		public boolean cleanUp(int startPage) {
-			// QTree qtree = new QTree();
 
 			int jtp = qtree.scanDatabase(startPage, oi);
 			hasErrors = hasErrors
