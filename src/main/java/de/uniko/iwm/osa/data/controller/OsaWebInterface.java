@@ -180,15 +180,15 @@ public class OsaWebInterface {
 
 		OsaItem oi = new OsaItem();
 
-		//
-		// debug
-		//
-
-		headers.put(FROC_NAME, TESTOSA);
-		headers.put(FROC_PATH, "/home/user/iwm/osa/questtype_templates.zip");
-		headers.put(FROC_PID, "5101");
-
-		// debug end
+		/*
+		 * // // debug //
+		 * 
+		 * headers.put(FROC_NAME, TESTOSA); headers.put(FROC_PATH,
+		 * "/home/user/iwm/osa/questtype_templates.zip"); headers.put(FROC_PID,
+		 * "5101");
+		 * 
+		 * // debug end
+		 */
 
 		if (!headers.containsKey(FROC_NAME) || !headers.containsKey(FROC_PATH)
 				|| !headers.containsKey(FROC_PID)) {
@@ -215,7 +215,7 @@ public class OsaWebInterface {
 
 			ParseAndBuild pab = new ParseAndBuild(oi);
 
-			@SuppressWarnings(value="unused")
+			@SuppressWarnings(value = "unused")
 			boolean success = pab.prepare(qtiInput, base)
 					&& pab.parse((String) headers.get(FROC_PID)) && pab.build()
 					&& pab.cleanUp(startPage);
