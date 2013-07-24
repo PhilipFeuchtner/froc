@@ -40,41 +40,26 @@ public class Builder {
 	@Autowired
 	private HashMap<String, Integer> keyword2cyquest;
 
-//	@Value("${QTI_MEDIAFOLDER}")
-//	String QTI_MEDIAFOLDER;
-//	@Value("${CYQUEST_MEDIAFOLDER}")
-//	String CYQUEST_MEDIAFOLDER;
-//
-//	@Value("${IMSMANIFEST}")
-//	String IMSMANIFEST;
+	// @Value("${QTI_MEDIAFOLDER}")
+	// String QTI_MEDIAFOLDER;
+	// @Value("${CYQUEST_MEDIAFOLDER}")
+	// String CYQUEST_MEDIAFOLDER;
+	//
+	// @Value("${IMSMANIFEST}")
+	// String IMSMANIFEST;
 
 	String fwdftemplate = "a:2:{s:1:\"p\";i:%d;s:1:\"t\";s:6:\"weiter\";}";
 
+	/**
+	 * writes pages to ds
+	 * 
+	 * @param oi
+	 *            collect reports
+	 * @param generatedPages
+	 *            list of pages, quest & questitem
+	 * @return true
+	 */
 	public boolean build(OsaItem oi, List<Cy_PageItem> generatedPages) {
-		
-		// System.err.println("gp: " + generatedPages.size());
-
-		// try {
-		// String base = UnZip.unzipFile(zipFile);
-		// Parse parser = new Parse(base, keyword2cyquest, pagesid, oi);
-		//
-		// //
-		// // step zero
-		// // copy media files
-		//
-		// FileUtils
-		// .copyDirectory(
-		// new File(FilenameUtils
-		// .concat(base, QTI_MEDIAFOLDER)),
-		// new File(FilenameUtils.concat(osaBase,
-		// CYQUEST_MEDIAFOLDER)));
-		//
-		// //
-		// // step one
-		// // scan manifest
-		// //
-		// if (parser.handleManifest(IMSMANIFEST)) {
-		// List<Cy_PageItem> generatedPages = parser.getGenerated_pages();
 
 		for (Cy_PageItem pi : generatedPages) {
 
@@ -99,33 +84,20 @@ public class Builder {
 			}
 		}
 
-		//
-		// set navigation
-		//
-
-		// Collections.reverse(generatedPages);
-		// for (Cy_PageItem pi : generatedPages) {
-		// OsaDbPages p = pi.getPage();
-		//
-		// p.setForwardform(String.format(fwdftemplate, jumpToPage));
-		// pagesService.storeOsaDbPages(p);
-		//
-		// jumpToPage = p.getId();
-		// }
-		// }
-		// } catch (IOException e) {
-		// oi.addErrorEntry(e.getMessage());
-		// e.printStackTrace();
-		//
-		// return false;
-		// }
-
 		return true;
 	}
 
+	/**
+	 * links pages with forward-navigation
+	 * 
+	 * @param generatedPages
+	 * @param jumpToPage
+	 *            id where the last question directs to
+	 * @return true
+	 */
 	public boolean setNavigation(List<Cy_PageItem> generatedPages,
 			int jumpToPage) {
-		
+
 		Collections.reverse(generatedPages);
 		for (Cy_PageItem pi : generatedPages) {
 			OsaDbPages p = pi.getPage();

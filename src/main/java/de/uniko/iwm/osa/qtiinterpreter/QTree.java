@@ -10,7 +10,6 @@ import java.util.List;
 import org.lorecraft.phparser.SerializedPhpParser;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import de.uniko.iwm.osa.data.model.Item;
 import de.uniko.iwm.osa.data.model.OsaDbPages;
 import de.uniko.iwm.osa.data.model.OsaDbQuestitems;
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
@@ -35,12 +34,23 @@ public class QTree {
 	Set<Integer> quests2remove = null;
 	Set<Integer> questitems2remove = null;
 
+	/**
+	 * scan database: - scan pages to remove - quest - questitems
+	 * 
+	 * and removes them all
+	 * 
+	 * @param startPage
+	 *            pid of the first page to remove
+	 * @param oi
+	 *            report item
+	 * @return returns success/failure
+	 */
 	public int scanDatabase(int startPage, OsaItem oi) {
 
 		pages2remove = new TreeSet<Integer>();
 		quests2remove = new TreeSet<Integer>();
 		questitems2remove = new TreeSet<Integer>();
-		
+
 		//
 		// parse pages
 		//
@@ -101,7 +111,7 @@ public class QTree {
 		System.err.println("pages    : " + pages2remove);
 		System.err.println("quests   : " + quests2remove);
 		System.err.println("questitem: " + questitems2remove);
-		
+
 		for (Integer i : pages2remove) {
 			oi.addDeletedPage(i);
 		}
@@ -109,16 +119,16 @@ public class QTree {
 		for (Integer i : quests2remove) {
 			oi.addDeletedQuest(i);
 		}
-		
+
 		for (Integer i : questitems2remove) {
 			oi.addDeletedQuestitem(i);
 		}
-		
+
 		//
 		// remove items from db
 		//
 
-		// removeAllContent();
+		removeAllContent();
 
 		return page;
 	}
@@ -167,27 +177,27 @@ public class QTree {
 
 		return true;
 	}
-	
+
 	// -----------------------------------------------------------------------
 
 	public List<Integer> getPages2remove() {
 		List<Integer> result = new ArrayList<Integer>();
 		result.addAll(pages2remove);
-		
+
 		return result;
 	}
 
 	public List<Integer> getQuests2remove() {
 		List<Integer> result = new ArrayList<Integer>();
 		result.addAll(quests2remove);
-		
+
 		return result;
 	}
 
 	public List<Integer> getQuestitems2remove() {
 		List<Integer> result = new ArrayList<Integer>();
 		result.addAll(questitems2remove);
-		
+
 		return result;
-	}	
+	}
 }

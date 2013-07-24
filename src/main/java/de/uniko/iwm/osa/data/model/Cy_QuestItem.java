@@ -3,6 +3,11 @@ package de.uniko.iwm.osa.data.model;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author user
+ *
+ * wrapper class
+ */
 public class Cy_QuestItem {
 	
 	OsaDbQuestitems questitem = null;

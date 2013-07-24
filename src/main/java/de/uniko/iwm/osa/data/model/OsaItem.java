@@ -6,6 +6,12 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * @author user
+ *
+ * reporting class
+ * list of new item, deleted item und errors
+ */
 @XmlRootElement(name = "osaItem")
 public class OsaItem {
 

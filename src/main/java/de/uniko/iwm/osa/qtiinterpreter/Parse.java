@@ -43,6 +43,9 @@ import de.uniko.iwm.osa.data.model.OsaDbQuests;
 import de.uniko.iwm.osa.data.model.OsaItem;
 import de.uniko.iwm.osa.utils.HtmlFilter;
 
+/**
+ * @author user main class
+ */
 public class Parse {
 
 	static Logger log = Logger.getLogger(Parse.class.getName());
@@ -52,6 +55,9 @@ public class Parse {
 	//
 	// imscp assessment
 	//
+	/**
+	 * xpath expressions imsmanifest
+	 */
 	// final String QUERY_MANIFEST_RESOURCE =
 	// "/imscp:manifest/imscp:resources/imscp:resource[@type='imsqti_item_xmlv2p1']";
 	final String QUERY_MANIFEST_ASSESSMENT = "/imscp:manifest/imscp:resources"
@@ -70,6 +76,9 @@ public class Parse {
 	// assessment -> assessmentItemRef
 	//
 
+	/**
+	 * xpath imsqti entries
+	 */
 	final String QUERY_IMSQTI_ASSESSMENTTEST = "imsqti:assessmentTest";
 	final String QUERY_IMSQTI_TESTPART = "imsqti:testPart";
 	final String QUERY_IMSQTI_ASSESSMENTSECTION = "imsqti:assessmentSection";
@@ -86,6 +95,9 @@ public class Parse {
 	// assessmentItem
 	//
 
+	/**
+	 * xpath-queries imsqti
+	 */
 	final String PART_ITEM_BODY = "/imsqti:assessmentItem/imsqti:itemBody";
 	final String PART_ASS_TITLE = "/imsqti:assessmentItem/@title";
 	final String PART_ASS_IDENTIFIER = "/imsqti:assessmentItem/@identifier";
@@ -162,6 +174,14 @@ public class Parse {
 
 	}
 
+	/**
+	 * entry point parses qti-file and produces a list of generated pages
+	 * 
+	 * @param filename
+	 *            file to parse
+	 * @return true/false
+	 * @throws FileNotFoundException
+	 */
 	public boolean handleManifest(String filename) throws FileNotFoundException {
 		// osaPage = new OsaPage();
 
@@ -511,7 +531,8 @@ public class Parse {
 				log.info("Cyquest Question Type: " + questionType);
 				return;
 			} else {
-				oi.addErrorEntry("Unknown Cyquest Question Type: " + questionType);
+				oi.addErrorEntry("Unknown Cyquest Question Type: "
+						+ questionType);
 				log.error("Unknown Cyquest Question Type: " + questionType);
 			}
 		}

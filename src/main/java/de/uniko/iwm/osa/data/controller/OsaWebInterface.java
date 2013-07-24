@@ -9,8 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.UniqueConstraint;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
@@ -37,6 +35,7 @@ import de.uniko.iwm.osa.qtiinterpreter.QTree;
 import de.uniko.iwm.osa.utils.OsaConfigExtractor;
 import de.uniko.iwm.osa.utils.UnZip;
 
+
 @Controller
 public class OsaWebInterface {
 
@@ -47,12 +46,21 @@ public class OsaWebInterface {
 	// @Value("classpath:/questtype_templates.zip")
 	// private Resource inputFile;
 
+	/**
+	 * Builder-Component
+	 */
 	@Autowired
 	Builder builder;
 
+	/**
+	 * QTree find & removes unused questions
+	 */
 	@Autowired
 	private QTree qtree;
 
+	/**
+	 * Pagesservice stores pages in ds
+	 */
 	@Autowired
 	OsaDbPagesService pagesService;
 
@@ -64,6 +72,9 @@ public class OsaWebInterface {
 
 	private OsaItem oi;
 
+	/**
+	 * 
+	 */
 	@Autowired
 	private String OsaFileBase;
 
@@ -72,8 +83,9 @@ public class OsaWebInterface {
 	private @Value("${DATABASE_PORT}")
 	String MAGIC_DB_PORT;
 
-	private String TESTOSA = "psychosa";
-
+	/**
+	 * 
+	 */
 	@Autowired
 	private HashMap<String, Integer> keyword2cyquest;
 
@@ -102,6 +114,12 @@ public class OsaWebInterface {
 
 	//
 
+	/**
+	 * debug interface
+	 * 
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
 	public String contact(Model model) {
 
@@ -115,6 +133,14 @@ public class OsaWebInterface {
 		return "osadbform";
 	}
 
+	/**
+	 * debug interface
+	 * 
+	 * @param uploadItem
+	 * @param result
+	 * @return
+	 * @throws IOException
+	 */
 	@RequestMapping(value = "/index", method = RequestMethod.POST)
 	public ModelAndView create(UploadItem uploadItem, BindingResult result)
 			throws IOException {
@@ -174,6 +200,14 @@ public class OsaWebInterface {
 
 	}
 
+	/**
+	 * main entry point
+	 * 
+	 * 
+	 * @param headers
+	 *            requestheader, see froc-path, froc-name, forc-pid, autowired
+	 * @return returns an osaitem oi
+	 */
 	@RequestMapping("/upload")
 	public @ResponseBody
 	OsaItem getResponse(@RequestHeader Map<String, Object> headers) {
@@ -183,7 +217,7 @@ public class OsaWebInterface {
 		/*
 		 * // // debug //
 		 * 
-		 * headers.put(FROC_NAME, TESTOSA); headers.put(FROC_PATH,
+		 * headers.put(FROC_NAME, "psychosa"); headers.put(FROC_PATH,
 		 * "/home/user/iwm/osa/questtype_templates.zip"); headers.put(FROC_PID,
 		 * "5101");
 		 * 
@@ -227,6 +261,9 @@ public class OsaWebInterface {
 		return oi;
 	}
 
+	/*
+	 * helper class
+	 */
 	public class ParseAndBuild {
 		Parse parser;
 		OsaItem oi;
@@ -236,11 +273,24 @@ public class OsaWebInterface {
 		boolean hasErrors;
 		List<Cy_PageItem> generatedPages;
 
+		/**
+		 * @param oi
+		 *            osaitem as returnvalue
+		 */
 		public ParseAndBuild(OsaItem oi) {
 			this.oi = oi;
 			hasErrors = false;
 		}
 
+		/**
+		 * prepare first step
+		 * 
+		 * @param zipFile
+		 *            qti-file to parse
+		 * @param base
+		 *            osa-base, path to osa
+		 * @return true/fale: success-value
+		 */
 		public boolean prepare(InputStream zipFile, String base) {
 			try {
 				source = UnZip.unzipFile(zipFile);
@@ -263,6 +313,13 @@ public class OsaWebInterface {
 			}
 		}
 
+		/**
+		 * parses qti-file, but donot alter the ds
+		 * 
+		 * @param pagesid
+		 *            pid of the first question
+		 * @return success/failure
+		 */
 		public boolean parse(String pagesid) {
 			parser = new Parse(source, keyword2cyquest, pagesid, oi);
 
@@ -278,12 +335,23 @@ public class OsaWebInterface {
 			return !hasErrors;
 		}
 
+		/**
+		 * writes pages, questitem & quest to ds
+		 * 
+		 * @return success/failure
+		 */
 		public boolean build() {
 			hasErrors = hasErrors || !builder.build(oi, generatedPages);
 
 			return !hasErrors;
 		}
 
+		/**
+		 * remove unused entries from ds and generate navigation
+		 * 
+		 * @param startPage
+		 * @return
+		 */
 		public boolean cleanUp(int startPage) {
 
 			int jtp = qtree.scanDatabase(startPage, oi);
