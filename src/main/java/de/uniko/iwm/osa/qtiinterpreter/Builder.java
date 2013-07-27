@@ -96,16 +96,20 @@ public class Builder {
 	 * @return true
 	 */
 	public boolean setNavigation(List<Cy_PageItem> generatedPages,
-			int jumpToPage) {
+			int jumpToPage, String firstMd5) {
 
-		Collections.reverse(generatedPages);
-		for (Cy_PageItem pi : generatedPages) {
-			OsaDbPages p = pi.getPage();
+		if (generatedPages.size() >= 1) {
+			generatedPages.get(0).getPage().setMd5key(firstMd5);
 
-			p.setForwardform(String.format(fwdftemplate, jumpToPage));
-			pagesService.storeOsaDbPages(p);
+			Collections.reverse(generatedPages);
+			for (Cy_PageItem pi : generatedPages) {
+				OsaDbPages p = pi.getPage();
 
-			jumpToPage = p.getId();
+				p.setForwardform(String.format(fwdftemplate, jumpToPage));
+				pagesService.storeOsaDbPages(p);
+
+				jumpToPage = p.getId();
+			}
 		}
 
 		return true;

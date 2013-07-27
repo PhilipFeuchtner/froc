@@ -208,6 +208,10 @@ public class OsaWebInterface {
 	 *            requestheader, see froc-path, froc-name, forc-pid, autowired
 	 * @return returns an osaitem oi
 	 */
+	/**
+	 * @param headers
+	 * @return
+	 */
 	@RequestMapping("/upload")
 	public @ResponseBody
 	OsaItem getResponse(@RequestHeader Map<String, Object> headers) {
@@ -230,6 +234,9 @@ public class OsaWebInterface {
 			return oi;
 		}
 
+		/**
+		 * select id by pid
+		 */
 		List<OsaDbPages> pagesByPid = pagesService
 				.getOsaDbPagesByPid((String) headers.get(FROC_PID));
 		int startPage;
@@ -249,6 +256,17 @@ public class OsaWebInterface {
 
 			ParseAndBuild pab = new ParseAndBuild(oi);
 
+			/**
+			 * do the work:
+			 * 
+			 * first unzip qti-file
+			 * second parse qti
+			 * third update ds
+			 * fourth set navigation
+			 * 
+			 * if anything goes wrong, the following steps will not executed
+			 * short-cut logic
+			 */
 			@SuppressWarnings(value = "unused")
 			boolean success = pab.prepare(qtiInput, base)
 					&& pab.parse((String) headers.get(FROC_PID)) && pab.build()
@@ -355,8 +373,10 @@ public class OsaWebInterface {
 		public boolean cleanUp(int startPage) {
 
 			int jtp = qtree.scanDatabase(startPage, oi);
+			String firstMd5 = qtree.getFirstMd5();
+			
 			hasErrors = hasErrors
-					|| !builder.setNavigation(generatedPages, jtp);
+					|| !builder.setNavigation(generatedPages, jtp, firstMd5);
 
 			return !hasErrors;
 		}

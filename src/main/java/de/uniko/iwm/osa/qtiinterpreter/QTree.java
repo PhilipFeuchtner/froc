@@ -33,6 +33,8 @@ public class QTree {
 	Set<Integer> pages2remove = null;
 	Set<Integer> quests2remove = null;
 	Set<Integer> questitems2remove = null;
+	
+	String firstMd5 = null;
 
 	/**
 	 * scan database: - scan pages to remove - quest - questitems
@@ -51,6 +53,21 @@ public class QTree {
 		quests2remove = new TreeSet<Integer>();
 		questitems2remove = new TreeSet<Integer>();
 
+		// 
+		// rescue md5 of start page
+		//
+		
+		List<OsaDbPages> first_pages = pagesService
+				.getOsaDbPagesById(new Integer(startPage));
+
+		if (first_pages.size() == 1) {
+			OsaDbPages first_page = first_pages.get(0);
+			firstMd5 = first_page.getMd5key();
+		} else {
+			oi.addErrorEntry("missing or abigous id: " + startPage);
+			return 0;
+		}
+		
 		//
 		// parse pages
 		//
@@ -199,5 +216,9 @@ public class QTree {
 		result.addAll(questitems2remove);
 
 		return result;
+	}
+	
+	public String getFirstMd5() {
+		return firstMd5;
 	}
 }
