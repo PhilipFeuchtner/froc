@@ -55,7 +55,7 @@
 	<jee:jndi-lookup id="dataSource" jndi-name="java:comp/env/jdbc/MYSQLDB" />
 
 	<jdbc:initialize-database data-source="dataSource"
-		enabled="true">
+		enabled="f">
 	    <jdbc:script location="classpath:sql/init.sql" /> 
 		<jdbc:script location="classpath:sql/db_osa.sql" />
 	</jdbc:initialize-database>

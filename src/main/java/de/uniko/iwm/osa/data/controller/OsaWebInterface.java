@@ -35,7 +35,6 @@ import de.uniko.iwm.osa.qtiinterpreter.QTree;
 import de.uniko.iwm.osa.utils.OsaConfigExtractor;
 import de.uniko.iwm.osa.utils.UnZip;
 
-
 @Controller
 public class OsaWebInterface {
 
@@ -64,9 +63,9 @@ public class OsaWebInterface {
 	@Autowired
 	OsaDbPagesService pagesService;
 
-	private @Value("${MAGIC_START_PAGES}")
-	int MAGIC_START_PAGES;
-	int JUMPTOPAGE = 177;
+	// private @Value("${MAGIC_START_PAGES}")
+	// int MAGIC_START_PAGES;
+	// int JUMPTOPAGE = 177;
 	@Value("${IMSMANIFEST}")
 	String IMSMANIFEST;
 
@@ -181,17 +180,33 @@ public class OsaWebInterface {
 		}
 
 		if (!uploadItem.getFileData().isEmpty()) {
-			InputStream qtiInput = uploadItem.getFileData().getInputStream();
 
-			String base = FilenameUtils.concat(OsaFileBase, osa_name);
+			/**
+			 * select id by pid
+			 */
+			List<OsaDbPages> pagesByPid = pagesService
+					.getOsaDbPagesByPid(uploadItem.getPagesid());
+			int startPage = 0;
+			
+			if (pagesByPid.isEmpty()) {
+				oi.addErrorEntry("Missing page: " + uploadItem.getPagesid());
 
-			ParseAndBuild pab = new ParseAndBuild(oi);
+			} else {
+				startPage = pagesByPid.get(0).getId();
 
-			if (pab.prepare(qtiInput, base)
-					&& pab.parse(uploadItem.getPagesid()) && pab.build()
-					&& pab.cleanUp(MAGIC_START_PAGES)) {
-				modelAndView.setViewName("osa-status-ok");
-				return modelAndView;
+				InputStream qtiInput = uploadItem.getFileData()
+						.getInputStream();
+
+				String base = FilenameUtils.concat(OsaFileBase, osa_name);
+
+				ParseAndBuild pab = new ParseAndBuild(oi);
+
+				if (pab.prepare(qtiInput, base)
+						&& pab.parse(uploadItem.getPagesid()) && pab.build()
+						&& pab.cleanUp(startPage)) {
+					modelAndView.setViewName("osa-status-ok");
+					return modelAndView;
+				}
 			}
 		}
 
@@ -259,10 +274,8 @@ public class OsaWebInterface {
 			/**
 			 * do the work:
 			 * 
-			 * first unzip qti-file
-			 * second parse qti
-			 * third update ds
-			 * fourth set navigation
+			 * first unzip qti-file second parse qti third update ds fourth set
+			 * navigation
 			 * 
 			 * if anything goes wrong, the following steps will not executed
 			 * short-cut logic
@@ -374,7 +387,7 @@ public class OsaWebInterface {
 
 			int jtp = qtree.scanDatabase(startPage, oi);
 			String firstMd5 = qtree.getFirstMd5();
-			
+
 			hasErrors = hasErrors
 					|| !builder.setNavigation(generatedPages, jtp, firstMd5);
 
