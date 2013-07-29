@@ -199,10 +199,10 @@ public class OsaWebInterface {
 
 				String base = FilenameUtils.concat(OsaFileBase, osa_name);
 
-				ParseAndBuild pab = new ParseAndBuild(oi);
+				ParseAndBuild pab = new ParseAndBuild(oi, uploadItem.getPagesid());
 
 				if (pab.prepare(qtiInput, base)
-						&& pab.parse(uploadItem.getPagesid()) && pab.build()
+						&& pab.parse() && pab.build()
 						&& pab.cleanUp(startPage)) {
 					modelAndView.setViewName("osa-status-ok");
 					return modelAndView;
@@ -269,7 +269,7 @@ public class OsaWebInterface {
 			String base = FilenameUtils.concat(OsaFileBase,
 					(String) headers.get(FROC_NAME));
 
-			ParseAndBuild pab = new ParseAndBuild(oi);
+			ParseAndBuild pab = new ParseAndBuild(oi, (String) headers.get(FROC_PID));
 
 			/**
 			 * do the work:
@@ -282,7 +282,7 @@ public class OsaWebInterface {
 			 */
 			@SuppressWarnings(value = "unused")
 			boolean success = pab.prepare(qtiInput, base)
-					&& pab.parse((String) headers.get(FROC_PID)) && pab.build()
+					&& pab.parse() && pab.build()
 					&& pab.cleanUp(startPage);
 		} catch (IOException e) {
 			oi.addErrorEntry(e.getMessage());
@@ -303,13 +303,17 @@ public class OsaWebInterface {
 
 		boolean hasErrors;
 		List<Cy_PageItem> generatedPages;
+		
+		String pagesId;
 
 		/**
 		 * @param oi
 		 *            osaitem as returnvalue
 		 */
-		public ParseAndBuild(OsaItem oi) {
+		public ParseAndBuild(OsaItem oi, String pagesId) {
 			this.oi = oi;
+			this.pagesId = pagesId;
+			
 			hasErrors = false;
 		}
 
@@ -351,8 +355,8 @@ public class OsaWebInterface {
 		 *            pid of the first question
 		 * @return success/failure
 		 */
-		public boolean parse(String pagesid) {
-			parser = new Parse(source, keyword2cyquest, pagesid, oi);
+		public boolean parse() {
+			parser = new Parse(source, keyword2cyquest, pagesId, oi);
 
 			try {
 				hasErrors = hasErrors || !parser.handleManifest(IMSMANIFEST);
@@ -389,7 +393,7 @@ public class OsaWebInterface {
 			String firstMd5 = qtree.getFirstMd5();
 
 			hasErrors = hasErrors
-					|| !builder.setNavigation(generatedPages, jtp, firstMd5);
+					|| !builder.setNavigation(generatedPages, jtp, firstMd5, pagesId);
 
 			return !hasErrors;
 		}

@@ -96,10 +96,12 @@ public class Builder {
 	 * @return true
 	 */
 	public boolean setNavigation(List<Cy_PageItem> generatedPages,
-			int jumpToPage, String firstMd5) {
+			int jumpToPage, String firstMd5, String firstPagesId) {
 
 		if (generatedPages.size() >= 1) {
-			generatedPages.get(0).getPage().setMd5key(firstMd5);
+			OsaDbPages firstPage = generatedPages.get(0).getPage();  
+			firstPage.setMd5key(firstMd5);
+			firstPage.setPid(firstPagesId);
 
 			Collections.reverse(generatedPages);
 			for (Cy_PageItem pi : generatedPages) {
