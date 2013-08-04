@@ -1,4 +1,4 @@
-package de.uniko.iwm.osa.qtiinterpreter;
+package de.uniko.iwm.osa.data.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,25 +9,26 @@ import java.util.List;
 
 import org.lorecraft.phparser.SerializedPhpParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
+import de.uniko.iwm.osa.data.dao.OsaDbPagesDAO;
+import de.uniko.iwm.osa.data.dao.OsaDbQuestitemsDAO;
+import de.uniko.iwm.osa.data.dao.OsaDbQuestsDAO;
 import de.uniko.iwm.osa.data.model.OsaDbPages;
 import de.uniko.iwm.osa.data.model.OsaDbQuestitems;
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
 import de.uniko.iwm.osa.data.model.OsaItem;
-import de.uniko.iwm.osa.data.service.OsaDbPagesService;
-import de.uniko.iwm.osa.data.service.OsaDbQuestitemsService;
-import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
 
-public class QTree {
+public class QtiTreeServiceImpl implements QtiTreeService {
 
 	@Autowired
-	private OsaDbPagesService pagesService;
+	private OsaDbPagesDAO pagesDAO;
 
 	@Autowired
-	private OsaDbQuestitemsService questsitemsService;
+	private OsaDbQuestitemsDAO questsitemsDAO;
 
 	@Autowired
-	private OsaDbQuestsService questsService;
+	private OsaDbQuestsDAO questsDAO;
 
 	// resultset
 	Set<Integer> pages2remove = null;
@@ -36,17 +37,10 @@ public class QTree {
 	
 	String firstMd5 = null;
 
-	/**
-	 * scan database: - scan pages to remove - quest - questitems
-	 * 
-	 * and removes them all
-	 * 
-	 * @param startPage
-	 *            pid of the first page to remove
-	 * @param oi
-	 *            report item
-	 * @return returns success/failure
+	/* (non-Javadoc)
+	 * @see de.uniko.iwm.osa.qtiinterpreter.QtiTreeService#scanDatabase(int, de.uniko.iwm.osa.data.model.OsaItem)
 	 */
+	@Transactional
 	public int scanDatabase(int startPage, OsaItem oi) {
 
 		pages2remove = new TreeSet<Integer>();
@@ -57,7 +51,7 @@ public class QTree {
 		// rescue md5 of start page
 		//
 		
-		List<OsaDbPages> first_pages = pagesService
+		List<OsaDbPages> first_pages = pagesDAO
 				.getOsaDbPagesById(new Integer(startPage));
 
 		if (first_pages.size() == 1) {
@@ -77,7 +71,7 @@ public class QTree {
 
 		while (hasNextPage) {
 
-			List<OsaDbPages> current_pages = pagesService
+			List<OsaDbPages> current_pages = pagesDAO
 					.getOsaDbPagesById(new Integer(page));
 
 			if (!current_pages.isEmpty()) {
@@ -113,7 +107,7 @@ public class QTree {
 				// is quest?, end reached?
 				//
 
-				List<OsaDbQuestitems> questitems_list = questsitemsService
+				List<OsaDbQuestitems> questitems_list = questsitemsDAO
 						.listOsaDbQuestitemsByPagesid(page);
 				if (questitems_list.size() == 0) {
 					hasNextPage = false;
@@ -152,7 +146,7 @@ public class QTree {
 
 	void parse_questitems(int id) {
 
-		List<OsaDbQuestitems> questitems_list = questsitemsService
+		List<OsaDbQuestitems> questitems_list = questsitemsDAO
 				.listOsaDbQuestitemsByPagesid(id);
 		for (OsaDbQuestitems item : questitems_list) {
 			int itemId = item.getId();
@@ -166,7 +160,7 @@ public class QTree {
 
 	void parse_quests(int id) {
 
-		List<OsaDbQuests> quests_list = questsService
+		List<OsaDbQuests> quests_list = questsDAO
 				.getOsaDbQuestsByQuestid(id);
 		for (OsaDbQuests item : quests_list) {
 			int questId = item.getId();
@@ -181,15 +175,15 @@ public class QTree {
 	boolean removeAllContent() {
 
 		for (Integer id : pages2remove) {
-			pagesService.removeOsaDbPages(id);
+			pagesDAO.removeOsaDbPages(id);
 		}
 
 		for (Integer id : quests2remove) {
-			questsService.removeOsaDbQuests(id);
+			questsDAO.removeOsaDbQuests(id);
 		}
 
 		for (Integer id : questitems2remove) {
-			questsitemsService.removeOsaDbQuestitems(id);
+			questsitemsDAO.removeOsaDbQuestitems(id);
 		}
 
 		return true;
@@ -197,6 +191,10 @@ public class QTree {
 
 	// -----------------------------------------------------------------------
 
+	/* (non-Javadoc)
+	 * @see de.uniko.iwm.osa.qtiinterpreter.QtiTreeService#getPages2remove()
+	 */
+	@Override
 	public List<Integer> getPages2remove() {
 		List<Integer> result = new ArrayList<Integer>();
 		result.addAll(pages2remove);
@@ -204,6 +202,10 @@ public class QTree {
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see de.uniko.iwm.osa.qtiinterpreter.QtiTreeService#getQuests2remove()
+	 */
+	@Override
 	public List<Integer> getQuests2remove() {
 		List<Integer> result = new ArrayList<Integer>();
 		result.addAll(quests2remove);
@@ -211,6 +213,10 @@ public class QTree {
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see de.uniko.iwm.osa.qtiinterpreter.QtiTreeService#getQuestitems2remove()
+	 */
+	@Override
 	public List<Integer> getQuestitems2remove() {
 		List<Integer> result = new ArrayList<Integer>();
 		result.addAll(questitems2remove);
@@ -218,6 +224,10 @@ public class QTree {
 		return result;
 	}
 	
+	/* (non-Javadoc)
+	 * @see de.uniko.iwm.osa.qtiinterpreter.QtiTreeService#getFirstMd5()
+	 */
+	@Override
 	public String getFirstMd5() {
 		return firstMd5;
 	}

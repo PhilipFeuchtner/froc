@@ -29,9 +29,9 @@ import de.uniko.iwm.osa.data.model.OsaDbPages;
 import de.uniko.iwm.osa.data.model.OsaItem;
 import de.uniko.iwm.osa.data.model.UploadItem;
 import de.uniko.iwm.osa.data.service.OsaDbPagesService;
-import de.uniko.iwm.osa.qtiinterpreter.Builder;
+import de.uniko.iwm.osa.data.service.QtiBuilderServive;
+import de.uniko.iwm.osa.data.service.QtiTreeService;
 import de.uniko.iwm.osa.qtiinterpreter.Parse;
-import de.uniko.iwm.osa.qtiinterpreter.QTree;
 import de.uniko.iwm.osa.utils.OsaConfigExtractor;
 import de.uniko.iwm.osa.utils.UnZip;
 
@@ -49,13 +49,13 @@ public class OsaWebInterface {
 	 * Builder-Component
 	 */
 	@Autowired
-	Builder builder;
+	QtiBuilderServive builder;
 
 	/**
 	 * QTree find & removes unused questions
 	 */
 	@Autowired
-	private QTree qtree;
+	private QtiTreeService qtree;
 
 	/**
 	 * Pagesservice stores pages in ds

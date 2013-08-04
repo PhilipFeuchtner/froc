@@ -1,4 +1,4 @@
-package de.uniko.iwm.osa.qtiinterpreter;
+package de.uniko.iwm.osa.data.service;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,29 +13,30 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
 
+import de.uniko.iwm.osa.data.dao.OsaDbPagesDAO;
+import de.uniko.iwm.osa.data.dao.OsaDbQuestitemsDAO;
+import de.uniko.iwm.osa.data.dao.OsaDbQuestsDAO;
 import de.uniko.iwm.osa.data.model.Cy_PageItem;
 import de.uniko.iwm.osa.data.model.Cy_QuestItem;
 import de.uniko.iwm.osa.data.model.OsaDbPages;
 import de.uniko.iwm.osa.data.model.OsaDbQuestitems;
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
 import de.uniko.iwm.osa.data.model.OsaItem;
-import de.uniko.iwm.osa.data.service.OsaDbPagesService;
-import de.uniko.iwm.osa.data.service.OsaDbQuestitemsService;
-import de.uniko.iwm.osa.data.service.OsaDbQuestsService;
 import de.uniko.iwm.osa.utils.UnZip;
 
-public class Builder {
-	static Logger log = Logger.getLogger(Builder.class.getName());
+public class QtiBuilderServiceImpl implements QtiBuilderServive {
+	static Logger log = Logger.getLogger(QtiBuilderServiceImpl.class.getName());
 
 	@Autowired
-	OsaDbPagesService pagesService;
+	OsaDbPagesDAO pagesDAO;
 
 	@Autowired
-	OsaDbQuestsService questsService;
+	OsaDbQuestsDAO questsDAO;
 
 	@Autowired
-	OsaDbQuestitemsService questitemsService;
+	OsaDbQuestitemsDAO questitemsDAO;
 
 	@Autowired
 	private HashMap<String, Integer> keyword2cyquest;
@@ -50,21 +51,16 @@ public class Builder {
 
 	String fwdftemplate = "a:2:{s:1:\"p\";i:%d;s:1:\"t\";s:6:\"weiter\";}";
 
-	/**
-	 * writes pages to ds
-	 * 
-	 * @param oi
-	 *            collect reports
-	 * @param generatedPages
-	 *            list of pages, quest & questitem
-	 * @return true
+	/* (non-Javadoc)
+	 * @see de.uniko.iwm.osa.qtiinterpreter.QtiBuilderServive#build(de.uniko.iwm.osa.data.model.OsaItem, java.util.List)
 	 */
+	@Transactional
 	public boolean build(OsaItem oi, List<Cy_PageItem> generatedPages) {
 
 		for (Cy_PageItem pi : generatedPages) {
 
 			OsaDbPages p = pi.getPage();
-			pagesService.addOsaDbPages(p);
+			pagesDAO.addOsaDbPages(p);
 			oi.addNewPage(p.getId());
 
 			for (Cy_QuestItem qi : pi.getCy_QuestItem()) {
@@ -72,13 +68,13 @@ public class Builder {
 				OsaDbQuestitems it = qi.getQuestitem();
 				it.setPagesid(p.getId());
 
-				questitemsService.addOsaDbQuestitems(it);
+				questitemsDAO.addOsaDbQuestitems(it);
 				oi.addNewQuestitem(it.getId());
 
 				for (OsaDbQuests q : qi.getQuestsList()) {
 					q.setQuestid(it.getId());
 
-					questsService.addOsaDbQuests(q);
+					questsDAO.addOsaDbQuests(q);
 					oi.addNewQuest(q.getId());
 				}
 			}
@@ -87,14 +83,10 @@ public class Builder {
 		return true;
 	}
 
-	/**
-	 * links pages with forward-navigation
-	 * 
-	 * @param generatedPages
-	 * @param jumpToPage
-	 *            id where the last question directs to
-	 * @return true
+	/* (non-Javadoc)
+	 * @see de.uniko.iwm.osa.qtiinterpreter.QtiBuilderServive#setNavigation(java.util.List, int, java.lang.String, java.lang.String)
 	 */
+	@Transactional
 	public boolean setNavigation(List<Cy_PageItem> generatedPages,
 			int jumpToPage, String firstMd5, String firstPagesId) {
 
@@ -108,7 +100,7 @@ public class Builder {
 				OsaDbPages p = pi.getPage();
 
 				p.setForwardform(String.format(fwdftemplate, jumpToPage));
-				pagesService.storeOsaDbPages(p);
+				pagesDAO.storeOsaDbPages(p);
 
 				jumpToPage = p.getId();
 			}
