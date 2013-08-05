@@ -1,10 +1,10 @@
 package de.uniko.iwm.osa.data.assessmentItem;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
-
-import net.sf.saxon.s9api.XdmNode;
 
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
 import de.uniko.iwm.osa.qtiinterpreter.Parse.ItemConigurator;
@@ -32,7 +32,7 @@ public class AssessmentItem_Type008 implements AssessmentItem {
 
 		this.quest = quest;
 		this.ic = ic;
-		
+
 		buildShowdesc();
 		buildTypevalues();
 
@@ -67,7 +67,7 @@ public class AssessmentItem_Type008 implements AssessmentItem {
 
 	void buildShowdesc() {
 		String question = ic.queryIQQuestion();
-		
+
 		String text = String.format(
 				"a:2:{s:4:\"type\";s:3:\"img\";s:5:\"value\";s:%d:\"%s\";}",
 				question.length(), question);
@@ -96,7 +96,9 @@ public class AssessmentItem_Type008 implements AssessmentItem {
 
 	void buildTypevalues() {
 		List<String> choices = ic.queryIQChoices();
-		
+
+		Pattern p = Pattern.compile("media/(.*)");
+
 		// num entries + array-string
 		String arrayFormat = "a:%d:{%s}";
 
@@ -113,6 +115,16 @@ public class AssessmentItem_Type008 implements AssessmentItem {
 		String arrayText = "";
 		int count = 0;
 		for (String item : choices) {
+			Matcher m = p.matcher(item);
+		
+
+			if (m.find())
+				item = "media/images/" + m.group(1);
+
+			item = "/" + item;
+			
+			System.err.println("---> "+ item);
+			
 			arrayText = arrayText
 					+ String.format(imageEntryFormat, count, item.length(),
 							item, 1, "A");
@@ -121,6 +133,8 @@ public class AssessmentItem_Type008 implements AssessmentItem {
 		}
 
 		String text = String.format(arrayFormat, choices.size(), arrayText);
+
+		System.err.println(text);
 
 		quest.setTypevalues(text);
 	}
