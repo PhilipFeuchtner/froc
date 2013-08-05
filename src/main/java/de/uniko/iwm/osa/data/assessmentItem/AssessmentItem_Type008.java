@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
 import de.uniko.iwm.osa.qtiinterpreter.Parse.ItemConigurator;
@@ -119,11 +120,8 @@ public class AssessmentItem_Type008 implements AssessmentItem {
 		
 
 			if (m.find())
-				item = "media/images/" + m.group(1);
-
+				item = ic.getCy_image_base() + "/" + m.group(1);
 			item = "/" + item;
-			
-			System.err.println("---> "+ item);
 			
 			arrayText = arrayText
 					+ String.format(imageEntryFormat, count, item.length(),

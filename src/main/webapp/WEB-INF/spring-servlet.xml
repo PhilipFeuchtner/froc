@@ -73,7 +73,7 @@
 		<property name="hibernateProperties">
 			<value>
 				hibernate.dialect=org.hibernate.dialect.MySQLDialect
-				hibernate.show_sql=true
+				hibernate.show_sql=false
 			</value>
 		</property>
 	</bean>
@@ -98,8 +98,8 @@
 
 	<!-- other bean -->
 
- 	<bean id="builder" class="de.uniko.iwm.osa.qtiinterpreter.Builder" /> 
- 	<bean id="qtree" class="de.uniko.iwm.osa.qtiinterpreter.QTree" /> 
+ 	<bean id="builder" class="de.uniko.iwm.osa.data.service.QtiBuilderServiceImpl" /> 
+ 	<bean id="qtree" class="de.uniko.iwm.osa.data.service.QtiTreeServiceImpl" /> 
 	<!-- <bean id="assessmentItem" class="de.uniko.iwm.osa.questsitemTree.AssessmentItem" 
 		/> -->
 

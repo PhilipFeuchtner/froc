@@ -127,6 +127,8 @@ public class Parse {
 	// private final String sep = System.getProperty("file.separator");
 
 	private String base;
+	private String cy_image_base;
+	
 	// private String image_base;
 
 	/* --- generated values --- */
@@ -148,13 +150,16 @@ public class Parse {
 
 	private OsaItem oi = null;
 
-	public Parse(String base,
+	public Parse(String base, String cy_image_base,
 			HashMap<String, Integer> questionType2CyquestQuestionType,
 			String pagesid, OsaItem oi) {
+		
 		this.base = base;
+		this.cy_image_base = cy_image_base;
 		this.pagesid = pagesid;
 		this.questionType2CyquestQuestionType = questionType2CyquestQuestionType;
 		this.oi = oi;
+		
 		// this.image_base = image_base;
 		identifier2questionType = new HashMap<String, String>();
 
@@ -695,6 +700,10 @@ public class Parse {
 			}
 
 			return null;
+		}
+		
+		public String getCy_image_base() {
+			return cy_image_base;
 		}
 	}
 
