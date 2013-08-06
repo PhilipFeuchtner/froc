@@ -72,6 +72,9 @@ public class AssessmentItem_Type008 implements AssessmentItem {
 		String text = String.format(
 				"a:2:{s:4:\"type\";s:3:\"img\";s:5:\"value\";s:%d:\"%s\";}",
 				question.length(), question);
+		
+		System.err.println("---> " + text);
+		
 		quest.setShowdesc(text);
 	}
 

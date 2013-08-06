@@ -108,7 +108,9 @@ public class Parse {
 	final String IMAGE_PREFIX = "<img";
 
 	final String IQ_QUERY_TASK = PART_ITEM_BODY + "/p/text()";
-	final String IQ_QUERY_QUESTION = PART_ITEM_BODY + "/p/imsqti:img/@src";
+	final String IQ_QUERY_QUESTION = PART_ITEM_BODY + "/p/imsqti:img/@src"
+			+ "|" + PART_ITEM_BODY + "/xsi:p/imsqti:img/@src";
+
 	final String IQ_QUERY_CHOICES = PART_ITEM_BODY
 			+ "/imsqti:choiceInteraction"
 			+ "//imsqti:simpleChoice/imsqti:img/@src";
@@ -128,7 +130,7 @@ public class Parse {
 
 	private String base;
 	private String cy_image_base;
-	
+
 	// private String image_base;
 
 	/* --- generated values --- */
@@ -153,18 +155,21 @@ public class Parse {
 	public Parse(String base, String cy_image_base,
 			HashMap<String, Integer> questionType2CyquestQuestionType,
 			String pagesid, OsaItem oi) {
-		
+
 		this.base = base;
 		this.cy_image_base = cy_image_base;
 		this.pagesid = pagesid;
 		this.questionType2CyquestQuestionType = questionType2CyquestQuestionType;
 		this.oi = oi;
-		
+
 		// this.image_base = image_base;
 		identifier2questionType = new HashMap<String, String>();
 
 		proc = new Processor(false);
 		xpath = proc.newXPathCompiler();
+
+		xpath.declareNamespace("xsi",
+				"http://www.w3.org/2001/XMLSchema-instance");
 
 		xpath.declareNamespace("imscp",
 				"http://www.imsglobal.org/xsd/imscp_v1p1");
@@ -701,7 +706,7 @@ public class Parse {
 
 			return null;
 		}
-		
+
 		public String getCy_image_base() {
 			return cy_image_base;
 		}
