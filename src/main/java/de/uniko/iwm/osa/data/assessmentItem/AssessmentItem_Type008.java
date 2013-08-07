@@ -69,12 +69,15 @@ public class AssessmentItem_Type008 implements AssessmentItem {
 	void buildShowdesc() {
 		String question = ic.queryIQQuestion();
 
+		if (question != null)
+			question = cleanImagePath(question);
+
 		String text = String.format(
 				"a:2:{s:4:\"type\";s:3:\"img\";s:5:\"value\";s:%d:\"%s\";}",
 				question.length(), question);
-		
+
 		System.err.println("---> " + text);
-		
+
 		quest.setShowdesc(text);
 	}
 
@@ -101,8 +104,6 @@ public class AssessmentItem_Type008 implements AssessmentItem {
 	void buildTypevalues() {
 		List<String> choices = ic.queryIQChoices();
 
-		Pattern p = Pattern.compile("media/(.*)");
-
 		// num entries + array-string
 		String arrayFormat = "a:%d:{%s}";
 
@@ -119,13 +120,9 @@ public class AssessmentItem_Type008 implements AssessmentItem {
 		String arrayText = "";
 		int count = 0;
 		for (String item : choices) {
-			Matcher m = p.matcher(item);
-		
 
-			if (m.find())
-				item = ic.getCy_image_base() + "/" + m.group(1);
-			item = "/" + item;
-			
+			item = cleanImagePath(item);
+
 			arrayText = arrayText
 					+ String.format(imageEntryFormat, count, item.length(),
 							item, 1, "A");
@@ -138,5 +135,13 @@ public class AssessmentItem_Type008 implements AssessmentItem {
 		System.err.println(text);
 
 		quest.setTypevalues(text);
+	}
+
+	private String cleanImagePath(String path) {
+		Pattern p = Pattern.compile("/?" + ic.getQti_media_folder() + "/(.*)");
+		Matcher m = p.matcher(path);
+
+		return m.find() ? "/" + ic.getCy_image_base() + "/" + m.group(1) : path;
+
 	}
 }

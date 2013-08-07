@@ -108,12 +108,13 @@ public class Parse {
 	final String IMAGE_PREFIX = "<img";
 
 	final String IQ_QUERY_TASK = PART_ITEM_BODY + "/p/text()";
-	final String IQ_QUERY_QUESTION = PART_ITEM_BODY + "/p/imsqti:img/@src"
-			+ "|" + PART_ITEM_BODY + "/xsi:p/imsqti:img/@src";
+	final String IQ_QUERY_QUESTION = PART_ITEM_BODY + "/p/descendant::imsqti:img/@src";
+			// "/p/imsqti:img/@src"
+			// + "|" + PART_ITEM_BODY + "/xsi:p/imsqti:img/@src";
 
 	final String IQ_QUERY_CHOICES = PART_ITEM_BODY
 			+ "/imsqti:choiceInteraction"
-			+ "//imsqti:simpleChoice/imsqti:img/@src";
+			+ "/imsqti:simpleChoice/imsqti:img/@src";
 
 	final String PART_HTML = "//imsqti:itemBody/child::node()";
 	// final String PART_HTML = "//imsqti:itemBody";
@@ -130,6 +131,7 @@ public class Parse {
 
 	private String base;
 	private String cy_image_base;
+	private String qti_media_folder;
 
 	// private String image_base;
 
@@ -152,12 +154,13 @@ public class Parse {
 
 	private OsaItem oi = null;
 
-	public Parse(String base, String cy_image_base,
+	public Parse(String base, String cy_image_base, String oss_media_folder,
 			HashMap<String, Integer> questionType2CyquestQuestionType,
 			String pagesid, OsaItem oi) {
 
 		this.base = base;
 		this.cy_image_base = cy_image_base;
+		this.qti_media_folder = oss_media_folder;
 		this.pagesid = pagesid;
 		this.questionType2CyquestQuestionType = questionType2CyquestQuestionType;
 		this.oi = oi;
@@ -709,6 +712,10 @@ public class Parse {
 
 		public String getCy_image_base() {
 			return cy_image_base;
+		}
+		
+		public String getQti_media_folder() {
+			return qti_media_folder;
 		}
 	}
 
