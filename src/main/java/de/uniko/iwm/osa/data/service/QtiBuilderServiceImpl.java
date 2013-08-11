@@ -1,18 +1,12 @@
 package de.uniko.iwm.osa.data.service;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
+import org.ietf.jgss.Oid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.uniko.iwm.osa.data.dao.OsaDbPagesDAO;
@@ -23,8 +17,7 @@ import de.uniko.iwm.osa.data.model.Cy_QuestItem;
 import de.uniko.iwm.osa.data.model.OsaDbPages;
 import de.uniko.iwm.osa.data.model.OsaDbQuestitems;
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
-import de.uniko.iwm.osa.data.model.OsaItem;
-import de.uniko.iwm.osa.utils.UnZip;
+import de.uniko.iwm.osa.data.model.osaitem.OsaItem;
 
 public class QtiBuilderServiceImpl implements QtiBuilderServive {
 	static Logger log = Logger.getLogger(QtiBuilderServiceImpl.class.getName());
@@ -40,6 +33,8 @@ public class QtiBuilderServiceImpl implements QtiBuilderServive {
 
 	@Autowired
 	private HashMap<String, Integer> keyword2cyquest;
+	
+	private OsaItem oi;
 
 	// @Value("${QTI_MEDIAFOLDER}")
 	// String QTI_MEDIAFOLDER;
@@ -56,12 +51,13 @@ public class QtiBuilderServiceImpl implements QtiBuilderServive {
 	 */
 	@Transactional
 	public boolean build(OsaItem oi, List<Cy_PageItem> generatedPages) {
+		this.oi = oi;
 
 		for (Cy_PageItem pi : generatedPages) {
 
 			OsaDbPages p = pi.getPage();
 			pagesDAO.addOsaDbPages(p);
-			oi.addNewPage(p.getId());
+			oi.addNewPage(p.getId(), p.getMd5key());
 
 			for (Cy_QuestItem qi : pi.getCy_QuestItem()) {
 
@@ -94,6 +90,8 @@ public class QtiBuilderServiceImpl implements QtiBuilderServive {
 			OsaDbPages firstPage = generatedPages.get(0).getPage();  
 			firstPage.setMd5key(firstMd5);
 			firstPage.setPid(firstPagesId);
+			
+			oi.updateFirstNewPage(firstMd5);
 
 			Collections.reverse(generatedPages);
 			for (Cy_PageItem pi : generatedPages) {

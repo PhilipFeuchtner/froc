@@ -17,7 +17,7 @@ import de.uniko.iwm.osa.data.dao.OsaDbQuestsDAO;
 import de.uniko.iwm.osa.data.model.OsaDbPages;
 import de.uniko.iwm.osa.data.model.OsaDbQuestitems;
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
-import de.uniko.iwm.osa.data.model.OsaItem;
+import de.uniko.iwm.osa.data.model.osaitem.OsaItem;
 
 public class QtiTreeServiceImpl implements QtiTreeService {
 

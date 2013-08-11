@@ -1,10 +1,11 @@
-package de.uniko.iwm.osa.data.model;
+package de.uniko.iwm.osa.data.model.osaitem;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
 
 /**
  * @author user
@@ -24,8 +25,12 @@ public class OsaItem {
 	
 	// ------------------------------------------------------------------
 
-	public void addNewPage(Integer id) {
-		itemNew.addPage(id);
+	public void addNewPage(int id, String md5) {
+		itemNew.addPage(id, md5);
+	}
+	
+	public void updateFirstNewPage(String md5) {
+		itemNew.updateFirstPage(md5);
 	}
 	
 	public void addNewQuest(Integer id) {

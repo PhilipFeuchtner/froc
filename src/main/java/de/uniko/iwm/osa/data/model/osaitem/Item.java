@@ -1,4 +1,4 @@
-package de.uniko.iwm.osa.data.model;
+package de.uniko.iwm.osa.data.model.osaitem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "Item")
 public class Item {
 
-	private List<Integer> pagesList = new ArrayList<Integer>();
+	private List<Page> pagesList = new ArrayList<Page>();
 	private List<Integer> questsList = new ArrayList<Integer>();
 	private List<Integer> questitemList = new ArrayList<Integer>();
 
@@ -23,7 +23,7 @@ public class Item {
 	}
 
 	@XmlElement(name = "pages")
-	public List<Integer> getPagesList() {
+	public List<Page> getPagesList() {
 		return pagesList;
 	}
 
@@ -37,7 +37,7 @@ public class Item {
 		return questitemList;
 	}
 	
-	public void setPageList(List<Integer> pageList) {
+	public void setPageList(List<Page> pageList) {
 		this.pagesList = pageList;
 	}
 
@@ -51,8 +51,17 @@ public class Item {
 	
 	// ---------------------------------------------------------
 	
-	public void addPage(Integer id) {
-		pagesList.add(id);
+	public void addPage(int id) {
+		pagesList.add(new Page(id));
+	}
+	
+	public void addPage(int id, String md5) {
+		pagesList.add(new Page(id, md5));
+	}
+	
+	public void updateFirstPage(String md5) {
+		Page p = pagesList.get(0);
+		p.setMd5(md5);
 	}
 	
 	public void addQuest(Integer id) {

@@ -3,7 +3,7 @@ package de.uniko.iwm.osa.data.service;
 import java.util.List;
 
 import de.uniko.iwm.osa.data.model.Cy_PageItem;
-import de.uniko.iwm.osa.data.model.OsaItem;
+import de.uniko.iwm.osa.data.model.osaitem.OsaItem;
 
 public interface QtiBuilderServive {
 

@@ -26,8 +26,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import de.uniko.iwm.osa.data.model.Cy_PageItem;
 import de.uniko.iwm.osa.data.model.OsaDbPages;
-import de.uniko.iwm.osa.data.model.OsaItem;
 import de.uniko.iwm.osa.data.model.UploadItem;
+import de.uniko.iwm.osa.data.model.osaitem.OsaItem;
 import de.uniko.iwm.osa.data.service.OsaDbPagesService;
 import de.uniko.iwm.osa.data.service.QtiBuilderServive;
 import de.uniko.iwm.osa.data.service.QtiTreeService;
@@ -227,7 +227,7 @@ public class OsaWebInterface {
 	 * @param headers
 	 * @return
 	 */
-	@RequestMapping("/upload")
+	@RequestMapping("/upload-orig")
 	public @ResponseBody
 	OsaItem getResponse(@RequestHeader Map<String, Object> headers) {
 
@@ -291,7 +291,16 @@ public class OsaWebInterface {
 
 		return oi;
 	}
+	
+	@RequestMapping("/upload")
+	public @ResponseBody
+	OsaItem getDummy() {
 
+		OsaItem oi = new OsaItem();
+		oi.addErrorEntry("Service under construction.");
+		return oi;
+	}
+	
 	/*
 	 * helper class
 	 */

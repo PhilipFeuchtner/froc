@@ -40,7 +40,7 @@ import de.uniko.iwm.osa.data.model.Cy_QuestItem;
 import de.uniko.iwm.osa.data.model.OsaDbPages;
 import de.uniko.iwm.osa.data.model.OsaDbQuestitems;
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
-import de.uniko.iwm.osa.data.model.OsaItem;
+import de.uniko.iwm.osa.data.model.osaitem.OsaItem;
 import de.uniko.iwm.osa.utils.HtmlFilter;
 
 /**
