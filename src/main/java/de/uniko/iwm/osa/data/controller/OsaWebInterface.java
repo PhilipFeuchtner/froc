@@ -187,7 +187,7 @@ public class OsaWebInterface {
 			List<OsaDbPages> pagesByPid = pagesService
 					.getOsaDbPagesByPid(uploadItem.getPagesid());
 			int startPage = 0;
-			
+
 			if (pagesByPid.isEmpty()) {
 				oi.addErrorEntry("Missing page: " + uploadItem.getPagesid());
 
@@ -199,10 +199,10 @@ public class OsaWebInterface {
 
 				String base = FilenameUtils.concat(OsaFileBase, osa_name);
 
-				ParseAndBuild pab = new ParseAndBuild(oi, uploadItem.getPagesid());
+				ParseAndBuild pab = new ParseAndBuild(oi,
+						uploadItem.getPagesid());
 
-				if (pab.prepare(qtiInput, base)
-						&& pab.parse() && pab.build()
+				if (pab.prepare(qtiInput, base) && pab.parse() && pab.build()
 						&& pab.cleanUp(startPage)) {
 					modelAndView.setViewName("osa-status-ok");
 					return modelAndView;
@@ -235,6 +235,7 @@ public class OsaWebInterface {
 
 		/*
 		 * // // debug //
+		 * 
 		 * 
 		 * headers.put(FROC_NAME, "psychosa"); headers.put(FROC_PATH,
 		 * "/home/user/iwm/osa/questtype_templates.zip"); headers.put(FROC_PID,
@@ -269,7 +270,8 @@ public class OsaWebInterface {
 			String base = FilenameUtils.concat(OsaFileBase,
 					(String) headers.get(FROC_NAME));
 
-			ParseAndBuild pab = new ParseAndBuild(oi, (String) headers.get(FROC_PID));
+			ParseAndBuild pab = new ParseAndBuild(oi,
+					(String) headers.get(FROC_PID));
 
 			/**
 			 * do the work:
@@ -281,9 +283,8 @@ public class OsaWebInterface {
 			 * short-cut logic
 			 */
 			@SuppressWarnings(value = "unused")
-			boolean success = pab.prepare(qtiInput, base)
-					&& pab.parse() && pab.build()
-					&& pab.cleanUp(startPage);
+			boolean success = pab.prepare(qtiInput, base) && pab.parse()
+					&& pab.build() && pab.cleanUp(startPage);
 		} catch (IOException e) {
 			oi.addErrorEntry(e.getMessage());
 			e.printStackTrace();
@@ -291,7 +292,7 @@ public class OsaWebInterface {
 
 		return oi;
 	}
-	
+
 	@RequestMapping("/upload")
 	public @ResponseBody
 	OsaItem getDummy() {
@@ -300,7 +301,7 @@ public class OsaWebInterface {
 		oi.addErrorEntry("Service under construction.");
 		return oi;
 	}
-	
+
 	/*
 	 * helper class
 	 */
@@ -312,7 +313,7 @@ public class OsaWebInterface {
 
 		boolean hasErrors;
 		List<Cy_PageItem> generatedPages;
-		
+
 		String pagesId;
 
 		/**
@@ -322,7 +323,7 @@ public class OsaWebInterface {
 		public ParseAndBuild(OsaItem oi, String pagesId) {
 			this.oi = oi;
 			this.pagesId = pagesId;
-			
+
 			hasErrors = false;
 		}
 
@@ -365,7 +366,8 @@ public class OsaWebInterface {
 		 * @return success/failure
 		 */
 		public boolean parse() {
-			parser = new Parse(source, CYQUEST_MEDIAFOLDER, QTI_MEDIAFOLDER, keyword2cyquest, pagesId, oi);
+			parser = new Parse(source, CYQUEST_MEDIAFOLDER, QTI_MEDIAFOLDER,
+					keyword2cyquest, pagesId, oi);
 
 			try {
 				hasErrors = hasErrors || !parser.handleManifest(IMSMANIFEST);
@@ -402,7 +404,8 @@ public class OsaWebInterface {
 			String firstMd5 = qtree.getFirstMd5();
 
 			hasErrors = hasErrors
-					|| !builder.setNavigation(generatedPages, jtp, firstMd5, pagesId);
+					|| !builder.setNavigation(generatedPages, jtp, firstMd5,
+							pagesId);
 
 			return !hasErrors;
 		}
