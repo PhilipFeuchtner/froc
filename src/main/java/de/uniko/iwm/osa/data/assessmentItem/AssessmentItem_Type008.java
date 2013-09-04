@@ -5,7 +5,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
-import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
 import de.uniko.iwm.osa.qtiinterpreter.Parse.ItemConigurator;
@@ -17,8 +16,14 @@ public class AssessmentItem_Type008 implements AssessmentItem {
 
 	ItemConigurator ic = null;
 
-	String identifier = "Cyquest-8";
+	int identifier = 8;
 	String cyquest_question_type = null;
+	String title;
+	
+	int itemPerPage = 1;
+
+	String[] quest_ans_def = { "A", "B", "C", "D", "E", "F", "G", "H", "I",
+			"J", "K", "L" };
 
 	OsaDbQuests quest;
 
@@ -28,11 +33,12 @@ public class AssessmentItem_Type008 implements AssessmentItem {
 	 * @see de.uniko.iwm.osa.data.model.AssessmantItemI#getQuestid()
 	 */
 
-	public AssessmentItem_Type008(OsaDbQuests quest, ItemConigurator ic) {
+	public AssessmentItem_Type008(OsaDbQuests quest, ItemConigurator ic, String title) {
 		log.info("Assessment item type 008 created");
 
 		this.quest = quest;
 		this.ic = ic;
+		this.title = title;
 
 		buildShowdesc();
 		buildTypevalues();
@@ -47,7 +53,7 @@ public class AssessmentItem_Type008 implements AssessmentItem {
 	}
 
 	@Override
-	public String getIdentifier() {
+	public int getIdentifier() {
 		return identifier;
 	}
 
@@ -115,7 +121,7 @@ public class AssessmentItem_Type008 implements AssessmentItem {
 				+ "s:8:\"imgwidth\";s:3:\"110\";s:9:\"imgheight\";s:3:\"110\";"
 				+ "s:3:\"svg\";s:0:\"\";s:8:\"svgwidth\";s:0:\"\";s:9:\"svgheight\";s:0:\"\";"
 				// size description + description text
-				+ "s:4:\"desc\";s:%d:\"%s\";s:4:\"text\";s:0:\"\";}";
+				+ "s:4:\"desc\";s:%d:\"%s\";s:4:\"text\";s:%d:\"%s\";}";
 
 		String arrayText = "";
 		int count = 0;
@@ -123,9 +129,12 @@ public class AssessmentItem_Type008 implements AssessmentItem {
 
 			item = cleanImagePath(item);
 
+			String answer = quest_ans_def[count];
+
 			arrayText = arrayText
 					+ String.format(imageEntryFormat, count, item.length(),
-							item, 1, "A");
+							item, answer.length(), answer, answer.length(),
+							answer);
 
 			count++;
 		}
@@ -143,5 +152,20 @@ public class AssessmentItem_Type008 implements AssessmentItem {
 
 		return m.find() ? "/" + ic.getCy_image_base() + "/" + m.group(1) : path;
 
+	}
+	
+	@Override
+	public int getItemPerPage() {
+		return itemPerPage;
+	}
+	
+	@Override
+	public void setTitle(String text) {
+		title = text;	
+	}
+
+	@Override
+	public String getTitle() {
+		return title;
 	}
 }

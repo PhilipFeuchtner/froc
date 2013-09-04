@@ -98,7 +98,7 @@
 				<td>Pages</td>
 				<td>&nbsp;</td>
 				<td><c:forEach items="${osaPage.itemNew.pagesList}" var="item">
-						<a href="<%=hostName%>/dev.php?${item.md5}"><c:out
+						<a href="http://<%=hostName%>/dev.php?${item.md5}"><c:out
 								value="${item.id}">
 							</c:out></a>
 					</c:forEach></td>

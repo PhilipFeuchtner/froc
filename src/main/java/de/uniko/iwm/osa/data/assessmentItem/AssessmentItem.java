@@ -26,7 +26,7 @@ public interface AssessmentItem {
 	/**
 	 * @return identifier
 	 */
-	public String getIdentifier();
+	public int getIdentifier();
 
 	/**
 	 * get cyquest-question-id
@@ -45,4 +45,9 @@ public interface AssessmentItem {
 	 * @return osadbquest
 	 */
 	public OsaDbQuests getOsaDbQuest();
+	
+	public int getItemPerPage();
+	
+	public void setTitle(String title);
+	public String getTitle();
 }

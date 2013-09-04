@@ -35,11 +35,11 @@ import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type001;
 import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type002;
 import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type003;
 import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type008;
-import de.uniko.iwm.osa.data.model.Cy_PageItem;
-import de.uniko.iwm.osa.data.model.Cy_QuestItem;
+import de.uniko.iwm.osa.data.model.Cy_QuestionWrapper;
 import de.uniko.iwm.osa.data.model.OsaDbPages;
 import de.uniko.iwm.osa.data.model.OsaDbQuestitems;
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
+import de.uniko.iwm.osa.data.model.osaitem.ManifestItem;
 import de.uniko.iwm.osa.data.model.osaitem.OsaItem;
 import de.uniko.iwm.osa.utils.HtmlFilter;
 
@@ -70,6 +70,9 @@ public class Parse {
 	// imsmd:metadata/imsmd:lom/imsmd:general/imsmd:keyword/imsmd:langstring
 	final String QUERY_MANIFEST_CY_QUESTIONTYPE = "imsmd:metadata/imsmd:lom/imsmd:general"
 			+ "//imsmd:keyword/imsmd:langstring/text()";
+
+	final String QUERY_MANIFEST_CY_TITLE = "imsmd:metadata/imsmd:lom/imsmd:general"
+			+ "//imsmd:title/imsmd:langstring/text()";
 
 	//
 	// imsqti
@@ -137,16 +140,16 @@ public class Parse {
 
 	/* --- generated values --- */
 
-	private List<Cy_PageItem> generated_pages = new ArrayList<Cy_PageItem>();
+	private List<Cy_QuestionWrapper> generated_pages = new ArrayList<Cy_QuestionWrapper>();
 
 	// private OsaPage osaPage = null;
-	private HashMap<String, String> identifier2questionType;
+	private HashMap<String, ManifestItem> identifier2questionType;
 	private HashMap<String, Integer> questionType2CyquestQuestionType;
 
 	private int count = 0;
 
-	private String MD5PREFIX = "MD5PREFIX %s %d";
-	private int MD5Counter = 0;
+	
+	// private int MD5Counter = 0;
 
 	private int pageCount = 0;
 
@@ -166,7 +169,7 @@ public class Parse {
 		this.oi = oi;
 
 		// this.image_base = image_base;
-		identifier2questionType = new HashMap<String, String>();
+		identifier2questionType = new HashMap<String, ManifestItem>(); 
 
 		proc = new Processor(false);
 		xpath = proc.newXPathCompiler();
@@ -325,68 +328,20 @@ public class Parse {
 
 	private void handle_AssessmentSection(XdmItem item, int cy_questid)
 			throws FileNotFoundException, SaxonApiException,
-			UnsupportedEncodingException, NoSuchAlgorithmException {
+			UnsupportedEncodingException {
 
-		ItemConigurator ic = new ItemConigurator((XdmNode) item);
+		ItemConigurator pages_config = new ItemConigurator((XdmNode) item);
+		
+		Cy_QuestionWrapper qw = null;
+		String pagesIDText = null;
 
 		int cy_position = 0;
-
-		OsaDbPages cy_db_page = new OsaDbPages();
-		OsaDbQuestitems cy_db_quest = new OsaDbQuestitems();
-
-		Cy_PageItem cy_page = new Cy_PageItem(cy_db_page);
-		Cy_QuestItem cy_quest = new Cy_QuestItem(cy_db_quest);
-
-		// pagesid ----------------------------------------------
-
-		cy_db_page.setPid(pagesid + pageCount++);
-
-		// md5 --------------------------------------------------
-
-		{
-			MD5Counter++;
-			String md5Text = String.format(MD5PREFIX, MD5Counter,
-					System.currentTimeMillis());
-
-			final MessageDigest messageDigest = MessageDigest
-					.getInstance("MD5");
-			messageDigest.reset();
-			messageDigest.update(md5Text.getBytes(Charset.forName("UTF8")));
-			final String result = new String(Hex.encodeHex(messageDigest
-					.digest()));
-			log.info("md5 [" + md5Text + "] " + result);
-
-			// --------------------------------------------------
-
-			cy_db_page.setMd5key(result);
-		}
-
-		// ------------------------------------------------------
-
-		//
-		// title
-		//
-
-		{
-			String text = ic.queryToString(QUERY_TITLE_ATTRIBUTE);
-			cy_db_quest.setQuesthead(text);
-		}
-
-		//
-		// set rubricBlock
-		//
-
-		{
-			String text = ic.cleanHtmlContent(QUERY_ASSESSMENTSECTION_RUBRIC,
-					PART_RUBRIC);
-			cy_db_quest.setQuestdesc(text);
-		}
-
+		
 		//
 		// find refs
 		//
 
-		List<String> hrefs = ic
+		List<String> hrefs = pages_config
 				.queryToStringList(QUERY_IMSQTI_ASSESSMENTITEMREF);
 
 		//
@@ -402,43 +357,45 @@ public class Parse {
 					"count [%2d], questid [%2d], position [%2d]", count,
 					cy_questid, cy_position));
 
-			cy_db_quest.setQuestsubhead(String.format("Aufgabe %d von %d",
-					cy_questid, hrefs.size()));
+//			cy_db_quest.setQuestsubhead(String.format("Aufgabe %d von %d",
+//					cy_questid, hrefs.size()));
 
 			AssessmentItem ai = handle_imsqti_item_xmlv2p1(href, cy_questid,
-					cy_position, cy_db_page, cy_db_quest);
+					cy_position);
 
+			if ((cy_position % ai.getItemPerPage() == 0) || qw == null) {
+				pagesIDText = String.format("9%03d", pageCount++);
+				qw = new Cy_QuestionWrapper(pages_config, pagesIDText);
+				generated_pages.add(qw);
+			}
+			
 			if (ai != null) {
 				log.info("IT: " + ai);
-
-				cy_quest.addQuest(ai.getOsaDbQuest());
+				
+				OsaDbQuests q = ai.getOsaDbQuest();
+				
+				qw.addQuest(q);
+				qw.setCyQuesttype(ai.getIdentifier());
+				qw.setPageTitle(ai.getTitle());
 			}
 		}
-
-		// save results -----------------------------------------
-
-		cy_page.addQuest(cy_quest);
-		generated_pages.add(cy_page);
-
-		// ------------------------------------------------------
 	}
 
 	private AssessmentItem handle_imsqti_item_xmlv2p1(String href,
-			int cy_questid, int cy_position, OsaDbPages cy_page,
-			OsaDbQuestitems cy_questitem) throws FileNotFoundException,
+			int cy_questid, int cy_position) throws FileNotFoundException,
 			SaxonApiException {
 
-		OsaDbQuests cy_quest = new OsaDbQuests();
-		ItemConigurator ic = new ItemConigurator(href, cy_page);
+		ItemConigurator ic = new ItemConigurator(href);
+		OsaDbQuests quest = new OsaDbQuests();
 
-		cy_quest.setPosition(cy_position);
-		cy_quest.setShownum(String.format("%d", count));
-		cy_quest.setShowdesc(ic.queryShowdescr());
+		quest.setPosition(cy_position);
+		quest.setShownum(String.format("%d", count));
+		quest.setShowdesc(ic.queryShowdescr());
 
-		AssessmentItem question = null;
-
-		String questionType = identifier2questionType.get(ic.queryIdentifier());
-
+		ManifestItem manifestItem = identifier2questionType.get(ic.queryIdentifier());
+		String questionType = manifestItem.getQuestTypeString();
+		String title = manifestItem.getQuestTitle();
+		
 		if (questionType != null
 				&& questionType2CyquestQuestionType.containsKey(questionType)) {
 			int cyType = questionType2CyquestQuestionType.get(questionType);
@@ -446,17 +403,17 @@ public class Parse {
 			//
 			// set cyquest-question-type
 			//
-			cy_questitem.setQuesttype(cyType);
+			// cy_questitem.setQuesttype(cyType);
 
 			switch (cyType) {
 			case 1:
-				return new AssessmentItem_Type001(cy_quest, ic);
+				return new AssessmentItem_Type001(quest, ic, title);
 			case 2:
-				return new AssessmentItem_Type002(cy_quest, ic);
+				return new AssessmentItem_Type002(quest, ic, title);
 			case 3:
-				return new AssessmentItem_Type003(cy_quest, ic);
+				return new AssessmentItem_Type003(quest, ic, title);
 			case 8:
-				return new AssessmentItem_Type008(cy_quest, ic);
+				return new AssessmentItem_Type008(quest, ic, title);
 
 			default:
 				oi.addErrorEntry("QuestionType not implemented: "
@@ -471,7 +428,7 @@ public class Parse {
 					+ questionType);
 		}
 
-		return question;
+		return null;
 	}
 
 	// -------------------------------- helper ------------ //
@@ -524,9 +481,12 @@ public class Parse {
 
 	private void handle_IMSMetadata(XdmItem item) throws FileNotFoundException,
 			SaxonApiException {
-
+		
 		String identifier = ((XdmNode) item).getAttributeValue(new QName(
 				"identifier"));
+
+		ManifestItem manifestItem = new ManifestItem();
+		identifier2questionType.put(identifier, manifestItem);
 
 		XPathSelector selector = xpath.compile(QUERY_MANIFEST_CY_QUESTIONTYPE)
 				.load();
@@ -540,7 +500,9 @@ public class Parse {
 			//
 			String questionType = resNode.getStringValue();
 			if (questionType.startsWith("qt")) {
-				identifier2questionType.put(identifier, questionType);
+						
+				manifestItem.setQuestTypeString(questionType);
+				
 				log.info("Cyquest Question Type: " + questionType);
 				return;
 			} else {
@@ -549,6 +511,22 @@ public class Parse {
 				log.error("Unknown Cyquest Question Type: " + questionType);
 			}
 		}
+		
+		XPathSelector selector_title = xpath.compile(QUERY_MANIFEST_CY_QUESTIONTYPE)
+				.load();
+		selector_title.setContextItem(item);
+		XdmValue titles = selector_title.evaluate();
+
+		String title = "";
+		for (XdmItem child : titles) {
+			XdmNode resNode = (XdmNode) child;
+			//
+			// text nodes
+			//
+			title = titles + resNode.getStringValue();
+		}
+		
+		manifestItem.setQuestTitle(title);
 	}
 
 	/* --- helper --- */
@@ -565,7 +543,7 @@ public class Parse {
 			this.node = node;
 		}
 
-		ItemConigurator(String href, OsaDbPages cy_page)
+		ItemConigurator(String href)
 				throws SaxonApiException {
 			XdmNode document = builder.build(new File(base, href));
 
@@ -710,6 +688,33 @@ public class Parse {
 			return null;
 		}
 
+		// --------------------------------------------------------------
+
+		public String queryQuestTitle() {
+			try {
+				return queryToString(QUERY_TITLE_ATTRIBUTE);
+			} catch (SaxonApiException e) {
+				e.printStackTrace();
+				oi.addErrorEntry(e.getMessage());
+			}
+
+			return null;
+		}
+		
+		public String queryQuestDescription() {
+			try {
+				return cleanHtmlContent(QUERY_ASSESSMENTSECTION_RUBRIC,
+						PART_RUBRIC);
+			} catch (SaxonApiException e) {
+				e.printStackTrace();
+				oi.addErrorEntry(e.getMessage());
+			}
+
+			return null;
+		}
+		
+		// --------------------------------------------------------------
+
 		public String getCy_image_base() {
 			return cy_image_base;
 		}
@@ -717,15 +722,18 @@ public class Parse {
 		public String getQti_media_folder() {
 			return qti_media_folder;
 		}
+		
+		// --------------------------------------------------------------
+		
 	}
 
 	// getter & setter
 
-	public List<Cy_PageItem> getGenerated_pages() {
+	public List<Cy_QuestionWrapper> getGenerated_pages() {
 		return generated_pages;
 	}
 
-	public void setGenerated_pages(List<Cy_PageItem> generated_pages) {
+	public void setGenerated_pages(List<Cy_QuestionWrapper> generated_pages) {
 		this.generated_pages = generated_pages;
 	}
 }

@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import de.uniko.iwm.osa.data.model.Cy_PageItem;
+import de.uniko.iwm.osa.data.model.Cy_QuestionWrapper;
 import de.uniko.iwm.osa.data.model.OsaDbPages;
 import de.uniko.iwm.osa.data.model.UploadItem;
 import de.uniko.iwm.osa.data.model.osaitem.OsaItem;
@@ -312,7 +312,7 @@ public class OsaWebInterface {
 		String source;
 
 		boolean hasErrors;
-		List<Cy_PageItem> generatedPages;
+		List<Cy_QuestionWrapper> generatedPages;
 
 		String pagesId;
 

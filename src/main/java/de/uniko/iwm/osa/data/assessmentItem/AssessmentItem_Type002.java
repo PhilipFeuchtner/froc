@@ -13,8 +13,11 @@ public class AssessmentItem_Type002 implements AssessmentItem {
 
 	ItemConigurator ic = null;
 
-	String identifier = "Cyquest-2";
+	int identifier = 2;
 	String cyquest_question_type = null;
+	String title;
+	
+	int itemPerPage = 1;
 	
 	final String MAGIC_INTERESSEN_TYPEVALUES = "a:1:{s:8:\"scaledir\";s:2:\"up\";}";
 
@@ -26,17 +29,18 @@ public class AssessmentItem_Type002 implements AssessmentItem {
 	 * @see de.uniko.iwm.osa.data.model.AssessmantItemI#getQuestid()
 	 */
 
-	public AssessmentItem_Type002(OsaDbQuests quest, ItemConigurator ic) {
+	public AssessmentItem_Type002(OsaDbQuests quest, ItemConigurator ic, String title) {
 		log.info("Assessment item type 002 created");
 
 		this.quest = quest;
 		this.ic = ic;
+		this.title = title;
 		
 		quest.setTypevalues(MAGIC_INTERESSEN_TYPEVALUES);
 	}
 
 	@Override
-	public String getIdentifier() {
+	public int getIdentifier() {
 		return identifier;
 	}
 
@@ -48,5 +52,20 @@ public class AssessmentItem_Type002 implements AssessmentItem {
 	@Override
 	public OsaDbQuests getOsaDbQuest() {
 		return quest;
+	}
+	
+	@Override
+	public int getItemPerPage() {
+		return itemPerPage;
+	}
+	
+	@Override
+	public void setTitle(String text) {
+		title = text;	
+	}
+
+	@Override
+	public String getTitle() {
+		return title;
 	}
 }

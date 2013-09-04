@@ -118,10 +118,10 @@ public class QtiTreeServiceImpl implements QtiTreeService {
 			}
 		}
 
-		System.err.println("next content page: " + page);
-		System.err.println("pages    : " + pages2remove);
-		System.err.println("quests   : " + quests2remove);
-		System.err.println("questitem: " + questitems2remove);
+		// System.err.println("next content page: " + page);
+		// System.err.println("pages    : " + pages2remove);
+		// System.err.println("quests   : " + quests2remove);
+		// System.err.println("questitem: " + questitems2remove);
 
 		for (Integer i : pages2remove) {
 			oi.addDeletedPage(i);
