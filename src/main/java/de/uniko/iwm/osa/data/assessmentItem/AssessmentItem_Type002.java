@@ -17,7 +17,7 @@ public class AssessmentItem_Type002 implements AssessmentItem {
 	String cyquest_question_type = null;
 	String title;
 	
-	int itemPerPage = 1;
+	int itemPerPage = 8;
 	
 	final String MAGIC_INTERESSEN_TYPEVALUES = "a:1:{s:8:\"scaledir\";s:2:\"up\";}";
 
