@@ -367,7 +367,7 @@ public class OsaWebInterface {
 		 */
 		public boolean parse() {
 			parser = new Parse(source, CYQUEST_MEDIAFOLDER, QTI_MEDIAFOLDER,
-					keyword2cyquest, pagesId, oi);
+					keyword2cyquest, oi);
 
 			try {
 				hasErrors = hasErrors || !parser.handleManifest(IMSMANIFEST);

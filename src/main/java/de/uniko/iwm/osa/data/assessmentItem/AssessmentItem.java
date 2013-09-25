@@ -1,8 +1,5 @@
 package de.uniko.iwm.osa.data.assessmentItem;
 
-import de.uniko.iwm.osa.data.model.OsaDbQuests;
-import net.sf.saxon.s9api.XdmNode;
-
 /**
  * @author user
  * 
@@ -14,6 +11,7 @@ import net.sf.saxon.s9api.XdmNode;
  * 
  */
 public interface AssessmentItem {
+	
 	/**
 	 * question or page?
 	 * 
@@ -22,11 +20,14 @@ public interface AssessmentItem {
 	static enum CYQUEST_QUESTION_TYPE {
 		QESTION, EXTRASEITE
 	};
-
+	
+	String[] quest_ans_def = { "A", "B", "C", "D", "E", "F", "G", "H", "I",
+			"J", "K", "L" };
+	
 	/**
 	 * @return identifier
 	 */
-	public int getIdentifier();
+	// public int getIdentifier();
 
 	/**
 	 * get cyquest-question-id
@@ -35,7 +36,7 @@ public interface AssessmentItem {
 	 * 
 	 * @return cyquest-cuestion-id
 	 */
-	public String getCqt();
+//	public String getCqt();
 
 	/**
 	 * get corresponding osadbquest
@@ -44,10 +45,10 @@ public interface AssessmentItem {
 	 * 
 	 * @return osadbquest
 	 */
-	public OsaDbQuests getOsaDbQuest();
+	// public OsaDbQuests getOsaDbQuest();
 	
 	public int getItemPerPage();
 	
-	public void setTitle(String title);
-	public String getTitle();
+	// public void setTitle(String title);
+	// public String getTitle();
 }

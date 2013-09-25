@@ -39,6 +39,7 @@ import de.uniko.iwm.osa.data.model.Cy_QuestionWrapper;
 import de.uniko.iwm.osa.data.model.OsaDbPages;
 import de.uniko.iwm.osa.data.model.OsaDbQuestitems;
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
+import de.uniko.iwm.osa.data.model.PagesQuestitemsQuestsMisc;
 import de.uniko.iwm.osa.data.model.osaitem.ManifestItem;
 import de.uniko.iwm.osa.data.model.osaitem.OsaItem;
 import de.uniko.iwm.osa.utils.HtmlFilter;
@@ -141,23 +142,17 @@ public class Parse {
 	private HashMap<String, Integer> questionType2CyquestQuestionType;
 
 	private int count = 0;
-
-	// private int MD5Counter = 0;
-
 	private int pageCount = 0;
-
-	private String pagesid;
 
 	private OsaItem oi = null;
 
 	public Parse(String base, String cy_image_base, String oss_media_folder,
 			HashMap<String, Integer> questionType2CyquestQuestionType,
-			String pagesid, OsaItem oi) {
+			OsaItem oi) {
 
 		this.base = base;
 		this.cy_image_base = cy_image_base;
 		this.qti_media_folder = oss_media_folder;
-		this.pagesid = pagesid;
 		this.questionType2CyquestQuestionType = questionType2CyquestQuestionType;
 		this.oi = oi;
 
@@ -325,8 +320,9 @@ public class Parse {
 
 		ItemConigurator pages_config = new ItemConigurator((XdmNode) item);
 
+		// PagesQuestitemsQuestsMisc parent_pqiqm = new
+		// PagesQuestitemsQuestsMisc();
 		Cy_QuestionWrapper qw = null;
-		String pagesIDText = null;
 
 		int cy_position = 0;
 
@@ -350,70 +346,68 @@ public class Parse {
 					"count [%2d], questid [%2d], position [%2d]", count,
 					cy_questid, cy_position));
 
-			// cy_db_quest.setQuestsubhead(String.format("Aufgabe %d von %d",
-			// cy_questid, hrefs.size()));
+			ItemConigurator qi_config = new ItemConigurator(href);
 
-			AssessmentItem ai = handle_imsqti_item_xmlv2p1(href, cy_questid,
-					cy_position);
+			PagesQuestitemsQuestsMisc pqiqm = handle_imsqti_item_xmlv2p1(href);
 
-			if ((cy_position % ai.getItemPerPage() == 0) || qw == null) {
-				pagesIDText = String.format("9%03d", pageCount++);
-				qw = new Cy_QuestionWrapper(pages_config, pagesIDText);
-				generated_pages.add(qw);
-			}
+			if (pqiqm != null) {
+				setupPageAndQuest(pqiqm, pages_config, qi_config, pageCount);
 
-			if (ai != null) {
-				log.info("IT: " + ai);
+				if ((cy_position % pqiqm.getM_itemPerPage() == 0) || qw == null) {
 
-				OsaDbQuests q = ai.getOsaDbQuest();
+					qw = new Cy_QuestionWrapper(pqiqm);
+					generated_pages.add(qw);
+				}
 
-				qw.addQuest(q);
-				qw.setCyQuesttype(ai.getIdentifier());
-				qw.setPageTitle(ai.getTitle());
+				log.info("IT: " + pqiqm);
+				qw.addQuest(pqiqm.getQuests());
 			}
 		}
 	}
 
-	private AssessmentItem handle_imsqti_item_xmlv2p1(String href,
-			int cy_questid, int cy_position) throws FileNotFoundException,
-			SaxonApiException {
+	private PagesQuestitemsQuestsMisc handle_imsqti_item_xmlv2p1(String href)
+			throws FileNotFoundException, SaxonApiException {
 
 		ItemConigurator ic = new ItemConigurator(href);
-		OsaDbQuests quest = new OsaDbQuests();
-
-		quest.setPosition(cy_position);
-		quest.setShownum(String.format("%d", count));
-		quest.setShowdesc(ic.queryShowdescr());
+		PagesQuestitemsQuestsMisc result = new PagesQuestitemsQuestsMisc();
 
 		ManifestItem manifestItem = identifier2questionType.get(ic
 				.queryIdentifier());
 		String questionType = manifestItem.getQuestTypeString();
+
 		String title = manifestItem.getQuestTitle();
+		result.setP_name(title);
+		
+		result.setQ_showdesc(ic.queryShowdescr());
 
 		if (questionType != null
 				&& questionType2CyquestQuestionType.containsKey(questionType)) {
 			int cyType = questionType2CyquestQuestionType.get(questionType);
 
-			//
-			// set cyquest-question-type
-			//
-			// cy_questitem.setQuesttype(cyType);
-
 			switch (cyType) {
 			case 1:
-				return new AssessmentItem_Type001(quest, ic, title);
+				new AssessmentItem_Type001(result, ic);
+				break;
+
 			case 2:
-				return new AssessmentItem_Type002(quest, ic, title);
+				new AssessmentItem_Type002(result, ic);
+				break;
+
 			case 3:
-				return new AssessmentItem_Type003(quest, ic, title);
+				new AssessmentItem_Type001(result, ic);
+				break;
+
 			case 8:
-				return new AssessmentItem_Type008(quest, ic, title);
+				new AssessmentItem_Type001(result, ic);
+				break;
 
 			default:
 				oi.addErrorEntry("QuestionType not implemented: "
 						+ questionType);
 				log.error("QuestionType not implemented: " + questionType);
 			}
+
+			return result;
 
 		} else {
 			oi.addErrorEntry("QuestionType not defined: "
@@ -426,6 +420,35 @@ public class Parse {
 	}
 
 	// -------------------------------- helper ------------ //
+
+	private void setupPageAndQuest(PagesQuestitemsQuestsMisc pqiqm,
+			ItemConigurator pages_config, ItemConigurator qi_config,
+			int pageCount) {
+		//
+		// setup questitem
+		//
+		// title
+
+		pqiqm.setQi_questhead(pages_config.queryQuestTitle());
+
+		// set rubricBlock
+
+		// quest.setQuestdesc(ic.queryQuestDescription());
+
+		// quest shosdesrc
+
+		pqiqm.setQi_questdesc(pages_config.queryIQTask());
+
+		// page pagesid
+
+		String pagesIDText = String.format("X-%03d", pageCount++);
+		pqiqm.setP_pid(pagesIDText);
+		
+		// cy_db_quest.setQuestsubhead(String.format("Aufgabe %d von %d",
+		// cy_questid, hrefs.size()));
+		// quest.setPosition(cy_position);
+		pqiqm.setQ_shownum(String.format("%d", count));
+	}
 
 	/**
 	 * Helper method to get the first child of an element having a given name.
@@ -457,11 +480,11 @@ public class Parse {
 
 		for (XdmItem child : children) {
 			XdmNode resNode = (XdmNode) child;
-			
+
 			String href = resNode.getAttributeValue(new QName("href"));
 			String identifier = resNode.getAttributeValue(new QName(
 					"identifier"));
-			
+
 			ManifestItem manifestItem = new ManifestItem(xpath, resNode);
 			identifier2questionType.put(identifier, manifestItem);
 
@@ -469,6 +492,7 @@ public class Parse {
 			// item nodes
 			//
 			log.info("TestPart " + href + "/" + identifier);
+			log.info("         " + manifestItem);
 		}
 	}
 

@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
+import de.uniko.iwm.osa.data.model.PagesQuestitemsQuestsMisc;
 import de.uniko.iwm.osa.qtiinterpreter.Parse.ItemConigurator;
 
 public class AssessmentItem_Type008 implements AssessmentItem {
@@ -14,69 +15,68 @@ public class AssessmentItem_Type008 implements AssessmentItem {
 	static Logger log = Logger
 			.getLogger(AssessmentItem_Type008.class.getName());
 
-	ItemConigurator ic = null;
-
 	int identifier = 8;
-	String cyquest_question_type = null;
-	String title;
-	
 	int itemPerPage = 1;
-
-	String[] quest_ans_def = { "A", "B", "C", "D", "E", "F", "G", "H", "I",
-			"J", "K", "L" };
-
-	OsaDbQuests quest;
+	// OsaDbQuests quest;
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see de.uniko.iwm.osa.data.model.AssessmantItemI#getQuestid()
 	 */
-
-	public AssessmentItem_Type008(OsaDbQuests quest, ItemConigurator ic, String title) {
-		log.info("Assessment item type 008 created");
-
-		this.quest = quest;
-		this.ic = ic;
-		this.title = title;
-
-		buildShowdesc();
-		buildTypevalues();
-
-		// showdesc:
-		// a:2:{s:4:"type";s:3:"img";s:5:"value";s:31:"/media/images/pid5301_quest.png";}
-
-		// typvalues:
-		// a:4:{i:0;a:8:{s:3:"img";s:27:"/media/images/pid5301_a.png";s:8:"imgwidth";s:3:"110";s:9:"imgheight";s:3:"110";s:3:"svg";s:0:"";s:8:"svgwidth";s:0:"";s:9:"svgheight";s:0:"";s:4:"desc";s:1:"A";s:4:"text";s:0:"";}i:1;a:8:{s:3:"img";s:27:"/media/images/pid5301_b.png";s:8:"imgwidth";s:3:"110";s:9:"imgheight";s:3:"110";s:3:"svg";s:0:"";s:8:"svgwidth";s:0:"";s:9:"svgheight";s:0:"";s:4:"desc";s:1:"B";s:4:"text";s:0:"";}i:2;a:8:{s:3:"img";s:27:"/media/images/pid5301_c.png";s:8:"imgwidth";s:3:"110";s:9:"imgheight";s:3:"110";s:3:"svg";s:0:"";s:8:"svgwidth";s:0:"";s:9:"svgheight";s:0:"";s:4:"desc";s:1:"C";s:4:"text";s:0:"";}i:3;a:8:{s:3:"img";s:27:"/media/images/pid5301_d.png";s:8:"imgwidth";s:3:"110";s:9:"imgheight";s:3:"110";s:3:"svg";s:0:"";s:8:"svgwidth";s:0:"";s:9:"svgheight";s:0:"";s:4:"desc";s:1:"D";s:4:"text";s:0:"";}}
-
-		// log.info(ic.queryIQTask());
+	
+	public AssessmentItem_Type008(PagesQuestitemsQuestsMisc pqiq, ItemConigurator ic) {
+		pqiq.setQi_questtype(identifier);
+		pqiq.setM_itemPerPage(itemPerPage);
+		
+		buildShowdesc(pqiq, ic);
+		buildTypevalues(pqiq, ic);
 	}
 
-	@Override
-	public int getIdentifier() {
-		return identifier;
-	}
+//	public AssessmentItem_Type008(OsaDbQuests quest, ItemConigurator ic, String title) {
+//		log.info("Assessment item type 008 created");
+//
+//		this.quest = quest;
+//		this.ic = ic;
+//		this.title = title;
+//
+//		buildShowdesc();
+//		buildTypevalues();
+//
+//		// showdesc:
+//		// a:2:{s:4:"type";s:3:"img";s:5:"value";s:31:"/media/images/pid5301_quest.png";}
+//
+//		// typvalues:
+//		// a:4:{i:0;a:8:{s:3:"img";s:27:"/media/images/pid5301_a.png";s:8:"imgwidth";s:3:"110";s:9:"imgheight";s:3:"110";s:3:"svg";s:0:"";s:8:"svgwidth";s:0:"";s:9:"svgheight";s:0:"";s:4:"desc";s:1:"A";s:4:"text";s:0:"";}i:1;a:8:{s:3:"img";s:27:"/media/images/pid5301_b.png";s:8:"imgwidth";s:3:"110";s:9:"imgheight";s:3:"110";s:3:"svg";s:0:"";s:8:"svgwidth";s:0:"";s:9:"svgheight";s:0:"";s:4:"desc";s:1:"B";s:4:"text";s:0:"";}i:2;a:8:{s:3:"img";s:27:"/media/images/pid5301_c.png";s:8:"imgwidth";s:3:"110";s:9:"imgheight";s:3:"110";s:3:"svg";s:0:"";s:8:"svgwidth";s:0:"";s:9:"svgheight";s:0:"";s:4:"desc";s:1:"C";s:4:"text";s:0:"";}i:3;a:8:{s:3:"img";s:27:"/media/images/pid5301_d.png";s:8:"imgwidth";s:3:"110";s:9:"imgheight";s:3:"110";s:3:"svg";s:0:"";s:8:"svgwidth";s:0:"";s:9:"svgheight";s:0:"";s:4:"desc";s:1:"D";s:4:"text";s:0:"";}}
+//
+//		// log.info(ic.queryIQTask());
+//	}
 
-	@Override
-	public String getCqt() {
-		return cyquest_question_type;
-	}
+//	@Override
+//	public int getIdentifier() {
+//		return identifier;
+//	}
 
-	@Override
-	public OsaDbQuests getOsaDbQuest() {
-		return quest;
-	}
+//	@Override
+//	public String getCqt() {
+//		return cyquest_question_type;
+//	}
+
+//	@Override
+//	public OsaDbQuests getOsaDbQuest() {
+//		return quest;
+//	}
 
 	// ------------------------------------------------------------------------------------
 
 	// showdesc:
 	// a:2:{s:4:"type";s:3:"img";s:5:"value";s:31:"/media/images/pid5301_quest.png";}
 
-	void buildShowdesc() {
+	void buildShowdesc(PagesQuestitemsQuestsMisc pqiq, ItemConigurator ic) {
 		String question = ic.queryIQQuestion();
 
 		if (question != null)
-			question = cleanImagePath(question);
+			question = cleanImagePath(question, ic);
 
 		String text = String.format(
 				"a:2:{s:4:\"type\";s:3:\"img\";s:5:\"value\";s:%d:\"%s\";}",
@@ -84,7 +84,7 @@ public class AssessmentItem_Type008 implements AssessmentItem {
 
 		System.err.println("---> " + text);
 
-		quest.setShowdesc(text);
+		pqiq.setQ_showdesc(text);
 	}
 
 	// typevalues:
@@ -107,7 +107,7 @@ public class AssessmentItem_Type008 implements AssessmentItem {
 	// s:8:"imgwidth";s:3:"110";s:9:"imgheight";s:3:"110";s:3:"svg";s:0:"";s:8:"svgwidth";s:0:"";s:9:"svgheight";s:0:"";s:4:"desc";
 	// s:1:"D";s:4:"text";s:0:"";}}
 
-	void buildTypevalues() {
+	void buildTypevalues(PagesQuestitemsQuestsMisc pqiq, ItemConigurator ic) {
 		List<String> choices = ic.queryIQChoices();
 
 		// num entries + array-string
@@ -127,7 +127,7 @@ public class AssessmentItem_Type008 implements AssessmentItem {
 		int count = 0;
 		for (String item : choices) {
 
-			item = cleanImagePath(item);
+			item = cleanImagePath(item, ic);
 
 			String answer = quest_ans_def[count];
 
@@ -143,10 +143,10 @@ public class AssessmentItem_Type008 implements AssessmentItem {
 
 		System.err.println(text);
 
-		quest.setTypevalues(text);
+		pqiq.setQ_typevalues(text);
 	}
 
-	private String cleanImagePath(String path) {
+	private String cleanImagePath(String path, ItemConigurator ic) {
 		Pattern p = Pattern.compile("/?" + ic.getQti_media_folder() + "/(.*)");
 		Matcher m = p.matcher(path);
 
@@ -159,13 +159,13 @@ public class AssessmentItem_Type008 implements AssessmentItem {
 		return itemPerPage;
 	}
 	
-	@Override
-	public void setTitle(String text) {
-		title = text;	
-	}
-
-	@Override
-	public String getTitle() {
-		return title;
-	}
+//	@Override
+//	public void setTitle(String text) {
+//		title = text;	
+//	}
+//
+//	@Override
+//	public String getTitle() {
+//		return title;
+//	}
 }

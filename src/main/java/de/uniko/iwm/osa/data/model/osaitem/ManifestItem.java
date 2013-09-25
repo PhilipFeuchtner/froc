@@ -90,5 +90,11 @@ public class ManifestItem {
 	public void setPageDescr(String pageDescr) {
 		this.pageDescr = pageDescr;
 	}
+	
+	// --------------------------------------------------------------
 
+	@Override
+	public String toString() {
+		return "MI ["+questTypeString+"]["+questTitle+"]";
+	}
 }
