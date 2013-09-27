@@ -125,13 +125,14 @@
 			<tr>
 				<th colspan="3" align="left">Errors</th>
 			</tr>
-			<tr>
 
-				<c:forEach items="${osaPage.errors}" var="item">
+			<c:forEach items="${osaPage.errors}" var="item">
+				<tr>
 					<td colspan="3"><c:out value="${item}">
 						</c:out></td>
-				</c:forEach>
-			</tr>
+				</tr>
+			</c:forEach>
+
 		</table>
 	</fieldset>
 </body>
