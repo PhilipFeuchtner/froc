@@ -40,7 +40,6 @@ import de.uniko.iwm.osa.data.model.OsaDbPages;
 import de.uniko.iwm.osa.data.model.OsaDbQuestitems;
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
 import de.uniko.iwm.osa.data.model.PagesQuestitemsQuestsMisc;
-import de.uniko.iwm.osa.data.model.osaitem.ManifestItem;
 import de.uniko.iwm.osa.data.model.osaitem.OsaItem;
 import de.uniko.iwm.osa.utils.HtmlFilter;
 
@@ -59,12 +58,17 @@ public class Parse {
 	/**
 	 * xpath expressions imsmanifest
 	 */
+	// -
 	final String QUERY_MANIFEST_RESOURCE = "/imscp:manifest/imscp:resources"
 			+ "/imscp:resource";
+
+	// +
 	final String QUERY_MANIFEST_ASSESSMENT = "/imscp:manifest/imscp:resources"
 			+ "/imscp:resource[@type='imsqti_assessment_xmlv2p1']";
+	// +
 	final String QUERY_MANIFEST_ITEM = "/imscp:manifest"
 			+ "/imscp:resources/imscp:resource[@type='imsqti_item_xmlv2p1']";
+	// -
 	final String QUERY_MANIFEST_DESCRIPTION = "/imscp:manifest//imscp:resources/imscp:resource"
 			+ "/imsmd:metadata/imsmd:lom/imsmd:general/imsmd:description/imsmd:langstring";
 
@@ -76,15 +80,22 @@ public class Parse {
 	/**
 	 * xpath imsqti entries
 	 */
+	// +
 	final String QUERY_IMSQTI_ASSESSMENTTEST = "imsqti:assessmentTest";
+	// +
 	final String QUERY_IMSQTI_TESTPART = "imsqti:testPart";
+	// +
 	final String QUERY_IMSQTI_ASSESSMENTSECTION = "imsqti:assessmentSection";
 	// final String QUERY_ASSESSMENTSECTION_RUBRIC =
 	// "imsqti:rubricBlock/child::node()";
+	// -
 	final String QUERY_ASSESSMENTSECTION_RUBRIC = "imsqti:rubricBlock";
+	// -
 	final String PART_RUBRIC = "imsqti:rubricBlock/child::node()";
 
+	// -
 	final String QUERY_TITLE_ATTRIBUTE = "@title";
+	// +
 	final String QUERY_IMSQTI_ASSESSMENTITEMREF = "imsqti:assessmentItemRef/@href";
 
 	//
@@ -189,9 +200,10 @@ public class Parse {
 	public boolean handleManifest(String filename) throws FileNotFoundException {
 		// osaPage = new OsaPage();
 
-		XPathSelector selector;
+		// XPathSelector selector;
 
 		try {
+
 			XdmNode manifestDoc = builder.build(new File(base, filename));
 
 			// //
@@ -215,15 +227,9 @@ public class Parse {
 			// collect metadata
 			//
 
-			handle_IMSItem(manifestDoc);
-
-			//
-			// query assessmentTest
-			//
-
-			selector = xpath.compile(QUERY_MANIFEST_ASSESSMENT).load();
-			selector.setContextItem(manifestDoc);
-			XdmValue children = selector.evaluate();
+			AssessmentConfigurer ac = new AssessmentConfigurer(base, filename);
+			handle_IMSItem(ac);
+			XdmValue children = ac.queryAssessment();
 
 			for (XdmItem child : children) {
 				XdmNode resNode = (XdmNode) child;
@@ -251,12 +257,15 @@ public class Parse {
 
 		count = 0;
 
-		XdmNode item = builder.build(new File(base, href));
+		// XdmNode item = builder.build(new File(base, href));
+		//
+		// XPathSelector selector = xpath.compile(QUERY_IMSQTI_ASSESSMENTTEST)
+		// .load();
+		// selector.setContextItem(item);
+		// XdmValue children = selector.evaluate();
 
-		XPathSelector selector = xpath.compile(QUERY_IMSQTI_ASSESSMENTTEST)
-				.load();
-		selector.setContextItem(item);
-		XdmValue children = selector.evaluate();
+		AssessmentConfigurer ac = new AssessmentConfigurer(base, href);
+		XdmValue children = ac.queryAssessmentTest();
 
 		for (XdmItem child : children) {
 			//
@@ -264,43 +273,49 @@ public class Parse {
 			//
 			log.info("AssessmentTest");
 
-			if (handle_AssessmentTest(child))
+			if (handle_AssessmentTest(ac, child))
 				return true;
 		}
 
 		return false;
 	}
 
-	private boolean handle_AssessmentTest(XdmItem item)
+	private boolean handle_AssessmentTest(AssessmentConfigurer ac, XdmItem item)
 			throws FileNotFoundException, SaxonApiException,
 			UnsupportedEncodingException, NoSuchAlgorithmException {
 
-		XPathSelector selector = xpath.compile(QUERY_IMSQTI_TESTPART).load();
-		selector.setContextItem(item);
-		XdmValue children = selector.evaluate();
+		// XPathSelector selector = xpath.compile(QUERY_IMSQTI_TESTPART).load();
+		// selector.setContextItem(item);
+		// XdmValue children = selector.evaluate();
+
+		// AssessmentConfigurer ac = new AssessmentConfigurer((XdmNode) item);
+		XdmValue children = ac.queryTestpart();
 
 		for (XdmItem child : children) {
 			//
 			// testParts
 			//
 			log.info("TestPart");
-
-			handle_TestPart(child);
+			handle_TestPart(ac, child);
 		}
 
 		return true;
 	}
 
-	private void handle_TestPart(XdmItem item) throws FileNotFoundException,
-			SaxonApiException, UnsupportedEncodingException,
-			NoSuchAlgorithmException {
+	private void handle_TestPart(AssessmentConfigurer ac, XdmItem item)
+			throws FileNotFoundException, SaxonApiException,
+			UnsupportedEncodingException, NoSuchAlgorithmException {
 
 		int cy_questid = 0;
 
-		XPathSelector selector = xpath.compile(QUERY_IMSQTI_ASSESSMENTSECTION)
-				.load();
-		selector.setContextItem(item);
-		XdmValue children = selector.evaluate();
+		// XPathSelector selector =
+		// xpath.compile(QUERY_IMSQTI_ASSESSMENTSECTION)
+		// .load();
+		// selector.setContextItem(item);
+		// XdmValue children = selector.evaluate();
+
+		// AssessmentConfigurer ac = new AssessmentConfigurer((XdmNode) item);
+		XdmValue children = ac.queryAssessmentSection();
 
 		for (XdmItem child : children) {
 			cy_questid++;
@@ -318,7 +333,9 @@ public class Parse {
 			throws FileNotFoundException, SaxonApiException,
 			UnsupportedEncodingException {
 
-		ItemConigurator pages_config = new ItemConigurator((XdmNode) item);
+		System.err.println("Hey-Ho");
+		ItemConiguratorLocal pages_config = new ItemConiguratorLocal(
+				(XdmNode) item);
 
 		// PagesQuestitemsQuestsMisc parent_pqiqm = new
 		// PagesQuestitemsQuestsMisc();
@@ -346,12 +363,16 @@ public class Parse {
 					"count [%2d], questid [%2d], position [%2d]", count,
 					cy_questid, cy_position));
 
-			ItemConigurator qi_config = new ItemConigurator(href);
+			ItemConiguratorLocal qi_config = new ItemConiguratorLocal(href);
 
 			PagesQuestitemsQuestsMisc pqiqm = handle_imsqti_item_xmlv2p1(href);
 
 			if (pqiqm != null) {
 				setupPageAndQuest(pqiqm, pages_config, qi_config, pageCount);
+
+				// pqiqm.setQi_questsubhead(String.format("Aufgabe %d von %d",cy_position,
+				// hrefs.size()));
+				pqiqm.setQi_questsubhead("Aufgabe");
 
 				if ((cy_position % pqiqm.getM_itemPerPage() == 0) || qw == null) {
 
@@ -368,16 +389,17 @@ public class Parse {
 	private PagesQuestitemsQuestsMisc handle_imsqti_item_xmlv2p1(String href)
 			throws FileNotFoundException, SaxonApiException {
 
-		ItemConigurator ic = new ItemConigurator(href);
+		ItemConiguratorLocal ic = new ItemConiguratorLocal(href);
 		PagesQuestitemsQuestsMisc result = new PagesQuestitemsQuestsMisc();
 
 		ManifestItem manifestItem = identifier2questionType.get(ic
 				.queryIdentifier());
 		String questionType = manifestItem.getQuestTypeString();
 
-		String title = manifestItem.getQuestTitle();
-		result.setP_name(title);
-		
+		result.setP_name(manifestItem.getQuestTitle());
+
+		result.setQi_questdesc(ic.queryQuestDescription());
+
 		result.setQ_showdesc(ic.queryShowdescr());
 
 		if (questionType != null
@@ -394,11 +416,11 @@ public class Parse {
 				break;
 
 			case 3:
-				new AssessmentItem_Type001(result, ic);
+				new AssessmentItem_Type003(result, ic);
 				break;
 
 			case 8:
-				new AssessmentItem_Type001(result, ic);
+				new AssessmentItem_Type008(result, ic);
 				break;
 
 			default:
@@ -422,7 +444,7 @@ public class Parse {
 	// -------------------------------- helper ------------ //
 
 	private void setupPageAndQuest(PagesQuestitemsQuestsMisc pqiqm,
-			ItemConigurator pages_config, ItemConigurator qi_config,
+			ItemConiguratorLocal pages_config, ItemConiguratorLocal qi_config,
 			int pageCount) {
 		//
 		// setup questitem
@@ -437,13 +459,13 @@ public class Parse {
 
 		// quest shosdesrc
 
-		pqiqm.setQi_questdesc(pages_config.queryIQTask());
+		// pqiqm.setQi_questdesc(pages_config.queryIQTask());
 
 		// page pagesid
 
-		String pagesIDText = String.format("X-%03d", pageCount++);
+		String pagesIDText = String.format("X-%03d", count);
 		pqiqm.setP_pid(pagesIDText);
-		
+
 		// cy_db_quest.setQuestsubhead(String.format("Aufgabe %d von %d",
 		// cy_questid, hrefs.size()));
 		// quest.setPosition(cy_position);
@@ -471,12 +493,14 @@ public class Parse {
 	// --- handle imsqti:imsassessmetitem
 	// --- and lommd:metadata
 
-	private void handle_IMSItem(XdmItem item) throws FileNotFoundException,
-			SaxonApiException {
+	private void handle_IMSItem(AssessmentConfigurer ac)
+			throws FileNotFoundException {
+		// try {
+		// XPathSelector selector = xpath.compile(QUERY_MANIFEST_ITEM).load();
+		// selector.setContextItem(item);
+		// XdmValue children = selector.evaluate();
 
-		XPathSelector selector = xpath.compile(QUERY_MANIFEST_ITEM).load();
-		selector.setContextItem(item);
-		XdmValue children = selector.evaluate();
+		XdmValue children = ac.queryItem();
 
 		for (XdmItem child : children) {
 			XdmNode resNode = (XdmNode) child;
@@ -485,7 +509,7 @@ public class Parse {
 			String identifier = resNode.getAttributeValue(new QName(
 					"identifier"));
 
-			ManifestItem manifestItem = new ManifestItem(xpath, resNode);
+			ManifestItem manifestItem = new ManifestItem(resNode);
 			identifier2questionType.put(identifier, manifestItem);
 
 			//
@@ -494,6 +518,9 @@ public class Parse {
 			log.info("TestPart " + href + "/" + identifier);
 			log.info("         " + manifestItem);
 		}
+		// } catch (SaxonApiException e) {
+		// e.printStackTrace();
+		// }
 	}
 
 	/* --- helper --- */
@@ -502,15 +529,15 @@ public class Parse {
 
 	// ----------------------------------------------------------------------
 
-	public class ItemConigurator {
+	public class ItemConiguratorLocal {
 
 		XdmNode node;
 
-		ItemConigurator(XdmNode node) {
+		ItemConiguratorLocal(XdmNode node) {
 			this.node = node;
 		}
 
-		ItemConigurator(String href) throws SaxonApiException {
+		ItemConiguratorLocal(String href) throws SaxonApiException {
 			XdmNode document = builder.build(new File(base, href));
 
 			this.node = document;
