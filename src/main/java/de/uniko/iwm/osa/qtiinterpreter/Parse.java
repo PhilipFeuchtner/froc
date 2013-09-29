@@ -3,8 +3,6 @@ package de.uniko.iwm.osa.qtiinterpreter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +11,6 @@ import java.util.regex.Pattern;
 
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -30,15 +27,11 @@ import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XdmSequenceIterator;
 import net.sf.saxon.s9api.XdmValue;
 
-import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem;
 import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type001;
 import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type002;
 import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type003;
 import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type008;
 import de.uniko.iwm.osa.data.model.Cy_QuestionWrapper;
-import de.uniko.iwm.osa.data.model.OsaDbPages;
-import de.uniko.iwm.osa.data.model.OsaDbQuestitems;
-import de.uniko.iwm.osa.data.model.OsaDbQuests;
 import de.uniko.iwm.osa.data.model.PagesQuestitemsQuestsMisc;
 import de.uniko.iwm.osa.data.model.osaitem.OsaItem;
 import de.uniko.iwm.osa.utils.HtmlFilter;
@@ -58,19 +51,19 @@ public class Parse {
 	/**
 	 * xpath expressions imsmanifest
 	 */
-	// -
-	final String QUERY_MANIFEST_RESOURCE = "/imscp:manifest/imscp:resources"
-			+ "/imscp:resource";
-
-	// +
-	final String QUERY_MANIFEST_ASSESSMENT = "/imscp:manifest/imscp:resources"
-			+ "/imscp:resource[@type='imsqti_assessment_xmlv2p1']";
-	// +
-	final String QUERY_MANIFEST_ITEM = "/imscp:manifest"
-			+ "/imscp:resources/imscp:resource[@type='imsqti_item_xmlv2p1']";
-	// -
-	final String QUERY_MANIFEST_DESCRIPTION = "/imscp:manifest//imscp:resources/imscp:resource"
-			+ "/imsmd:metadata/imsmd:lom/imsmd:general/imsmd:description/imsmd:langstring";
+//	// -
+//	private final String QUERY_MANIFEST_RESOURCE = "/imscp:manifest/imscp:resources"
+//			+ "/imscp:resource";
+//
+//	// +
+//	private final String QUERY_MANIFEST_ASSESSMENT = "/imscp:manifest/imscp:resources"
+//			+ "/imscp:resource[@type='imsqti_assessment_xmlv2p1']";
+//	// +
+//	private final String QUERY_MANIFEST_ITEM = "/imscp:manifest"
+//			+ "/imscp:resources/imscp:resource[@type='imsqti_item_xmlv2p1']";
+//	// -
+//	private final String QUERY_MANIFEST_DESCRIPTION = "/imscp:manifest//imscp:resources/imscp:resource"
+//			+ "/imsmd:metadata/imsmd:lom/imsmd:general/imsmd:description/imsmd:langstring";
 
 	//
 	// imsqti
@@ -80,23 +73,23 @@ public class Parse {
 	/**
 	 * xpath imsqti entries
 	 */
-	// +
-	final String QUERY_IMSQTI_ASSESSMENTTEST = "imsqti:assessmentTest";
-	// +
-	final String QUERY_IMSQTI_TESTPART = "imsqti:testPart";
-	// +
-	final String QUERY_IMSQTI_ASSESSMENTSECTION = "imsqti:assessmentSection";
+//	// +
+//	private final String QUERY_IMSQTI_ASSESSMENTTEST = "imsqti:assessmentTest";
+//	// +
+//	private final String QUERY_IMSQTI_TESTPART = "imsqti:testPart";
+//	// +
+//	private final String QUERY_IMSQTI_ASSESSMENTSECTION = "imsqti:assessmentSection";
 	// final String QUERY_ASSESSMENTSECTION_RUBRIC =
 	// "imsqti:rubricBlock/child::node()";
 	// -
-	final String QUERY_ASSESSMENTSECTION_RUBRIC = "imsqti:rubricBlock";
+	private final String QUERY_ASSESSMENTSECTION_RUBRIC = "imsqti:rubricBlock";
 	// -
-	final String PART_RUBRIC = "imsqti:rubricBlock/child::node()";
+	private final String PART_RUBRIC = "imsqti:rubricBlock/child::node()";
 
 	// -
-	final String QUERY_TITLE_ATTRIBUTE = "@title";
+	private final String QUERY_TITLE_ATTRIBUTE = "@title";
 	// +
-	final String QUERY_IMSQTI_ASSESSMENTITEMREF = "imsqti:assessmentItemRef/@href";
+	private final String QUERY_IMSQTI_ASSESSMENTITEMREF = "imsqti:assessmentItemRef/@href";
 
 	//
 	// imsqti
@@ -106,31 +99,31 @@ public class Parse {
 	/**
 	 * xpath-queries imsqti
 	 */
-	final String PART_ITEM_BODY = "/imsqti:assessmentItem/imsqti:itemBody";
-	final String PART_ASS_TITLE = "/imsqti:assessmentItem/@title";
-	final String PART_ASS_IDENTIFIER = "/imsqti:assessmentItem/@identifier";
+	private final String PART_ITEM_BODY = "/imsqti:assessmentItem/imsqti:itemBody";
+	private final String PART_ASS_TITLE = "/imsqti:assessmentItem/@title";
+	private final String PART_ASS_IDENTIFIER = "/imsqti:assessmentItem/@identifier";
 
-	final String PART_CORRECT_RESP = "/imsqti:assessmentItem/imsqti:responseDeclaration/imsqti:correctResponse/imsqti:value";
+	private final String PART_CORRECT_RESP = "/imsqti:assessmentItem/imsqti:responseDeclaration/imsqti:correctResponse/imsqti:value";
 
-	final String IMAGE_TAG = "//imsqti:img";
-	final String IMAGE_PREFIX = "<img";
+	private final String IMAGE_TAG = "//imsqti:img";
+	private final String IMAGE_PREFIX = "<img";
 
-	final String IQ_QUERY_TASK = PART_ITEM_BODY + "/p/text()";
-	final String IQ_QUERY_QUESTION = PART_ITEM_BODY
+	private final String IQ_QUERY_TASK = PART_ITEM_BODY + "/p/text()";
+	private final String IQ_QUERY_QUESTION = PART_ITEM_BODY
 			+ "/p/descendant::imsqti:img/@src";
 	// "/p/imsqti:img/@src"
 	// + "|" + PART_ITEM_BODY + "/xsi:p/imsqti:img/@src";
 
-	final String IQ_QUERY_CHOICES = PART_ITEM_BODY
+	private final String IQ_QUERY_CHOICES = PART_ITEM_BODY
 			+ "/imsqti:choiceInteraction"
 			+ "/imsqti:simpleChoice/imsqti:img/@src";
 
-	final String PART_HTML = "//imsqti:itemBody/child::node()";
+	private final String PART_HTML = "//imsqti:itemBody/child::node()";
 	// final String PART_HTML = "//imsqti:itemBody";
 
 	Pattern PATTERN_IMAGE_SRC = Pattern.compile("src=\"media");
 
-	final String MAGIC_INTERESSEN_TYPEVALUES = "a:1:{s:8:\"scaledir\";s:2:\"up\";}";
+	// final String MAGIC_INTERESSEN_TYPEVALUES = "a:1:{s:8:\"scaledir\";s:2:\"up\";}";
 
 	Processor proc;
 	XPathCompiler xpath;
@@ -203,9 +196,6 @@ public class Parse {
 		// XPathSelector selector;
 
 		try {
-
-			XdmNode manifestDoc = builder.build(new File(base, filename));
-
 			// //
 			// // query description
 			// //
@@ -257,13 +247,6 @@ public class Parse {
 
 		count = 0;
 
-		// XdmNode item = builder.build(new File(base, href));
-		//
-		// XPathSelector selector = xpath.compile(QUERY_IMSQTI_ASSESSMENTTEST)
-		// .load();
-		// selector.setContextItem(item);
-		// XdmValue children = selector.evaluate();
-
 		AssessmentConfigurer ac = new AssessmentConfigurer(base, href);
 		XdmValue children = ac.queryAssessmentTest();
 
@@ -273,22 +256,18 @@ public class Parse {
 			//
 			log.info("AssessmentTest");
 
-			if (handle_AssessmentTest(ac, child))
+			if (handle_AssessmentTest((XdmNode)child))
 				return true;
 		}
 
 		return false;
 	}
 
-	private boolean handle_AssessmentTest(AssessmentConfigurer ac, XdmItem item)
+	private boolean handle_AssessmentTest(XdmNode node)
 			throws FileNotFoundException, SaxonApiException,
 			UnsupportedEncodingException, NoSuchAlgorithmException {
 
-		// XPathSelector selector = xpath.compile(QUERY_IMSQTI_TESTPART).load();
-		// selector.setContextItem(item);
-		// XdmValue children = selector.evaluate();
-
-		// AssessmentConfigurer ac = new AssessmentConfigurer((XdmNode) item);
+		AssessmentConfigurer ac = new AssessmentConfigurer(node);
 		XdmValue children = ac.queryTestpart();
 
 		for (XdmItem child : children) {
@@ -296,25 +275,19 @@ public class Parse {
 			// testParts
 			//
 			log.info("TestPart");
-			handle_TestPart(ac, child);
+			handle_TestPart((XdmNode) child);
 		}
 
 		return true;
 	}
 
-	private void handle_TestPart(AssessmentConfigurer ac, XdmItem item)
+	private void handle_TestPart(XdmNode node)
 			throws FileNotFoundException, SaxonApiException,
 			UnsupportedEncodingException, NoSuchAlgorithmException {
 
 		int cy_questid = 0;
 
-		// XPathSelector selector =
-		// xpath.compile(QUERY_IMSQTI_ASSESSMENTSECTION)
-		// .load();
-		// selector.setContextItem(item);
-		// XdmValue children = selector.evaluate();
-
-		// AssessmentConfigurer ac = new AssessmentConfigurer((XdmNode) item);
+		AssessmentConfigurer ac = new AssessmentConfigurer(node);
 		XdmValue children = ac.queryAssessmentSection();
 
 		for (XdmItem child : children) {
@@ -325,17 +298,15 @@ public class Parse {
 			//
 			log.info("AssessmentSection");
 
-			handle_AssessmentSection(child, cy_questid);
+			handle_AssessmentSection((XdmNode)child, cy_questid);
 		}
 	}
 
-	private void handle_AssessmentSection(XdmItem item, int cy_questid)
+	private void handle_AssessmentSection(XdmNode node, int cy_questid)
 			throws FileNotFoundException, SaxonApiException,
 			UnsupportedEncodingException {
 
-		System.err.println("Hey-Ho");
-		ItemConiguratorLocal pages_config = new ItemConiguratorLocal(
-				(XdmNode) item);
+		PageQuestitemConfigurer pq_config = new PageQuestitemConfigurer(node);
 
 		// PagesQuestitemsQuestsMisc parent_pqiqm = new
 		// PagesQuestitemsQuestsMisc();
@@ -347,8 +318,7 @@ public class Parse {
 		// find refs
 		//
 
-		List<String> hrefs = pages_config
-				.queryToStringList(QUERY_IMSQTI_ASSESSMENTITEMREF);
+		List<String> hrefs = pq_config.queryAssessmentItemref();
 
 		//
 		// go on
@@ -362,13 +332,14 @@ public class Parse {
 			log.info(String.format(
 					"count [%2d], questid [%2d], position [%2d]", count,
 					cy_questid, cy_position));
-
-			ItemConiguratorLocal qi_config = new ItemConiguratorLocal(href);
+	
+			
 
 			PagesQuestitemsQuestsMisc pqiqm = handle_imsqti_item_xmlv2p1(href);
 
 			if (pqiqm != null) {
-				setupPageAndQuest(pqiqm, pages_config, qi_config, pageCount);
+				QuestConfigurer quest_config = new QuestConfigurer(base, href);
+				setupPageAndQuest(pqiqm, pq_config, quest_config, pageCount);
 
 				// pqiqm.setQi_questsubhead(String.format("Aufgabe %d von %d",cy_position,
 				// hrefs.size()));
@@ -389,18 +360,19 @@ public class Parse {
 	private PagesQuestitemsQuestsMisc handle_imsqti_item_xmlv2p1(String href)
 			throws FileNotFoundException, SaxonApiException {
 
-		ItemConiguratorLocal ic = new ItemConiguratorLocal(href);
+		QuestConfigurer qc = new QuestConfigurer(base, href);
+		
 		PagesQuestitemsQuestsMisc result = new PagesQuestitemsQuestsMisc();
 
-		ManifestItem manifestItem = identifier2questionType.get(ic
+		ManifestItem manifestItem = identifier2questionType.get(qc
 				.queryIdentifier());
 		String questionType = manifestItem.getQuestTypeString();
 
 		result.setP_name(manifestItem.getQuestTitle());
 
-		result.setQi_questdesc(ic.queryQuestDescription());
+		// result.setQi_questdesc(ic.queryQuestDescription());
 
-		result.setQ_showdesc(ic.queryShowdescr());
+		// result.setQ_showdesc(ic.queryShowdescr());
 
 		if (questionType != null
 				&& questionType2CyquestQuestionType.containsKey(questionType)) {
@@ -408,19 +380,19 @@ public class Parse {
 
 			switch (cyType) {
 			case 1:
-				new AssessmentItem_Type001(result, ic);
+				new AssessmentItem_Type001(result, qc);
 				break;
 
 			case 2:
-				new AssessmentItem_Type002(result, ic);
+				new AssessmentItem_Type002(result, qc);
 				break;
 
 			case 3:
-				new AssessmentItem_Type003(result, ic);
+				new AssessmentItem_Type003(result, qc);
 				break;
 
 			case 8:
-				new AssessmentItem_Type008(result, ic);
+				new AssessmentItem_Type008(result, qc);
 				break;
 
 			default:
@@ -433,8 +405,8 @@ public class Parse {
 
 		} else {
 			oi.addErrorEntry("QuestionType not defined: "
-					+ ic.queryIdentifier() + " " + questionType);
-			log.error("QuestionType not defined: " + ic.queryIdentifier() + " "
+					+ qc.queryIdentifier() + " " + questionType);
+			log.error("QuestionType not defined: " + qc.queryIdentifier() + " "
 					+ questionType);
 		}
 
@@ -444,14 +416,14 @@ public class Parse {
 	// -------------------------------- helper ------------ //
 
 	private void setupPageAndQuest(PagesQuestitemsQuestsMisc pqiqm,
-			ItemConiguratorLocal pages_config, ItemConiguratorLocal qi_config,
+			PageQuestitemConfigurer pq_config, QuestConfigurer q_config,
 			int pageCount) {
 		//
 		// setup questitem
 		//
 		// title
 
-		pqiqm.setQi_questhead(pages_config.queryQuestTitle());
+		pqiqm.setQi_questhead(pq_config.queryQuestTitle());
 
 		// set rubricBlock
 
@@ -529,15 +501,15 @@ public class Parse {
 
 	// ----------------------------------------------------------------------
 
-	public class ItemConiguratorLocal {
+	public class ItemConiguratorLocal_ {
 
 		XdmNode node;
 
-		ItemConiguratorLocal(XdmNode node) {
+		ItemConiguratorLocal_(XdmNode node) {
 			this.node = node;
 		}
 
-		ItemConiguratorLocal(String href) throws SaxonApiException {
+		ItemConiguratorLocal_(String href) throws SaxonApiException {
 			XdmNode document = builder.build(new File(base, href));
 
 			this.node = document;

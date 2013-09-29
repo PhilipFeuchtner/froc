@@ -92,7 +92,7 @@ public class OsaWebInterface {
 	String QTI_MEDIAFOLDER;
 	@Value("${CYQUEST_MEDIAFOLDER}")
 	String CYQUEST_MEDIAFOLDER;
-
+	
 	//
 	// froc
 	// header values
@@ -162,7 +162,8 @@ public class OsaWebInterface {
 
 		// Some type of file processing...
 		log.info("-------------------------------------------");
-		log.info("Test upload: " + uploadItem.getName());
+		log.info("Test upload: " + uploadItem.getName() + ", "
+				+ uploadItem.getFileData().getSize() + " bytes");
 		log.info("Test upload: "
 				+ uploadItem.getFileData().getOriginalFilename());
 		log.info("-------------------------------------------");

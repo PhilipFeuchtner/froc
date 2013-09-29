@@ -6,9 +6,8 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
-import de.uniko.iwm.osa.data.model.OsaDbQuests;
 import de.uniko.iwm.osa.data.model.PagesQuestitemsQuestsMisc;
-import de.uniko.iwm.osa.qtiinterpreter.Parse.ItemConigurator;
+import de.uniko.iwm.osa.qtiinterpreter.QuestConfigurer;
 
 public class AssessmentItem_Type008 implements AssessmentItem {
 
@@ -25,12 +24,12 @@ public class AssessmentItem_Type008 implements AssessmentItem {
 	 * @see de.uniko.iwm.osa.data.model.AssessmantItemI#getQuestid()
 	 */
 	
-	public AssessmentItem_Type008(PagesQuestitemsQuestsMisc pqiq, ItemConigurator ic) {
+	public AssessmentItem_Type008(PagesQuestitemsQuestsMisc pqiq, QuestConfigurer qc) {
 		pqiq.setQi_questtype(identifier);
 		pqiq.setM_itemPerPage(itemPerPage);
 		
-		buildShowdesc(pqiq, ic);
-		buildTypevalues(pqiq, ic);
+		buildShowdesc(pqiq, qc);
+		buildTypevalues(pqiq, qc);
 	}
 
 //	public AssessmentItem_Type008(OsaDbQuests quest, ItemConigurator ic, String title) {
@@ -72,11 +71,11 @@ public class AssessmentItem_Type008 implements AssessmentItem {
 	// showdesc:
 	// a:2:{s:4:"type";s:3:"img";s:5:"value";s:31:"/media/images/pid5301_quest.png";}
 
-	void buildShowdesc(PagesQuestitemsQuestsMisc pqiq, ItemConigurator ic) {
-		String question = ic.queryIQQuestion();
+	void buildShowdesc(PagesQuestitemsQuestsMisc pqiq, QuestConfigurer qc) {
+		String question = qc.queryIQQuestion();
 
 		if (question != null)
-			question = cleanImagePath(question, ic);
+			question = cleanImagePath(question, qc);
 
 		String text = String.format(
 				"a:2:{s:4:\"type\";s:3:\"img\";s:5:\"value\";s:%d:\"%s\";}",
@@ -107,8 +106,8 @@ public class AssessmentItem_Type008 implements AssessmentItem {
 	// s:8:"imgwidth";s:3:"110";s:9:"imgheight";s:3:"110";s:3:"svg";s:0:"";s:8:"svgwidth";s:0:"";s:9:"svgheight";s:0:"";s:4:"desc";
 	// s:1:"D";s:4:"text";s:0:"";}}
 
-	void buildTypevalues(PagesQuestitemsQuestsMisc pqiq, ItemConigurator ic) {
-		List<String> choices = ic.queryIQChoices();
+	void buildTypevalues(PagesQuestitemsQuestsMisc pqiq, QuestConfigurer qc) {
+		List<String> choices = qc.queryIQChoices();
 
 		// num entries + array-string
 		String arrayFormat = "a:%d:{%s}";
@@ -127,7 +126,7 @@ public class AssessmentItem_Type008 implements AssessmentItem {
 		int count = 0;
 		for (String item : choices) {
 
-			item = cleanImagePath(item, ic);
+			item = cleanImagePath(item, qc);
 
 			String answer = quest_ans_def[count];
 
@@ -146,11 +145,11 @@ public class AssessmentItem_Type008 implements AssessmentItem {
 		pqiq.setQ_typevalues(text);
 	}
 
-	private String cleanImagePath(String path, ItemConigurator ic) {
-		Pattern p = Pattern.compile("/?" + ic.getQti_media_folder() + "/(.*)");
+	private String cleanImagePath(String path, QuestConfigurer qc) {
+		Pattern p = Pattern.compile("/?" + qc.getQti_media_folder() + "/(.*)");
 		Matcher m = p.matcher(path);
 
-		return m.find() ? "/" + ic.getCy_image_base() + "/" + m.group(1) : path;
+		return m.find() ? "/" + qc.getCy_image_base() + "/" + m.group(1) : path;
 
 	}
 	

@@ -2,11 +2,8 @@ package de.uniko.iwm.osa.data.assessmentItem;
 
 import org.apache.log4j.Logger;
 
-import net.sf.saxon.s9api.XdmNode;
-
-import de.uniko.iwm.osa.data.model.OsaDbQuests;
 import de.uniko.iwm.osa.data.model.PagesQuestitemsQuestsMisc;
-import de.uniko.iwm.osa.qtiinterpreter.Parse.ItemConigurator;
+import de.uniko.iwm.osa.qtiinterpreter.QuestConfigurer;
 
 public class AssessmentItem_Type003 implements AssessmentItem {
 
@@ -27,20 +24,20 @@ public class AssessmentItem_Type003 implements AssessmentItem {
 	 * @see de.uniko.iwm.osa.data.model.AssessmantItemI#getQuestid()
 	 */
 
-	public AssessmentItem_Type003(PagesQuestitemsQuestsMisc pqiq, ItemConigurator ic) {
+	public AssessmentItem_Type003(PagesQuestitemsQuestsMisc pqiq, QuestConfigurer qc) {
 		pqiq.setQi_questtype(identifier);
 		pqiq.setM_itemPerPage(itemPerPage);
 		
-		buildShowdesc(pqiq, ic);
-		buildTypevalues(pqiq, ic);
+		buildShowdesc(pqiq, qc);
+		buildTypevalues(pqiq, qc);
 	}
 
-	private void buildShowdesc(PagesQuestitemsQuestsMisc pqiq, ItemConigurator ic) {
-		pqiq.setQ_showdesc(ic.queryShowdescr());
+	private void buildShowdesc(PagesQuestitemsQuestsMisc pqiq, QuestConfigurer qc) {
+		pqiq.setQ_showdesc("please implement me");
 		
 	}
 
-	private void buildTypevalues(PagesQuestitemsQuestsMisc pqiq, ItemConigurator ic) {
+	private void buildTypevalues(PagesQuestitemsQuestsMisc pqiq, QuestConfigurer qc) {
 		pqiq.setQ_typevalues(MAGIC_TYPEVALUES);
 	}
 

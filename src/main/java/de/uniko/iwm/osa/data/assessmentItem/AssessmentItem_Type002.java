@@ -6,7 +6,7 @@ import net.sf.saxon.s9api.XdmNode;
 
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
 import de.uniko.iwm.osa.data.model.PagesQuestitemsQuestsMisc;
-import de.uniko.iwm.osa.qtiinterpreter.Parse.ItemConigurator;
+import de.uniko.iwm.osa.qtiinterpreter.QuestConfigurer;
 
 public class AssessmentItem_Type002 implements AssessmentItem {
 	static Logger log = Logger
@@ -18,7 +18,9 @@ public class AssessmentItem_Type002 implements AssessmentItem {
 
 	int itemPerPage = 8;
 
-	final String MAGIC_INTERESSEN_TYPEVALUES = "a:1:{s:8:\"scaledir\";s:2:\"up\";}";
+	final String MAGIC_TYPEVALUES = "a:2:{i:0;i:1;i:1;i:0;}";
+	final String MAGIC_QUESTPARAM = "a:1:{s:8:\"scaledir\";s:2:\"up\";}";
+	
 
 	// OsaDbQuests quest;
 
@@ -28,56 +30,17 @@ public class AssessmentItem_Type002 implements AssessmentItem {
 	 * @see de.uniko.iwm.osa.data.model.AssessmantItemI#getQuestid()
 	 */
 
-	public AssessmentItem_Type002(PagesQuestitemsQuestsMisc pqiq, ItemConigurator ic) {
+	public AssessmentItem_Type002(PagesQuestitemsQuestsMisc pqiq, QuestConfigurer qc) {
 		pqiq.setQi_questtype(identifier);
-		pqiq.setM_itemPerPage(itemPerPage);
+		pqiq.setQi_questparam(MAGIC_QUESTPARAM);
 		
-		// buildShowdesc(pqiq, ic);
-		buildTypevalues(pqiq, ic);
+		pqiq.setQ_typevalues(MAGIC_TYPEVALUES);
+		
+		pqiq.setM_itemPerPage(itemPerPage);
 	}
-
-	private void buildTypevalues(PagesQuestitemsQuestsMisc pqiq, ItemConigurator ic) {
-		pqiq.setQ_typevalues(MAGIC_INTERESSEN_TYPEVALUES);
-	}
-
-	// public AssessmentItem_Type002(OsaDbQuests quest, ItemConigurator ic,
-	// String title) {
-	// log.info("Assessment item type 002 created");
-	//
-	// this.quest = quest;
-	// this.ic = ic;
-	// this.title = title;
-	//
-	// quest.setTypevalues(MAGIC_INTERESSEN_TYPEVALUES);
-	// }
-
-//	@Override
-//	public int getIdentifier() {
-//		return identifier;
-//	}
-
-//	@Override
-//	public String getCqt() {
-//		return cyquest_question_type;
-//	}
-
-	// @Override
-	// public OsaDbQuests getOsaDbQuest() {
-	// return quest;
-	// }
 
 	@Override
 	public int getItemPerPage() {
 		return itemPerPage;
 	}
-
-	// @Override
-	// public void setTitle(String text) {
-	// title = text;
-	// }
-	//
-	// @Override
-	// public String getTitle() {
-	// return title;
-	// }
 }
