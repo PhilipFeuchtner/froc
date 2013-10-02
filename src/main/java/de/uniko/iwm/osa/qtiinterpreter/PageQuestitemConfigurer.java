@@ -7,8 +7,11 @@ import net.sf.saxon.s9api.XdmNode;
 
 public class PageQuestitemConfigurer extends ItemConfigurer {
 
-	final String QUERY_IMSQTI_ASSESSMENTITEMREF = "imsqti:assessmentItemRef/@href";
-	final String QUERY_TITLE_ATTRIBUTE = "@title";
+	private final String QUERY_IMSQTI_ASSESSMENTITEMREF = "imsqti:assessmentItemRef/@href";
+	private final String QUERY_TITLE_ATTRIBUTE = "@title";
+	
+	private final String QUERY_ASSESSMENTSECTION_RUBRIC = "imsqti:rubricBlock";
+	private final String PART_RUBRIC = "imsqti:rubricBlock/child::node()";
 
 	public PageQuestitemConfigurer(String base, String href)
 			throws SaxonApiException {
@@ -25,5 +28,9 @@ public class PageQuestitemConfigurer extends ItemConfigurer {
 
 	public String queryQuestTitle() {
 		return queryToString(QUERY_TITLE_ATTRIBUTE);
+	}
+	
+	public String queryRubric() {
+		return cleanHtmlContent(QUERY_ASSESSMENTSECTION_RUBRIC, PART_RUBRIC);
 	}
 }

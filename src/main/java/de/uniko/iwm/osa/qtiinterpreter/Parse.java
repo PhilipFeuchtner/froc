@@ -1,6 +1,5 @@
 package de.uniko.iwm.osa.qtiinterpreter;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
@@ -9,19 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import javax.xml.transform.stream.StreamSource;
-
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import net.sf.saxon.s9api.Axis;
-import net.sf.saxon.s9api.DocumentBuilder;
-import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.QName;
 import net.sf.saxon.s9api.SaxonApiException;
-import net.sf.saxon.s9api.WhitespaceStrippingPolicy;
-import net.sf.saxon.s9api.XPathCompiler;
-import net.sf.saxon.s9api.XPathSelector;
 import net.sf.saxon.s9api.XdmItem;
 import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XdmSequenceIterator;
@@ -34,7 +25,6 @@ import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type008;
 import de.uniko.iwm.osa.data.model.Cy_QuestionWrapper;
 import de.uniko.iwm.osa.data.model.PagesQuestitemsQuestsMisc;
 import de.uniko.iwm.osa.data.model.osaitem.OsaItem;
-import de.uniko.iwm.osa.utils.HtmlFilter;
 
 /**
  * @author user main class
@@ -45,50 +35,9 @@ public class Parse {
 
 	final String MANIFEST_NAME = "imsmanifest.xml";
 
-	//
-	// imscp assessment
-	//
-	/**
-	 * xpath expressions imsmanifest
-	 */
-//	// -
-//	private final String QUERY_MANIFEST_RESOURCE = "/imscp:manifest/imscp:resources"
-//			+ "/imscp:resource";
-//
-//	// +
-//	private final String QUERY_MANIFEST_ASSESSMENT = "/imscp:manifest/imscp:resources"
-//			+ "/imscp:resource[@type='imsqti_assessment_xmlv2p1']";
-//	// +
-//	private final String QUERY_MANIFEST_ITEM = "/imscp:manifest"
-//			+ "/imscp:resources/imscp:resource[@type='imsqti_item_xmlv2p1']";
-//	// -
-//	private final String QUERY_MANIFEST_DESCRIPTION = "/imscp:manifest//imscp:resources/imscp:resource"
-//			+ "/imsmd:metadata/imsmd:lom/imsmd:general/imsmd:description/imsmd:langstring";
-
-	//
-	// imsqti
-	// assessment -> assessmentItemRef
-	//
-
-	/**
-	 * xpath imsqti entries
-	 */
-//	// +
-//	private final String QUERY_IMSQTI_ASSESSMENTTEST = "imsqti:assessmentTest";
-//	// +
-//	private final String QUERY_IMSQTI_TESTPART = "imsqti:testPart";
-//	// +
-//	private final String QUERY_IMSQTI_ASSESSMENTSECTION = "imsqti:assessmentSection";
-	// final String QUERY_ASSESSMENTSECTION_RUBRIC =
-	// "imsqti:rubricBlock/child::node()";
-	// -
 	private final String QUERY_ASSESSMENTSECTION_RUBRIC = "imsqti:rubricBlock";
-	// -
 	private final String PART_RUBRIC = "imsqti:rubricBlock/child::node()";
-
-	// -
 	private final String QUERY_TITLE_ATTRIBUTE = "@title";
-	// +
 	private final String QUERY_IMSQTI_ASSESSMENTITEMREF = "imsqti:assessmentItemRef/@href";
 
 	//
@@ -123,14 +72,6 @@ public class Parse {
 
 	Pattern PATTERN_IMAGE_SRC = Pattern.compile("src=\"media");
 
-	// final String MAGIC_INTERESSEN_TYPEVALUES = "a:1:{s:8:\"scaledir\";s:2:\"up\";}";
-
-	Processor proc;
-	XPathCompiler xpath;
-	DocumentBuilder builder;
-
-	// private final String sep = System.getProperty("file.separator");
-
 	private String base;
 	private String cy_image_base;
 	private String qti_media_folder;
@@ -162,23 +103,6 @@ public class Parse {
 
 		// this.image_base = image_base;
 		identifier2questionType = new HashMap<String, ManifestItem>();
-
-		proc = new Processor(false);
-		xpath = proc.newXPathCompiler();
-
-		xpath.declareNamespace("xsi",
-				"http://www.w3.org/2001/XMLSchema-instance");
-
-		xpath.declareNamespace("imscp",
-				"http://www.imsglobal.org/xsd/imscp_v1p1");
-		xpath.declareNamespace("imsmd",
-				"http://www.imsglobal.org/xsd/imsmd_v1p2p2");
-		xpath.declareNamespace("imsqti",
-				"http://www.imsglobal.org/xsd/imsqti_v2p1");
-
-		builder = proc.newDocumentBuilder();
-		builder.setLineNumbering(true);
-		builder.setWhitespaceStrippingPolicy(WhitespaceStrippingPolicy.ALL);
 
 	}
 
@@ -343,7 +267,6 @@ public class Parse {
 
 				// pqiqm.setQi_questsubhead(String.format("Aufgabe %d von %d",cy_position,
 				// hrefs.size()));
-				pqiqm.setQi_questsubhead("Aufgabe");
 
 				if ((cy_position % pqiqm.getM_itemPerPage() == 0) || qw == null) {
 
@@ -418,18 +341,16 @@ public class Parse {
 	private void setupPageAndQuest(PagesQuestitemsQuestsMisc pqiqm,
 			PageQuestitemConfigurer pq_config, QuestConfigurer q_config,
 			int pageCount) {
-		//
-		// setup questitem
-		//
-		// title
-
-		pqiqm.setQi_questhead(pq_config.queryQuestTitle());
-
-		// set rubricBlock
 
 		// quest.setQuestdesc(ic.queryQuestDescription());
 
 		// quest shosdesrc
+		//pqiqm.setQi_questhead(pq_config.queryQuestTitle());
+		String title = q_config.queryTitle();
+		pqiqm.setQi_questhead(title.isEmpty() ? pqiqm.getQi_questhead() : title);		
+		pqiqm.setQi_questsubhead("Aufgabe");
+		pqiqm.setQi_questdesc(pq_config.queryRubric());
+
 
 		// pqiqm.setQi_questdesc(pages_config.queryIQTask());
 
@@ -493,203 +414,6 @@ public class Parse {
 		// } catch (SaxonApiException e) {
 		// e.printStackTrace();
 		// }
-	}
-
-	/* --- helper --- */
-
-	/* --- getter & setter --- */
-
-	// ----------------------------------------------------------------------
-
-	public class ItemConiguratorLocal_ {
-
-		XdmNode node;
-
-		ItemConiguratorLocal_(XdmNode node) {
-			this.node = node;
-		}
-
-		ItemConiguratorLocal_(String href) throws SaxonApiException {
-			XdmNode document = builder.build(new File(base, href));
-
-			this.node = document;
-		}
-
-		String queryToString(String query) throws SaxonApiException {
-			return StringUtils.join(queryToStringList(query), "");
-		}
-
-		List<String> queryToStringList(String query) throws SaxonApiException {
-			List<String> result = new ArrayList<String>();
-
-			XPathSelector selector = xpath.compile(query).load();
-			selector.setContextItem(node);
-
-			// Evaluate the expression.
-			XdmValue children_titles = selector.evaluate();
-
-			for (XdmItem item : children_titles) {
-				result.add(item.getStringValue());
-				log.info(String.format("Found: (%s)", item.getStringValue()));
-			}
-			return result;
-		}
-
-		public String cleanHtmlContent(String XPATH_NODE, String XPATH_CHILD)
-				throws SaxonApiException {
-			String result = "";
-
-			XPathSelector selector = xpath.compile(XPATH_NODE).load();
-			selector.setContextItem(node);
-
-			// Evaluate the expression.
-			XdmValue children = selector.evaluate();
-
-			for (XdmItem item : children) {
-				// log.info("------>" + item.toString());
-
-				HtmlFilter hf = new HtmlFilter();
-				String fragment = hf.parseText(item.toString());
-
-				XdmNode htmlDoc = builder.build(new StreamSource(
-						new java.io.StringReader(fragment)));
-
-				selector = xpath.compile(XPATH_CHILD).load();
-				selector.setContextItem(htmlDoc);
-
-				// Evaluate the expression.
-				XdmValue htmlNodes = selector.evaluate();
-
-				StringBuilder html = new StringBuilder();
-				for (XdmItem htmlNode : htmlNodes) {
-					html.append(htmlNode.toString());
-				}
-
-				result += html.toString().trim();
-			}
-			log.info(String.format("HTML   : (%s)", result));
-
-			return result;
-		}
-
-		// ----------------------------------------------------- //
-
-		public String queryIdentifier() {
-			try {
-				return queryToString(PART_ASS_IDENTIFIER);
-			} catch (SaxonApiException e) {
-				oi.addErrorEntry(e.getMessage());
-				e.printStackTrace();
-			}
-
-			return null;
-		}
-
-		public String queryTitle() {
-			try {
-				return queryToString(PART_ASS_TITLE);
-			} catch (SaxonApiException e) {
-				oi.addErrorEntry(e.getMessage());
-				e.printStackTrace();
-			}
-
-			return null;
-		}
-
-		public List<String> queryCorrectResp() {
-			try {
-				return queryToStringList(PART_CORRECT_RESP);
-			} catch (SaxonApiException e) {
-				oi.addErrorEntry(e.getMessage());
-				e.printStackTrace();
-			}
-
-			return null;
-		}
-
-		public String queryShowdescr() {
-			try {
-				return cleanHtmlContent(PART_ITEM_BODY, PART_HTML);
-			} catch (SaxonApiException e) {
-				oi.addErrorEntry(e.getMessage());
-				e.printStackTrace();
-			}
-
-			return null;
-		}
-
-		// type 8
-
-		public String queryIQTask() {
-			try {
-				return queryToString(IQ_QUERY_TASK);
-			} catch (SaxonApiException e) {
-				oi.addErrorEntry(e.getMessage());
-				e.printStackTrace();
-			}
-
-			return null;
-		}
-
-		public String queryIQQuestion() {
-			try {
-				return queryToString(IQ_QUERY_QUESTION);
-			} catch (SaxonApiException e) {
-				e.printStackTrace();
-				oi.addErrorEntry(e.getMessage());
-			}
-
-			return null;
-		}
-
-		public List<String> queryIQChoices() {
-			try {
-				return queryToStringList(IQ_QUERY_CHOICES);
-			} catch (SaxonApiException e) {
-				e.printStackTrace();
-				oi.addErrorEntry(e.getMessage());
-			}
-
-			return null;
-		}
-
-		// --------------------------------------------------------------
-
-		public String queryQuestTitle() {
-			try {
-				return queryToString(QUERY_TITLE_ATTRIBUTE);
-			} catch (SaxonApiException e) {
-				e.printStackTrace();
-				oi.addErrorEntry(e.getMessage());
-			}
-
-			return null;
-		}
-
-		public String queryQuestDescription() {
-			try {
-				return cleanHtmlContent(QUERY_ASSESSMENTSECTION_RUBRIC,
-						PART_RUBRIC);
-			} catch (SaxonApiException e) {
-				e.printStackTrace();
-				oi.addErrorEntry(e.getMessage());
-			}
-
-			return null;
-		}
-
-		// --------------------------------------------------------------
-
-		public String getCy_image_base() {
-			return cy_image_base;
-		}
-
-		public String getQti_media_folder() {
-			return qti_media_folder;
-		}
-
-		// --------------------------------------------------------------
-
 	}
 
 	// getter & setter
