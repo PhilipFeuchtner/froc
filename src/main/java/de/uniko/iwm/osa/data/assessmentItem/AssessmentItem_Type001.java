@@ -6,6 +6,7 @@ import net.sf.saxon.s9api.XdmNode;
 
 import de.uniko.iwm.osa.data.model.OsaDbQuests;
 import de.uniko.iwm.osa.data.model.PagesQuestitemsQuestsMisc;
+import de.uniko.iwm.osa.qtiinterpreter.PageQuestitemConfigurer;
 import de.uniko.iwm.osa.qtiinterpreter.QuestConfigurer;
 
 public class AssessmentItem_Type001 implements AssessmentItem {

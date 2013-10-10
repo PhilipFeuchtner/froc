@@ -228,7 +228,7 @@ public class OsaWebInterface {
 	 * @param headers
 	 * @return
 	 */
-	@RequestMapping("/upload-orig")
+	@RequestMapping("/upload")
 	public @ResponseBody
 	OsaItem getResponse(@RequestHeader Map<String, Object> headers) {
 
@@ -294,7 +294,7 @@ public class OsaWebInterface {
 		return oi;
 	}
 
-	@RequestMapping("/upload")
+	@RequestMapping("/upload-dummy")
 	public @ResponseBody
 	OsaItem getDummy() {
 

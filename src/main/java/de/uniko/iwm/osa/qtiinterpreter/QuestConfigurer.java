@@ -17,6 +17,10 @@ public class QuestConfigurer extends ItemConfigurer {
 			+ "/p/descendant::imsqti:img/@src";
 	// "/p/imsqti:img/@src"
 	// + "|" + PART_ITEM_BODY + "/xsi:p/imsqti:img/@src";
+	
+	private final String PART_HTML = "//imsqti:itemBody/child::node()";
+	// private final String PART_HTML = "//imsqti:itemBody";
+
 
 	private final String IQ_QUERY_CHOICES = PART_ITEM_BODY
 			+ "/imsqti:choiceInteraction"
@@ -50,5 +54,9 @@ public class QuestConfigurer extends ItemConfigurer {
 
 	public List<String> queryIQChoices() {
 		return queryToStringList(IQ_QUERY_CHOICES);
+	}
+	
+	public String queryQuestionText() {
+		return cleanHtmlContent(PART_ITEM_BODY, PART_HTML);
 	}
 }

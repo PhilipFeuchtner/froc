@@ -356,13 +356,14 @@ public class Parse {
 
 		// page pagesid
 
-		String pagesIDText = String.format("X-%03d", count);
+		String pagesIDText = String.format("X%04d", count);
 		pqiqm.setP_pid(pagesIDText);
 
 		// cy_db_quest.setQuestsubhead(String.format("Aufgabe %d von %d",
 		// cy_questid, hrefs.size()));
 		// quest.setPosition(cy_position);
 		pqiqm.setQ_shownum(String.format("%d", count));
+		pqiqm.setQ_showdesc(q_config.queryQuestionText());
 	}
 
 	/**
