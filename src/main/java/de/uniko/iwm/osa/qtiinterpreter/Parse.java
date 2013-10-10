@@ -180,7 +180,7 @@ public class Parse {
 			//
 			log.info("AssessmentTest");
 
-			if (handle_AssessmentTest((XdmNode)child))
+			if (handle_AssessmentTest((XdmNode) child))
 				return true;
 		}
 
@@ -205,9 +205,9 @@ public class Parse {
 		return true;
 	}
 
-	private void handle_TestPart(XdmNode node)
-			throws FileNotFoundException, SaxonApiException,
-			UnsupportedEncodingException, NoSuchAlgorithmException {
+	private void handle_TestPart(XdmNode node) throws FileNotFoundException,
+			SaxonApiException, UnsupportedEncodingException,
+			NoSuchAlgorithmException {
 
 		int cy_questid = 0;
 
@@ -222,7 +222,7 @@ public class Parse {
 			//
 			log.info("AssessmentSection");
 
-			handle_AssessmentSection((XdmNode)child, cy_questid);
+			handle_AssessmentSection((XdmNode) child, cy_questid);
 		}
 	}
 
@@ -231,9 +231,6 @@ public class Parse {
 			UnsupportedEncodingException {
 
 		PageQuestitemConfigurer pq_config = new PageQuestitemConfigurer(node);
-
-		// PagesQuestitemsQuestsMisc parent_pqiqm = new
-		// PagesQuestitemsQuestsMisc();
 		Cy_QuestionWrapper qw = null;
 
 		int cy_position = 0;
@@ -252,105 +249,64 @@ public class Parse {
 			count++;
 			cy_position++;
 
+			QuestConfigurer q_config = new QuestConfigurer(base, href);
+			PagesQuestitemsQuestsMisc pqiqm = getPageAndQuest(pq_config,
+					q_config, cy_position);
+
 			log.info(String.format("ref file: %s", href));
 			log.info(String.format(
 					"count [%2d], questid [%2d], position [%2d]", count,
 					cy_questid, cy_position));
-	
-			
 
-			PagesQuestitemsQuestsMisc pqiqm = handle_imsqti_item_xmlv2p1(href);
+			handle_imsqti_item_xmlv2p1(q_config, pqiqm);
 
-			if (pqiqm != null) {
-				QuestConfigurer quest_config = new QuestConfigurer(base, href);
-				setupPageAndQuest(pqiqm, pq_config, quest_config, pageCount);
+			// getPageAndQuest(pqiqm, pq_config, quest_config, pageCount);
 
-				// pqiqm.setQi_questsubhead(String.format("Aufgabe %d von %d",cy_position,
-				// hrefs.size()));
+			// pqiqm.setQi_questsubhead(String.format("Aufgabe %d von %d",cy_position,
+			// hrefs.size()));
 
-				if ((cy_position % pqiqm.getM_itemPerPage() == 0) || qw == null) {
+			if ((cy_position % pqiqm.getM_itemPerPage() == 0) || qw == null) {
 
-					qw = new Cy_QuestionWrapper(pqiqm);
-					generated_pages.add(qw);
-				}
-
-				log.info("IT: " + pqiqm);
-				qw.addQuest(pqiqm.getQuests());
+				qw = new Cy_QuestionWrapper(pqiqm);
+				generated_pages.add(qw);
 			}
+
+			log.info("IT: " + pqiqm);
+			qw.addQuest(pqiqm.getQuests());
 		}
+
 	}
 
-	private PagesQuestitemsQuestsMisc handle_imsqti_item_xmlv2p1(String href)
-			throws FileNotFoundException, SaxonApiException {
-
-		QuestConfigurer qc = new QuestConfigurer(base, href);
-		
-		PagesQuestitemsQuestsMisc result = new PagesQuestitemsQuestsMisc();
+	private boolean handle_imsqti_item_xmlv2p1(QuestConfigurer qc,
+			PagesQuestitemsQuestsMisc pqiqm) throws FileNotFoundException,
+			SaxonApiException {
 
 		ManifestItem manifestItem = identifier2questionType.get(qc
 				.queryIdentifier());
-		String questionType = manifestItem.getQuestTypeString();
 
-		result.setP_name(manifestItem.getQuestTitle());
+		pqiqm.setP_name(manifestItem.getQuestTitle());
 
-		// result.setQi_questdesc(ic.queryQuestDescription());
+		manifestItem.getAi().setup(pqiqm, qc);
 
-		// result.setQ_showdesc(ic.queryShowdescr());
-
-		if (questionType != null
-				&& questionType2CyquestQuestionType.containsKey(questionType)) {
-			int cyType = questionType2CyquestQuestionType.get(questionType);
-
-			switch (cyType) {
-			case 1:
-				new AssessmentItem_Type001(result, qc);
-				break;
-
-			case 2:
-				new AssessmentItem_Type002(result, qc);
-				break;
-
-			case 3:
-				new AssessmentItem_Type003(result, qc);
-				break;
-
-			case 8:
-				new AssessmentItem_Type008(result, qc);
-				break;
-
-			default:
-				oi.addErrorEntry("QuestionType not implemented: "
-						+ questionType);
-				log.error("QuestionType not implemented: " + questionType);
-			}
-
-			return result;
-
-		} else {
-			oi.addErrorEntry("QuestionType not defined: "
-					+ qc.queryIdentifier() + " " + questionType);
-			log.error("QuestionType not defined: " + qc.queryIdentifier() + " "
-					+ questionType);
-		}
-
-		return null;
+		return true;
 	}
 
 	// -------------------------------- helper ------------ //
 
-	private void setupPageAndQuest(PagesQuestitemsQuestsMisc pqiqm,
+	private PagesQuestitemsQuestsMisc getPageAndQuest(
 			PageQuestitemConfigurer pq_config, QuestConfigurer q_config,
 			int pageCount) {
+
+		PagesQuestitemsQuestsMisc pqiqm = new PagesQuestitemsQuestsMisc();
 
 		// quest.setQuestdesc(ic.queryQuestDescription());
 
 		// quest shosdesrc
-		//pqiqm.setQi_questhead(pq_config.queryQuestTitle());
+		// pqiqm.setQi_questhead(pq_config.queryQuestTitle());
 		String title = q_config.queryTitle();
-		pqiqm.setQi_questhead(title.isEmpty() ? pqiqm.getQi_questhead() : title);		
+		pqiqm.setQi_questhead(title.isEmpty() ? pqiqm.getQi_questhead() : title);
 		pqiqm.setQi_questsubhead("Aufgabe");
 		pqiqm.setQi_questdesc(pq_config.queryRubric());
-
 
 		// pqiqm.setQi_questdesc(pages_config.queryIQTask());
 
@@ -364,6 +320,8 @@ public class Parse {
 		// quest.setPosition(cy_position);
 		pqiqm.setQ_shownum(String.format("%d", count));
 		pqiqm.setQ_showdesc(q_config.queryQuestionText());
+
+		return pqiqm;
 	}
 
 	/**

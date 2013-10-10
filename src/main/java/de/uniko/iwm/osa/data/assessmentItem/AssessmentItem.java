@@ -1,5 +1,10 @@
 package de.uniko.iwm.osa.data.assessmentItem;
 
+import org.apache.log4j.Logger;
+
+import de.uniko.iwm.osa.data.model.PagesQuestitemsQuestsMisc;
+import de.uniko.iwm.osa.qtiinterpreter.QuestConfigurer;
+
 /**
  * @author user
  * 
@@ -10,8 +15,10 @@ package de.uniko.iwm.osa.data.assessmentItem;
  *         constructor take an itemconfigurator as parameter
  * 
  */
-public interface AssessmentItem {
-	
+public abstract class AssessmentItem {
+	static Logger log = Logger
+			.getLogger(AssessmentItem.class.getName());
+
 	/**
 	 * question or page?
 	 * 
@@ -20,35 +27,9 @@ public interface AssessmentItem {
 	static enum CYQUEST_QUESTION_TYPE {
 		QESTION, EXTRASEITE
 	};
-	
-	String[] quest_ans_def = { "A", "B", "C", "D", "E", "F", "G", "H", "I",
+
+	static String[] quest_ans_def = { "A", "B", "C", "D", "E", "F", "G", "H", "I",
 			"J", "K", "L" };
-	
-	/**
-	 * @return identifier
-	 */
-	// public int getIdentifier();
 
-	/**
-	 * get cyquest-question-id
-	 * 
-	 * unused
-	 * 
-	 * @return cyquest-cuestion-id
-	 */
-//	public String getCqt();
-
-	/**
-	 * get corresponding osadbquest
-	 * 
-	 * unused
-	 * 
-	 * @return osadbquest
-	 */
-	// public OsaDbQuests getOsaDbQuest();
-	
-	public int getItemPerPage();
-	
-	// public void setTitle(String title);
-	// public String getTitle();
+	public abstract boolean setup(PagesQuestitemsQuestsMisc pqiqm, QuestConfigurer q);
 }
