@@ -56,8 +56,9 @@
 
 	<jdbc:initialize-database data-source="dataSource"
 		enabled="false">
-	    <jdbc:script location="classpath:sql/init.sql" /> 
-		<jdbc:script location="classpath:sql/db_osa.sql" />
+		<jdbc:script location="classpath:sql/init.sql" />
+		<!-- <jdbc:script location="classpath:sql/db_osa.sql" /> -->
+		<jdbc:script location="classpath:sql/OSA_B-db_osacv.sql" />
 	</jdbc:initialize-database>
 
 	<bean id="sessionFactory"
@@ -98,8 +99,8 @@
 
 	<!-- other bean -->
 
- 	<bean id="builder" class="de.uniko.iwm.osa.data.service.QtiBuilderServiceImpl" /> 
- 	<bean id="qtree" class="de.uniko.iwm.osa.data.service.QtiTreeServiceImpl" /> 
+	<bean id="builder" class="de.uniko.iwm.osa.data.service.QtiBuilderServiceImpl" />
+	<bean id="qtree" class="de.uniko.iwm.osa.data.service.QtiTreeServiceImpl" />
 	<!-- <bean id="assessmentItem" class="de.uniko.iwm.osa.questsitemTree.AssessmentItem" 
 		/> -->
 
