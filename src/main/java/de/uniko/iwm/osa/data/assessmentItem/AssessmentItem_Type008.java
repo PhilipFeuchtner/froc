@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javassist.bytecode.LineNumberAttribute.Pc;
+
 import de.uniko.iwm.osa.data.model.PagesQuestitemsQuestsMisc;
 import de.uniko.iwm.osa.qtiinterpreter.QuestConfigurer;
 
@@ -14,16 +16,16 @@ public class AssessmentItem_Type008 extends AssessmentItem {
 
 	public AssessmentItem_Type008() {
 	}
-	
+
 	public boolean setup(PagesQuestitemsQuestsMisc pqiq, QuestConfigurer qc) {
 		pqiq.setQi_questtype(identifier);
 		pqiq.setQi_questdesc(qc.queryQuestionText());
-		
+
 		pqiq.setM_itemPerPage(itemPerPage);
-		
+
 		buildShowdesc(pqiq, qc);
 		buildTypevalues(pqiq, qc);
-		
+
 		return true;
 	}
 
@@ -31,16 +33,20 @@ public class AssessmentItem_Type008 extends AssessmentItem {
 
 	// showdesc:
 	// a:2:{s:4:"type";s:3:"img";s:5:"value";s:31:"/media/images/pid5301_quest.png";}
+	// a:3:{s:4:"type";s:3:"img";s:5:"value";s:31:"/media/images/pid5301_quest.png";s:6:"answer";s:1:"B";}
 
 	void buildShowdesc(PagesQuestitemsQuestsMisc pqiq, QuestConfigurer qc) {
 		String question = qc.queryIQQuestion();
 
+		int coorect_resp = qc.queryCorrectResponsePosition();
+		String answer = quest_ans_def[coorect_resp];
+
 		if (question != null)
 			question = cleanImagePath(question, qc);
 
-		String text = String.format(
-				"a:2:{s:4:\"type\";s:3:\"img\";s:5:\"value\";s:%d:\"%s\";}",
-				question.length(), question);
+		String text = String
+				.format("a:2:{s:4:\"type\";s:3:\"img\";s:5:\"value\";s:%d:\"%s\";s:6:\"answer\";s:%d:\"%s\";}",
+						question.length(), question, answer.length(), answer);
 
 		System.err.println("---> " + text);
 

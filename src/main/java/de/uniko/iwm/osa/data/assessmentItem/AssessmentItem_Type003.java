@@ -22,6 +22,8 @@ public class AssessmentItem_Type003 extends AssessmentItem {
 		pqiq.setM_itemPerPage(itemPerPage);
 		
 		pqiq.setQ_showdesc(MAGIC_SHOWDESC);
+		
+		qc.queryCorrectResponsePosition();
 		pqiq.setQ_typevalues(MAGIC_TYPEVALUES);
 		
 		return true;
