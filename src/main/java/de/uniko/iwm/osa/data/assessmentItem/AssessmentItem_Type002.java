@@ -7,7 +7,7 @@ public class AssessmentItem_Type002 extends AssessmentItem {
 	int identifier = 2;
 	int itemPerPage = 8;
 
-	final String MAGIC_TYPEVALUES = "a:2:{i:0;i:1;i:1;i:0;}";
+	final String MAGIC_TYPEVALUES = "a:5:{i:0;i:1;i:1;i:2;i:2;i:3;i:3;i:4;i:4;i:5;}"; //"a:2:{i:0;i:1;i:1;i:0;}";
 	final String MAGIC_QUESTPARAM = "a:1:{s:8:\"scaledir\";s:2:\"up\";}";
 
 	public AssessmentItem_Type002() {
