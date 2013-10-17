@@ -7,6 +7,9 @@
 	<packaging>war</packaging>
 	<version>1.0-SNAPSHOT</version>
 	<description />
+	
+	
+	
 
 	<scm>
 		<!-- url = ssh://feucht@osa-dev.uni-koblenz.de/srv/git/osa/cosa.git scm:git:ssh://server_name[:port]/path_to_repository -->
