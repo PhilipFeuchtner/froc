@@ -19,12 +19,14 @@ public class AssessmentItem_Type008 extends AssessmentItem {
 
 	public boolean setup(PagesQuestitemsQuestsMisc pqiq, QuestConfigurer qc) {
 		pqiq.setQi_questtype(identifier);
-		pqiq.setQi_questdesc(qc.queryQuestionText());
+
+		// pqiq.setQi_questdesc(qc.queryQuestionText());
 
 		pqiq.setM_itemPerPage(itemPerPage);
 
 		buildShowdesc(pqiq, qc);
 		buildTypevalues(pqiq, qc);
+		buildQuestdesc(pqiq, qc);
 
 		return true;
 	}
@@ -110,6 +112,28 @@ public class AssessmentItem_Type008 extends AssessmentItem {
 		System.err.println(text);
 
 		pqiq.setQ_typevalues(text);
+	}
+
+	private void buildQuestdesc(PagesQuestitemsQuestsMisc pqiq,
+			QuestConfigurer qc) {
+
+		// <p xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Finden Sie
+		// die Regel und wählen Sie das Quadrat aus, das Ihrer Meinung nach am
+		// besten in das noch leere Feld passt.</p><p
+		// xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		// <img xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" alt=""
+		// src="media/989f8f9617f5404b876e534018fa8bec.png"/>
+		// </p>
+
+		String quest_text = qc.queryQuestionText();
+		Pattern p = Pattern.compile("src=\"/?" + qc.getQti_media_folder()
+				+ "/([^\"]+)\"");
+		Matcher m = p.matcher(quest_text);
+
+		String questdesc = m.find() ? m.replaceAll("src=\""
+				+ qc.getCy_image_base() + "/$1\"") : quest_text;
+
+		pqiq.setQi_questdesc(questdesc);
 	}
 
 	private String cleanImagePath(String path, QuestConfigurer qc) {

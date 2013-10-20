@@ -92,7 +92,7 @@ public class OsaWebInterface {
 	String QTI_MEDIAFOLDER;
 	@Value("${CYQUEST_MEDIAFOLDER}")
 	String CYQUEST_MEDIAFOLDER;
-	
+
 	//
 	// froc
 	// header values
@@ -340,6 +340,10 @@ public class OsaWebInterface {
 		public boolean prepare(InputStream zipFile, String base) {
 			try {
 				source = UnZip.unzipFile(zipFile);
+
+				System.err.println("Copying images from " + source + "/"
+						+ QTI_MEDIAFOLDER + " -> " + base + "/"
+						+ CYQUEST_MEDIAFOLDER);
 
 				FileUtils
 						.copyDirectory(
