@@ -126,14 +126,14 @@ public class AssessmentItem_Type008 extends AssessmentItem {
 		// </p>
 
 		String quest_text = qc.queryQuestionText();
-		Pattern p = Pattern.compile("src=\"/?" + qc.getQti_media_folder()
-				+ "/([^\"]+)\"");
-		Matcher m = p.matcher(quest_text);
+//		Pattern p = Pattern.compile("src=\"/?" + qc.getQti_media_folder()
+//				+ "/([^\"]+)\"");
+//		Matcher m = p.matcher(quest_text);
+//
+//		String questdesc = m.find() ? m.replaceAll("src=\""
+//				+ qc.getCy_image_base() + "/$1\"") : quest_text;
 
-		String questdesc = m.find() ? m.replaceAll("src=\""
-				+ qc.getCy_image_base() + "/$1\"") : quest_text;
-
-		pqiq.setQi_questdesc(questdesc);
+		pqiq.setQi_questdesc(cleanMediaUrl(quest_text, qc));
 	}
 
 	private String cleanImagePath(String path, QuestConfigurer qc) {

@@ -1,5 +1,8 @@
 package de.uniko.iwm.osa.data.assessmentItem;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import de.uniko.iwm.osa.data.model.PagesQuestitemsQuestsMisc;
 import de.uniko.iwm.osa.qtiinterpreter.QuestConfigurer;
 
@@ -17,7 +20,9 @@ public class AssessmentItem_Type003 extends AssessmentItem {
 	public boolean setup(PagesQuestitemsQuestsMisc pqiq, QuestConfigurer qc) {
 		pqiq.setQi_questtype(identifier);
 		pqiq.setQi_questparam(MAGIC_QUESTPARAM);
-		pqiq.setQi_questdesc(qc.queryQuestionText());
+		
+		String qText = qc.queryQuestionText();
+		pqiq.setQi_questdesc(cleanMediaUrl(qText, qc));
 		
 		pqiq.setM_itemPerPage(itemPerPage);
 		
