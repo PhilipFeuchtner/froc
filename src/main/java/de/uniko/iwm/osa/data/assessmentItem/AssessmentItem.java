@@ -1,5 +1,6 @@
 package de.uniko.iwm.osa.data.assessmentItem;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,5 +53,63 @@ public abstract class AssessmentItem {
 
 		return m.find() ? m.replaceAll("src=\"" + qc.getCy_image_base()
 				+ "/$1\"") : text;
+	}
+
+	void setTypevaluesAndShowdesc(PagesQuestitemsQuestsMisc pqiq,
+			QuestConfigurer qc) {
+
+		String template = "i:%d;s:%d:\"%s\";";
+
+		int correct = qc.queryCorrectResponsePosition();
+		List<String> responses = qc.queryResponseItemTextList();
+
+		String tv;
+		String sd;
+
+		if (responses.isEmpty()) {
+			tv = "" ; //"a:1:{i:0;i:1;}";
+			sd = "" ; //"a:1:{i:0;s:11:\"G&uuml;ltig\";}";
+		} else {
+			int count = 0;
+
+			//
+			// set prefix
+			//
+			tv = "a:" + responses.size() + ":{";
+			sd = "a:" + responses.size() + ":{";
+
+			for (String item : responses) {
+				//
+				// build correct response
+				//
+
+				if (count == correct) {
+					tv = tv + "i:" + count + ";i:1;";
+				} else {
+					tv = tv + "i:" + count + ";i:0;";
+				}
+
+				//
+				// build descr
+				//
+
+				sd = sd + String.format(template, count, item.length(), item);
+
+				// next item
+				count++;
+			}
+
+			//
+			// close array
+			//
+			tv = tv + "}";
+			sd = sd + "}";
+		}
+
+		// System.err.println(sd);
+		// System.err.println(tv);
+
+		pqiq.setQ_showdesc(sd);
+		pqiq.setQ_typevalues(tv);
 	}
 }
