@@ -40,6 +40,12 @@ public class QuestConfigurer extends ItemConfigurer {
 		
 	// --------------------------
 	
+	private final String QUERY_CHOICE_TEXTLIST = PART_ITEM_BODY
+			+ "/imsqti:choiceInteraction"
+			+ "/imsqti:simpleChoice/text()";
+	
+	// --------------------------
+	
 	public QuestConfigurer(String base, String href) throws SaxonApiException {
 		super(base, href);
 	}
@@ -82,5 +88,9 @@ public class QuestConfigurer extends ItemConfigurer {
 		// System.err.println(corr_resp_count_query);
 		
 		return Integer.parseInt(corr_resp_position);
+	}
+	
+	public List<String> queryResponseItemTextList() {
+		return queryToStringList(QUERY_CHOICE_TEXTLIST);
 	}
 }
