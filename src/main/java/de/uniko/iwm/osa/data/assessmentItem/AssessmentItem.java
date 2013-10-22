@@ -67,8 +67,8 @@ public abstract class AssessmentItem {
 		String sd;
 
 		if (responses.isEmpty()) {
-			tv = "" ; //"a:1:{i:0;i:1;}";
-			sd = "" ; //"a:1:{i:0;s:11:\"G&uuml;ltig\";}";
+			tv = "a:1:{i:0;i:1;}";
+			sd = "a:1:{i:0;s:11:\"G&uuml;ltig\";}";
 		} else {
 			int count = 0;
 
