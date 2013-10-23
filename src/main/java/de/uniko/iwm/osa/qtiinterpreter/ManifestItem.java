@@ -7,6 +7,7 @@ import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type001;
 import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type002;
 import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type003;
 import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_Type008;
+import de.uniko.iwm.osa.data.assessmentItem.AssessmentItem_TypeText;
 
 import net.sf.saxon.s9api.XPathSelector;
 import net.sf.saxon.s9api.XdmNode;
@@ -50,6 +51,10 @@ public class ManifestItem extends ItemConfigurer {
 			ai = new AssessmentItem_Type008();
 			break;
 
+		case "qt-text":
+			ai = new AssessmentItem_TypeText();
+			break;
+			
 		default:
 			//oi.addErrorEntry("QuestionType not implemented: "
 			//		+ questionType);

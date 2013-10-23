@@ -20,6 +20,7 @@ public class PagesQuestitemsQuestsMisc {
 	// misc
 
 	private int m_itemPerPage = 1;
+	private boolean m_isSimpleTextPage = false;
 
 	// -----------------------------------------------------------
 
@@ -69,6 +70,14 @@ public class PagesQuestitemsQuestsMisc {
 
 	public void setM_itemPerPage(int m_itemPerPage) {
 		this.m_itemPerPage = m_itemPerPage;
+	}
+	
+	public boolean isM_isSimpleTextPage() {
+		return m_isSimpleTextPage;
+	}
+
+	public void setM_isSimpleTextPage(boolean m_isSimpleTextPage) {
+		this.m_isSimpleTextPage = m_isSimpleTextPage;
 	}
 
 	// -----------------------------------------------------------

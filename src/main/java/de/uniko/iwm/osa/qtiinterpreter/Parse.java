@@ -233,8 +233,9 @@ public class Parse {
 		PageQuestitemConfigurer pq_config = new PageQuestitemConfigurer(node);
 		Cy_QuestionWrapper qw = null;
 
+		int cy_shownum = 0;
 		int cy_position = 0;
-
+		
 		//
 		// find refs
 		//
@@ -247,16 +248,17 @@ public class Parse {
 
 		for (String href : hrefs) {
 			count++;
+			cy_shownum++;
 			cy_position++;
 
 			QuestConfigurer q_config = new QuestConfigurer(base, href);
 			PagesQuestitemsQuestsMisc pqiqm = getPageAndQuest(pq_config,
-					q_config, cy_position);
+					q_config, cy_shownum, cy_position);
 
 			log.info(String.format("ref file: %s", href));
 			log.info(String.format(
 					"count [%2d], questid [%2d], position [%2d]", count,
-					cy_questid, cy_position));
+					cy_questid, cy_shownum));
 
 			handle_imsqti_item_xmlv2p1(q_config, pqiqm);
 
@@ -265,7 +267,8 @@ public class Parse {
 			// pqiqm.setQi_questsubhead(String.format("Aufgabe %d von %d",cy_position,
 			// hrefs.size()));
 
-			if ((cy_position % pqiqm.getM_itemPerPage() == 0) || qw == null) {
+			if ((cy_shownum % pqiqm.getM_itemPerPage() == 0) || qw == null) {
+				cy_position = 0;
 
 				qw = new Cy_QuestionWrapper(pqiqm);
 				generated_pages.add(qw);
@@ -295,7 +298,7 @@ public class Parse {
 
 	private PagesQuestitemsQuestsMisc getPageAndQuest(
 			PageQuestitemConfigurer pq_config, QuestConfigurer q_config,
-			int pageCount) {
+			int cy_shownum, int cy_position) {
 
 		PagesQuestitemsQuestsMisc pqiqm = new PagesQuestitemsQuestsMisc();
 
@@ -318,7 +321,10 @@ public class Parse {
 		// cy_db_quest.setQuestsubhead(String.format("Aufgabe %d von %d",
 		// cy_questid, hrefs.size()));
 		// quest.setPosition(cy_position);
-		pqiqm.setQ_shownum(String.format("%d", count));
+		
+		pqiqm.setQ_shownum(String.format("%d", cy_shownum));
+		pqiqm.setQ_position(cy_position);
+		
 		pqiqm.setQ_showdesc(q_config.queryQuestionText());
 
 		return pqiqm;

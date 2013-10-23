@@ -35,7 +35,7 @@ public class OsaDbPages {
 	private String pid = "Default";
 	private String md5key = "Default";
 	private Integer display = 1;
-	private Integer login = 1;  // TODO!
+	private Integer login = 0;  // TODO!
 	private Integer sessionpos = 1;
 	private Integer back = 0;
 	private Integer forward = 0;

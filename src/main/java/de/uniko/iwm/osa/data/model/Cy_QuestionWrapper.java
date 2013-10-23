@@ -8,8 +8,7 @@ import org.apache.log4j.Logger;
 /**
  * @author user
  * 
- *         wrapper class
- *         cyquest db-structure
+ *         wrapper class cyquest db-structure
  * 
  */
 public class Cy_QuestionWrapper {
@@ -23,7 +22,9 @@ public class Cy_QuestionWrapper {
 
 	public Cy_QuestionWrapper(PagesQuestitemsQuestsMisc pqiqm) {
 		page = pqiqm.getPages();
-		questsitem = pqiqm.getQuestitems();
+		
+		if (!pqiqm.isM_isSimpleTextPage())
+			questsitem = pqiqm.getQuestitems();
 	}
 
 	public OsaDbPages getPage() {
@@ -37,7 +38,7 @@ public class Cy_QuestionWrapper {
 	public List<OsaDbQuests> getOsaDbQuest() {
 		return questList;
 	}
-	
+
 	public void addQuest(OsaDbQuests q) {
 		questList.add(q);
 	}

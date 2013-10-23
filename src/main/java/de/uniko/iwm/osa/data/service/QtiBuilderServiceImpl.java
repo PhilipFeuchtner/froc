@@ -63,16 +63,18 @@ public class QtiBuilderServiceImpl implements QtiBuilderServive {
 
 			OsaDbQuestitems qi = qw.getOsaDbQuestitems();
 
-			qi.setPagesid(p.getId());
+			if (null != qi) {
+				qi.setPagesid(p.getId());
 
-			questitemsDAO.addOsaDbQuestitems(qi);
-			oi.addNewQuestitem(qi.getId());
+				questitemsDAO.addOsaDbQuestitems(qi);
+				oi.addNewQuestitem(qi.getId());
 
-			for (OsaDbQuests q : qw.getOsaDbQuest()) {
-				q.setQuestid(qi.getId());
+				for (OsaDbQuests q : qw.getOsaDbQuest()) {
+					q.setQuestid(qi.getId());
 
-				questsDAO.addOsaDbQuests(q);
-				oi.addNewQuest(q.getId());
+					questsDAO.addOsaDbQuests(q);
+					oi.addNewQuest(q.getId());
+				}
 			}
 		}
 
@@ -92,6 +94,10 @@ public class QtiBuilderServiceImpl implements QtiBuilderServive {
 
 		if (generatedPages.size() >= 1) {
 			OsaDbPages firstPage = generatedPages.get(0).getPage();
+			// ToDo copy file if its simple text
+			//
+			
+			// ----
 			firstPage.setMd5key(firstMd5);
 			firstPage.setPid(firstPagesId);
 
