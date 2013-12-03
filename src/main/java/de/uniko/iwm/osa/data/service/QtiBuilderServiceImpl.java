@@ -108,10 +108,44 @@ public class QtiBuilderServiceImpl implements QtiBuilderServive {
 				OsaDbPages p = pi.getPage();
 
 				p.setForwardform(String.format(fwdftemplate, jumpToPage));
+				
+				//Adjust PageID before store
+				int newPageId = Integer.parseInt( p.getPid().substring( p.getPid().length()-2, p.getPid().length()) );
+				
+				Logger.getRootLogger().error( "OPageId: "+newPageId );
+				
+				newPageId += Integer.parseInt(firstPagesId)-1;
+				
+				Logger.getRootLogger().error( "NPageId: "+(newPageId+(Integer.parseInt(firstPagesId)-1)) );
+				
+				Logger.getRootLogger().error( String.valueOf(newPageId) );
+				
+				//Fix PageID
+				p.setPid( String.valueOf(newPageId) );
+				
+				//Eliminate Clones
+				List<OsaDbPages> clones = pagesDAO.getOsaDbPagesByPid( String.valueOf(newPageId) );
+				Logger.getRootLogger().error("Clone Amount: "+clones.size());
+				for(OsaDbPages clone : clones)
+				{
+					int cloneId = clone.getId();
+					Logger.getRootLogger().error("Remove Id_"+clone.getId());
+					pagesDAO.removeOsaDbPages( cloneId );
+				}
+				
+				//Save DBPage
 				pagesDAO.storeOsaDbPages(p);
 
 				jumpToPage = p.getId();
 			}
+			
+			//TODO: Fix link to from 5X01 (input page) to firstPage generated Page.
+			String categoriePage = String.valueOf(Integer.parseInt(firstPagesId)-1);
+			OsaDbPages p5400 = pagesDAO.getOsaDbPagesByPid(categoriePage).get(0);
+			OsaDbPages p5401 = pagesDAO.getOsaDbPagesByPid(firstPagesId).get(0);
+			p5400.setForwardform("a:2:{s:1:\"p\";i:"+p5401.getId()+";s:1:\"t\";s:6:\"weiter\";}");
+			pagesDAO.storeOsaDbPages(p5400);
+			
 		}
 
 		return true;
