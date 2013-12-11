@@ -146,6 +146,38 @@ public class QtiBuilderServiceImpl implements QtiBuilderServive {
 			p5400.setForwardform("a:2:{s:1:\"p\";i:"+p5401.getId()+";s:1:\"t\";s:6:\"weiter\";}");
 			pagesDAO.storeOsaDbPages(p5400);
 			
+			//Fix all of added section (5X00)
+			if(pagesDAO.getOsaDbPagesByPid(firstPagesId).isEmpty())
+			{
+				Logger.getRootLogger().error("Page missing - FirstPageID: "+firstPagesId );
+			}
+			OsaDbPages curPage = pagesDAO.getOsaDbPagesByPid(firstPagesId).get(0);
+			int pageCounter = 0;
+			
+			while(curPage.getForwardform().contains("weiter")){
+				//Fix Pid
+				curPage.setPid(String.valueOf(Integer.parseInt(firstPagesId)+pageCounter));
+				pageCounter++;
+				
+				//Extract forwardForm Id
+				String forForm = curPage.getForwardform();
+				forForm = forForm.substring(forForm.indexOf("i:")+2, forForm.length());
+				forForm = forForm.substring(0, forForm.indexOf(";"));
+				int nextId = Integer.parseInt(forForm);
+				
+				//SavePage
+				pagesDAO.storeOsaDbPages(curPage);
+				
+				//NextPage
+				if(pagesDAO.getOsaDbPagesById(nextId).isEmpty())
+				{
+					Logger.getRootLogger().error("Page missing - Id: "+nextId );
+					break;
+				}
+				curPage = pagesDAO.getOsaDbPagesById(nextId).get(0);
+			}
+			
+			
 		}
 
 		return true;
